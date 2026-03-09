@@ -3,6 +3,9 @@
 **Date:** Sunday, 8 March 2026
 **Time:** 7:30 PM
 **Location:** Online
+
+**Chair:** Ettore Vescio  
+**Minutes recorded by:** Christian Finocchiaro
 **Attendees:**
 
 * Ettore Vescio
@@ -114,12 +117,12 @@ The following questions will be clarified with the project supervisor:
 
 ## 9. Action Items
 
-| Task                                          | Owner  |
-| --------------------------------------------- | ------ |
-| Create GitHub repository and add team members | Ettore |
-| Create project board (Miro)                   | Ettore |
-| Research alert data sources and APIs          | All    |
-| Confirm requirements with supervisor          | Ettore |
+| Task | Owner | Due Date |
+|-----|------|------|
+Create GitHub repository and add team members | Ettore | Completed |
+Create project board (Miro) | Ettore | Completed |
+Research alert data sources and APIs | All | 12 March 2026 |
+Confirm requirements with supervisor | Ettore | 12 March 2026 |
 
 ---
 
