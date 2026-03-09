@@ -1,0 +1,11 @@
+docs/
+docs/diagrams/.gitkeep
+docs/screenshots/.gitkeep
+
+backend/
+backend/api/.gitkeep
+backend/services/.gitkeep
+
+frontend/
+frontend/public/.gitkeep
+frontend/src/.gitkeep
