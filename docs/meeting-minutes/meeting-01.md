@@ -13,6 +13,10 @@
 * Thomas Smith
 * Pradip Pandey
 
+**Meeting Objective:**  
+Establish the project team, review the project brief, identify initial data sources,
+discuss the technical approach, and assign initial setup tasks.
+
 ---
 
 ## 1. Team Introductions
@@ -96,12 +100,13 @@ The team agreed to initially integrate **BoM and RFS feeds**, with additional so
 
 ---
 
-## 7. Decisions Made
+## 7. Key Decisions Summary
 
-* Ettore confirmed as **Team Leader**.
-* Initial data sources will be **BoM RSS** and **RFS RSS**.
-* React selected as **preferred front-end framework** (pending confirmation).
-* Backend language to be decided in the next meeting.
+- Ettore confirmed as Team Leader.
+- Initial alert sources will be Bureau of Meteorology (BoM) and NSW Rural Fire Service (RFS) RSS feeds.
+- React selected as the preferred front-end framework (pending confirmation).
+- Backend technology decision deferred to next meeting.
+- GitHub repository and Miro project board established.
 
 ---
 
@@ -130,3 +135,6 @@ Confirm requirements with supervisor | Ettore | 12 March 2026 |
 
 **Date:** Sunday, 15 March 2026
 **Time:** 7:30 PM
+
+**Minutes stored in:**  
+GitHub → /docs/meeting-minutes/
