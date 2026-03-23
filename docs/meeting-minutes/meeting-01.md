@@ -1,4 +1,4 @@
-**Meeting 1 – Project Kick-off**
+# Meeting 1 – Project Kick-off
 
 **Date:** Sunday, 8 March 2026
 **Time:** 7:30 PM
@@ -13,7 +13,8 @@
 * Thomas Smith
 * Pradip Pandey
 
-**Meeting Objective:**  
+## Meeting Objective:
+  
 Establish the project team, review the project brief, identify initial data sources,
 discuss the technical approach, and assign initial setup tasks.
 

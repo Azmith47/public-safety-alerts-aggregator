@@ -111,5 +111,8 @@ The following items will be clarified with the project sponsor:
 
 ## Next Meeting
 
-Date: Sunday, March 22, 2026  
-Time: 7:30 PM
+**Date:** Sunday, March 22, 2026  
+**Time:** 7:30 PM
+
+**Minutes stored in:**  
+GitHub → /docs/meeting-minutes/
