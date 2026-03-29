@@ -38,5 +38,4 @@ Data Collection: RSS + APIs
 - Ettore Vescio – Team Leader
 - Christian Finocchiaro
 - Thomas Smith
-- Pradip Pandey.
-.
+- Pradip Pandey
