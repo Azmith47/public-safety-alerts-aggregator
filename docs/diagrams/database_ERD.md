@@ -26,7 +26,7 @@ erDiagram
         int id PK "Primary key for notification"
         int user_id FK "FK to USERS"
         int alert_id FK "FK to ALERTS"
-        string sent_status "Sent / Pending"
+        string sent_status "Delivery status (e.g., Sent, Pending, Failed)"
         datetime created_at "Timestamp when notification created"
     }
 
@@ -44,12 +44,45 @@ erDiagram
         datetime issued_at "Timestamp when alert was issued"
         datetime updated_at "Timestamp when alert was last updated"
         string source_url "Direct link back to original source"
+        bool planned "Indicates if event is planned (Transport NSW)"
+        bool is_major "Indicates if alert is classified as major"
+        bool impacting_network "Indicates if alert impacts transport network"
+        int delay "Delay in minutes (traffic-related alerts)"
+        datetime start_date "Start time of planned or ongoing event"
+        datetime end_date "Expected end time of event"
+        string raw_payload "Raw JSON/XML payload from source for traceability and debugging"
     }
 
     %% Alerts to Regions (many-to-many)
     ALERTS_TO_REGIONS {
         int alert_id FK "FK to ALERTS"
         int region_id FK "FK to REGIONS"
+    }
+
+    %% Road-specific data (Transport NSW)
+    ALERT_ROADS {
+        int id PK "Primary key"
+        int alert_id FK "FK to ALERTS"
+        string main_street "Primary road affected"
+        string cross_street "Cross street reference"
+        string second_location "Secondary location reference"
+        string suburb "Suburb(s) affected"
+        string region "Region label provided by source (may differ from internal mapping)"
+    }
+
+    %% Related links (Transport NSW)
+    ALERT_LINKS {
+        int id PK "Unique identifier for related link"
+        int alert_id FK "Associated alert"
+        string link_text "Display text for link"
+        string link_url "External URL for additional information"
+    }
+
+    %% Advice messages (Transport NSW + RFS)
+    ALERT_ADVICE {
+        int id PK "Unique identifier for advice message"
+        int alert_id FK "Associated alert"
+        string message "Advice text for users (e.g., 'Exercise caution')"
     }
 
     %% Spatial Data: Marker Points
@@ -72,23 +105,23 @@ erDiagram
     %% Lookup Tables
     CATEGORIES {
         int id PK "Category ID"
-        string name "Category name, e.g., Bush Fire, Flood"
+        string name "Category name (e.g., Bush Fire, Flood, Traffic)"
     }
 
     SOURCES {
         int id PK "Source ID"
-        string name "Source agency, e.g., RFS, SES"
-        string website_url "URL of the source"
+        string name "Source system (e.g., RFS, SES, Transport NSW)"
+        string website_url "Base URL of source provider"
     }
 
     REGIONS {
         int id PK "Region ID"
-        string name "Region name, e.g., Northern NSW"
+        string name "Region name (e.g., Northern Rivers, Sydney Metro)"
     }
 
     COUNCIL_AREAS {
         int id PK "Council area ID"
-        string name "Council area name"
+        string name "Local government area name"
         int region_id FK "FK to REGIONS"
     }
 
@@ -101,12 +134,12 @@ erDiagram
 
     STATUS_TYPES {
         int id PK "Status type ID"
-        string name "e.g., Active, Expired"
+        string name "Standardised status (e.g., Active, Under Control, Ended)"
     }
 
     SEVERITY_LEVELS {
         int id PK "Severity level ID"
-        string name "Severity name, e.g., Advice, Watch & Act"
+        string name "Severity name (e.g., Advice, Watch & Act)"
         string description "Optional description of severity"
     }
 
@@ -118,162 +151,23 @@ erDiagram
     ALERTS ||--o{ ALERT_MARKERS : "has marker points"
     ALERTS ||--o{ ALERT_POLYGONS : "has polygon points"
     ALERTS ||--o{ ALERTS_TO_REGIONS : "linked to regions"
+    ALERTS ||--o{ ALERT_ROADS : "has road segments"
+    ALERTS ||--o{ ALERT_ADVICE : "has advice messages"
+    ALERTS ||--o{ ALERT_LINKS : "has related links"
+
+    ALERTS }o--|| CATEGORIES : "belongs to category"
+    ALERTS }o--|| SOURCES : "originates from source"
+    ALERTS }o--|| LOCATIONS : "mapped to primary location"
+    ALERTS }o--|| STATUS_TYPES : "has operational status"
+    ALERTS }o--|| SEVERITY_LEVELS : "has severity level"
 
     SUBSCRIPTIONS }o--|| CATEGORIES : "filters by category"
     SUBSCRIPTIONS }o--|| REGIONS : "filters by region"
     SUBSCRIPTIONS }o--|| COUNCIL_AREAS : "filters by council area"
-    SUBSCRIPTIONS }o--|| SEVERITY_LEVELS : "filters by severity"
-    
-    ALERTS }o--|| CATEGORIES : "belongs to category"
-    ALERTS }o--|| SOURCES : "from source"
-    ALERTS }o--|| LOCATIONS : "occurs at location"
-    ALERTS }o--|| STATUS_TYPES : "has status"
-    ALERTS }o--|| SEVERITY_LEVELS : "has severity level"
+    SUBSCRIPTIONS }o--|| SEVERITY_LEVELS : "filters by severity"    
     
     LOCATIONS }o--|| COUNCIL_AREAS : "belongs to council area"
     COUNCIL_AREAS }o--|| REGIONS : "belongs to region"
     
-    ALERTS_TO_REGIONS }o--|| REGIONS : "maps to"
-```
-
-``` mermaid
-erDiagram
-
-    %% Users Table
-    USERS {
-        int id PK
-        string email
-        datetime created_at
-        %% User's email and creation timestamp
-    }
-
-    %% Subscriptions Table
-    SUBSCRIPTIONS {
-        int id PK
-        int user_id FK
-        int category_id FK
-        int region_id FK
-        int council_area_id FK
-        int severity_level_id FK
-        datetime created_at
-        %% Links users to their alert preferences / filters
-    }
-
-    %% Notifications Table
-    NOTIFICATIONS {
-        int id PK
-        int user_id FK
-        int alert_id FK
-        string sent_status
-        datetime created_at
-        %% Stores which notifications have been sent or pending
-    }
-
-    %% Alerts Table
-    ALERTS {
-        int id PK
-        string external_id
-        string title
-        string description
-        int category_id FK
-        int source_id FK
-        int location_id FK
-        int status_type_id FK
-        int severity_level_id FK
-        datetime issued_at
-        datetime updated_at
-        string source_url
-        %% Stores alert info including link back to source
-    }
-
-    %% Alerts-to-Regions (many-to-many)
-    ALERTS_TO_REGIONS {
-        int alert_id FK
-        int region_id FK
-        %% Allows an alert to be linked to multiple regions
-    }
-
-    %% Spatial Data
-    ALERT_MARKERS {
-        int id PK
-        int alert_id FK
-        float latitude
-        float longitude
-        %% Single marker point for alert location
-    }
-
-    ALERT_POLYGONS {
-        int id PK
-        int alert_id FK
-        int point_order
-        float latitude
-        float longitude
-        %% Polygon points to define affected area
-    }
-
-    %% Lookup Tables
-    CATEGORIES {
-        int id PK
-        string name
-    }
-
-    SOURCES {
-        int id PK
-        string name
-        string website_url
-    }
-
-    REGIONS {
-        int id PK
-        string name
-    }
-
-    COUNCIL_AREAS {
-        int id PK
-        string name
-        int region_id FK
-    }
-
-    LOCATIONS {
-        int id PK
-        string name
-        string postcode
-        int council_area_id FK
-    }
-
-    STATUS_TYPES {
-        int id PK
-        string name
-    }
-
-    SEVERITY_LEVELS {
-        int id PK
-        string name
-        string description
-    }
-
-    %% Relationships
-    USERS ||--o{ SUBSCRIPTIONS : "has subscriptions"
-    USERS ||--o{ NOTIFICATIONS : "receives notifications"
-    
-    ALERTS ||--o{ NOTIFICATIONS : "triggers notifications"
-    ALERTS ||--o{ ALERT_MARKERS : "has marker points"
-    ALERTS ||--o{ ALERT_POLYGONS : "has polygon points"
-    ALERTS ||--o{ ALERTS_TO_REGIONS : "linked to regions"
-
-    SUBSCRIPTIONS }o--|| CATEGORIES : "filters by category"
-    SUBSCRIPTIONS }o--|| REGIONS : "filters by region"
-    SUBSCRIPTIONS }o--|| COUNCIL_AREAS : "filters by council area"
-    SUBSCRIPTIONS }o--|| SEVERITY_LEVELS : "filters by severity"
-    
-    ALERTS }o--|| CATEGORIES : "belongs to category"
-    ALERTS }o--|| SOURCES : "from source"
-    ALERTS }o--|| LOCATIONS : "occurs at location"
-    ALERTS }o--|| STATUS_TYPES : "has status"
-    ALERTS }o--|| SEVERITY_LEVELS : "has severity level"
-    
-    LOCATIONS }o--|| COUNCIL_AREAS : "belongs to council area"
-    COUNCIL_AREAS }o--|| REGIONS : "belongs to region"
-    
-    ALERTS_TO_REGIONS }o--|| REGIONS : "maps to"
+    ALERTS_TO_REGIONS }o--|| REGIONS : "maps alert to affected regions"
 ```
