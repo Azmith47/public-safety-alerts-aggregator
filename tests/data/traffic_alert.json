@@ -1,0 +1,55 @@
+{
+    "title": "CHANGED TRAFFIC CONDITIONS Mamre Road upgrade",
+    "link": "https://www.livetraffic.com/incident-details/212927",
+    "pubDate": "2024-11-01T04:26:14.000Z",
+    "markerPoint": {
+      "lat": -33.7913423,
+      "lng": 150.7698515
+    },
+    "type": "Traffic",
+    "category": "CHANGED TRAFFIC CONDITIONS",
+    "lastUpdated": "2024-11-08T04:13:49.940Z",
+    "id": 212927,
+    "planned": true,
+    "startDate": "2024-10-31T20:47:00.000Z",
+    "endDate": "2028-06-30T13:45:00.000Z",
+    "polyline": [],
+    "ended": false,
+    "delay": 0,
+    "headline": null,
+    "impactingNetwork": true,
+    "isMajor": false,
+    "queueLength": 0,
+    "roads": [
+      {
+        "conditionTendency": "",
+        "crossStreet": "M4 Motorway",
+        "delay": "",
+        "impactedLanes": [],
+        "locationQualifier": "between",
+        "mainStreet": "Mamre Road",
+        "quadrant": "",
+        "queueLength": 0,
+        "region": "Sydney",
+        "secondLocation": "Erskine Park Road",
+        "suburb": "St Clair to Erskine Park",
+        "trafficVolume": ""
+      }
+    ],
+    "speedLimit": -1,
+    "subCategory": "null",
+    "otherLinks": [
+      {
+        "linkText": "Mamre Road upgrade",
+        "linkURL": "https://www.transport.nsw.gov.au/projects/current-projects/mamre-road-upgrade-between-m4-motorway-st-clair-and-erskine-park-road"
+      }
+    ],
+    "diversions": null,
+    "attendingGtoups": null,
+    "advice": [
+      "Check signage",
+      "Exercise caution",
+      " "
+    ]
+  }
+  
