@@ -12,6 +12,8 @@ build/
 dist/
 
 # Environment Variables
+.env
+.env*
 .env*.local
 .env.sample
 
