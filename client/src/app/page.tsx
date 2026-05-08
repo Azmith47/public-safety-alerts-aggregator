@@ -35,7 +35,7 @@ export default function Home() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <AlertMap alertsProp={alerts} trafficAlertsProp={trafficAlerts} />
+      <AlertMap apiKey={process.env.GOOGLE_MAPS_API_KEY || ''} alertsProp={alerts} trafficAlertsProp={trafficAlerts} />
     </Suspense>
   );
 }

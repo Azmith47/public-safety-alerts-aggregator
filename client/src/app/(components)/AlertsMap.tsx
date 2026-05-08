@@ -4,6 +4,7 @@ import { use } from 'react';
 import { APIProvider, Map, Polygon, AdvancedMarker, Polyline, Pin } from "@vis.gl/react-google-maps"
 
 type AlertProps = {
+    apiKey: string;
     alertsProp: Promise<Alert[]>;
     trafficAlertsProp: Promise<TrafficAlert[]>;
 }
@@ -55,13 +56,13 @@ type TrafficAlert = {
 
 }
 
-function AlertMap({alertsProp, trafficAlertsProp}:AlertProps) {
+function AlertMap({apiKey, alertsProp, trafficAlertsProp}:AlertProps) {
     const alerts = use(alertsProp);
     const trafficAlerts = use(trafficAlertsProp);
 
     return (
-        <div className="map"> 
-      <APIProvider apiKey={'AIzaSyDQMd7DVlcFRLpeCNZut6El3XemhB30md0'}>
+        <div className="map">
+      <APIProvider apiKey={apiKey}>
         <Map width={'75vw'}
           defaultZoom={10}
           defaultCenter={{ lat: -33.860664, lng: 151.208138 }}

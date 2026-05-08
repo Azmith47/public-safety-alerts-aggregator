@@ -203,7 +203,6 @@ const getTrafficAlerts = async (req, res) => {
         });
         const data = await response.json();
         
-
         data?.features.forEach(feature => {
             const title = feature?.properties?.displayName || 'No title';
             const id = feature?.id || null
