@@ -35,7 +35,7 @@
 ## Map update
 
 - Confirmed that a map will be included in the prototype of the project
-- Viewed a basic test of implementing a map in Next.js
+- Viewed a basic test of implementing a map in Next\.js
 - Identified frontend latency issues due to loading a large number of markers and polygons
 - Discussed potential solutions to remedy issue
     - Load only what fits within the bounds of the map
