@@ -48,7 +48,7 @@
 - Still waiting on wireframes and class diagram to be completed for section 2
 - Discussed wireframe progress and UI ideas
 - Viewed the data structures from the data sources to better conceptualise the alert class structure to create the class diagram
-- Completed sections 1-3
+- Completed sections 1\-3
 - Reviewed and refined responses to each section 
 
 ## Open Questions
