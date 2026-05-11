@@ -6,7 +6,7 @@
 
 **Chair:** Ettore Vescio<br>**Minutes recorded by:** Pradip Pandey<br>**Attendees:**
 
-- Ettore Vescio \(Team Leader\)
+- Ettore Vescio (Team Leader)
 - Christian Finocchiaro
 - Thomas Smith
 - Pradip Pandey
@@ -14,18 +14,18 @@
 ## Agenda
 
 1. Finalize Use Case/User Story, ERD and Wireframe Diagrams
-2. Complete Section 3,4 &amp; 5 of Assignment 2\.
-3. Work further on Prototype and tech Stacks\.
+2. Complete Section 3,4 &amp; 5 of Assignment 2.
+3. Work further on Prototype and tech Stacks.
 
 ## Discussion
 
-Requirements Baseline &amp; Technology Decision Pack section 1,2,3,4,5 discuss and finalize\.
+Requirements Baseline Technology Decision Pack section 1,2,3,4,5 discuss and finalize.
 
-Discussion on Updated Project Controls and Risk Register was done\.
+Discussion on Updated Project Controls and Risk Register was done.
 
-Feasibility evidence as given a reality check\.
+Feasibility evidence as given a reality check.
 
-Improved Designs and Diagrams were added and finalized\.
+Improved Designs and Diagrams were added and finalized.
 
 Progress includes:
 
@@ -37,10 +37,10 @@ Progress includes:
 ## Decisions Made
 
 - Current team roles remain unchanged
-- Decided On Using RFS and SES traffic as SES will supersede BOM\.
-- Assignment  2 sections discussion and decision continues\.
-- Diagrams finalized\.
-- Changelog Decided and improved\.
+- Decided On Using RFS and SES traffic as SES will supersede BOM.
+- Assignment  2 sections discussion and decision continues.
+- Diagrams finalized.
+- Changelog Decided and improved.
 
 ## Open Questions
 
@@ -48,24 +48,24 @@ Polygons and Polylines Could stay on same database?
 
 Discussion on Alert Types, fire,weather?
 
-Discussion on JSON Objects decision\.
+Discussion on JSON Objects decision.
 
 **Action Items**
 
-Further Work On prototype to make it up and running\.
+Further Work On prototype to make it up and running.
 
-Work On Feasible Frontend and Backend tech stacks\.
+Work On Feasible Frontend and Backend tech stacks.
 
-Should be free resources\.
+Should be free resources.
 
 
 | Task | Owner | Due |
 | --- | --- | --- |
 | Add the Sections 3,4,5 in Typst | Ettore | Before next meeting |
-| Go through the A2 sample and give instruction on the progess of tech stack\. | Christian | Before next meeting |
+| Go through the A2 sample and give instruction on the progess of tech stack. | Christian | Before next meeting |
 | Finalize the diagrams and update in Miro Board | Thomas | Before next meeting |
-| Complete the Meeting Minutes and add anything that need to be added on A2 sample and organize suggestions on new tech stack\. | Pradip | Before next meeting |
-| Collect Evidence and attach it to section 6 of A2 | Ettore | Before A2 submission\. |
+| Complete the Meeting Minutes and add anything that need to be added on A2 sample and organize suggestions on new tech stack. | Pradip | Before next meeting |
+| Collect Evidence and attach it to section 6 of A2 | Ettore | Before A2 submission. |
 
 
 ## Next Meeting
