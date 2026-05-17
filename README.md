@@ -40,7 +40,7 @@ Data Collection: RSS + APIs
 - Thomas Smith
 - Pradip Pandey
 
-## How to use
+## How To Use
 1. Clone the desired branch
 2. In both the "client" and "backend" directories open a cmd terminal and type npm install
 3. Go to the "backend" directory and create a ".env" file with  a "TFNSW_API_KEY"  containing your API key for Transport For New South Wales live traffic
