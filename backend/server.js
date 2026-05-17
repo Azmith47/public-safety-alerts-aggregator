@@ -5,6 +5,7 @@ const express = require("express")
 const cors = require("cors")
 const corsOptions = require('./config/corsOptions')
 const port = 3001
+const { alertsCollector } = require('./middleware/alertsCollector')
 
 const app = express()
 
@@ -21,9 +22,13 @@ app.use(cors(corsOptions));
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 
+//alerts collecter loop
+setInterval(alertsCollector, 600000)
+
 //routes
 app.use('/alerts', require('./routes/alerts'))
 
+//start listening for API calls
 app.listen(port, () => {
-    console.log("App listening on port 3000")
+    console.log("App listening on port " + port)
   })

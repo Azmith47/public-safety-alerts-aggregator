@@ -3,7 +3,7 @@ import AlertMap from "./(components)/AlertsMap";
 
 async function fetchAlerts() {
   try {
-    const response = await fetch('http://localhost:3001/alerts');
+    const response = await fetch('http://localhost:3001/alerts/fire');
     if (response.ok) {
       const data = await response.json();
       return(data);
