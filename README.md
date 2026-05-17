@@ -24,13 +24,13 @@ by region and category.
 - MySQL alert database
 - Backend API
 - Web dashboard with search and filtering
-- Optional map-based visualization
+- Map-based visualization
 
 ## Tech Stack
 
-Backend: Python
+Backend: Express.js
 Database: MySQL  
-Frontend: React or HTML/JS  
+Frontend: Next.js 
 Data Collection: RSS + APIs
 
 ## Team Members
@@ -39,3 +39,19 @@ Data Collection: RSS + APIs
 - Christian Finocchiaro
 - Thomas Smith
 - Pradip Pandey
+
+## How to use
+1. Clone the desired branch
+2. In both the "client" and "backend" directories open a cmd terminal and type npm install
+3. Go to the "backend" directory and create a ".env" file with  a "TFNSW_API_KEY"  containing your API key for Transport For New South Wales live traffic
+4. Go to the "client" directory and create a ".env" file with a "GOOGLE_MAPS_API_KEY" variable containing your Google Maps Api key
+
+The repo should now be ready to be modified. To run the project in developer mode:
+1. Open a cmd terminal in the "backend" directory and type "npm run dev"
+2. Open a cmd terminal in the "client" directory and type "npm run dev"
+
+To build and run the final version of the project:
+1. Open a cmd terminal in the "backend" directory and type "npm run build"
+2. Open a cmd terminal in the "client" directory and type "npm run build"
+3. Open a cmd terminal in the "backend" directory and type "npm run start"
+4. Open a cmd terminal in the "client" directory and type "npm run start"
