@@ -28,9 +28,9 @@ by region and category.
 
 ## Tech Stack
 
-Backend: Python
+Backend: Express.js
 Database: MySQL  
-Frontend: React or HTML/JS  
+Frontend: Next.js 
 Data Collection: RSS + APIs
 
 ## Team Members
@@ -42,7 +42,7 @@ Data Collection: RSS + APIs
 
 ## How to use
 1. Clone the desired branch
-2. In both the "client" and "backend" directories open a cmd terminal and type npm init
+2. In both the "client" and "backend" directories open a cmd terminal and type npm install
 3. Go to the "backend" directory and create a ".env" file with  a "TFNSW_API_KEY"  containing your API key for Transport For New South Wales live traffic
 4. Go to the "client" directory and create a ".env" file with a "GOOGLE_MAPS_API_KEY" variable containing your Google Maps Api key
 
