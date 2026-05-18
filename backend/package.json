@@ -5,6 +5,9 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
+    "db:init": "node database/init.js",
+    "db:seed": "node database/seed.js",
+    "db:geospatial": "node database/importSpatialData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,7 +21,8 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "rss-parser": "^3.13.0",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "i": "^0.3.7",

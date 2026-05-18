@@ -3,44 +3,47 @@ PRAGMA foreign_keys = ON;
 -- Lookup Tables
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS sources (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     website_url TEXT
 );
 
 CREATE TABLE IF NOT EXISTS regions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS status_types (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS severity_levels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     description TEXT
 );
 
 -- Geographic Tables
 CREATE TABLE IF NOT EXISTS council_areas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     region_id INTEGER,
     FOREIGN KEY (region_id) REFERENCES regions(id)
 );
 
 CREATE TABLE IF NOT EXISTS locations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     postcode TEXT,
     council_area_id INTEGER,
+
+    UNIQUE(name, postcode),
+    
     FOREIGN KEY (council_area_id) REFERENCES council_areas(id)
 );
 
@@ -54,7 +57,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Alerts
 CREATE TABLE IF NOT EXISTS alerts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    external_id TEXT,
+    external_id TEXT UNIQUE,
     title TEXT NOT NULL,
     description TEXT,
     category_id INTEGER,
