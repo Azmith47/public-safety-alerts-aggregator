@@ -5,6 +5,7 @@ const express = require("express")
 const cors = require("cors")
 const corsOptions = require('./config/corsOptions')
 const port = 3001
+const db = require("./database/db");
 
 const app = express()
 
