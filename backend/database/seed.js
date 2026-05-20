@@ -1,3 +1,9 @@
+const {
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction
+} = require("./db");
+
 const CategoryDAO = require("./dao/CategoryDAO");
 const SeverityLevelDAO = require("./dao/SeverityLevelDAO");
 const StatusTypeDAO = require("./dao/StatusTypeDAO");
@@ -17,33 +23,16 @@ const statusTypes =
 const regions =
     require("./seeds/regions");
 
-/*
-const councilAreas =
-    require("./seeds/councilAreas");
-
-const locations =
-    require("./seeds/locations");
-*/
-
-async function seed() {
-
-    console.log("Seeding database...");
-
-    // -----------------------------------------
-    // Categories
-    // -----------------------------------------
-
+async function seedCategories() {
     for (const category of categories) {
 
         await CategoryDAO.getOrCreate(
             category
         );
     }
+}
 
-    // -----------------------------------------
-    // Severity Levels
-    // -----------------------------------------
-
+async function seedSeverityLevels() {
     for (const severity of severityLevels) {
 
         await SeverityLevelDAO.getOrCreate(
@@ -51,82 +40,66 @@ async function seed() {
             severity.description
         );
     }
+}
 
-    // -----------------------------------------
-    // Status Types
-    // -----------------------------------------
-
+async function seedStatusTypes() {
     for (const status of statusTypes) {
 
         await StatusTypeDAO.getOrCreate(
             status
         );
     }
-
-    // -----------------------------------------
-    // Regions
-    // -----------------------------------------
-
-    const regionMap = {};
-
-    for (const region of regions) {
-
-        const regionId =
-            await RegionDAO.getOrCreate(
-                region
-            );
-
-        regionMap[region] = regionId;
-    }
-
-    // -----------------------------------------
-    // Council Areas
-    // -----------------------------------------
-
-    /* 
-    const councilAreaMap = {}; 
-
-    for (const councilArea of councilAreas) {
-
-        const regionId =
-            regionMap[councilArea.region];
-
-        const councilAreaId =
-            await CouncilAreaDAO.getOrCreate(
-                councilArea.name,
-                regionId
-            );
-
-        councilAreaMap[
-            councilArea.name
-        ] = councilAreaId;
-    }
-
-    // -----------------------------------------
-    // Locations
-    // -----------------------------------------
-
-    for (const location of locations) {
-
-        const councilAreaId =
-            councilAreaMap[
-                location.councilArea
-            ];
-
-        await LocationDAO.getOrCreate(
-            location.name,
-            location.postcode,
-            councilAreaId
-        );
-    }
-    */
-
-    console.log("Database seeded successfully.");
 }
 
-seed()
-    .then(() => process.exit(0))
-    .catch(err => {
-        console.error(err);
-        process.exit(1);
-    });
+async function seedRegions() {
+    for (const region of regions) {
+
+        await RegionDAO.getOrCreate(
+            region
+        );
+    }
+}
+
+
+async function seed() {
+    await beginTransaction();
+
+    try {
+        console.log("Seeding database...");
+
+        // -----------------------------------------
+        // Categories
+        // -----------------------------------------
+        console.log("Seeding categories...");
+        await seedCategories();
+        console.log("Categories seeded.");
+
+        // -----------------------------------------
+        // Severity Levels
+        // -----------------------------------------
+        console.log("Seeding severity levels...");
+        await seedSeverityLevels();
+        console.log("Severity levels seeded.");
+        // -----------------------------------------
+        // Status Types
+        // -----------------------------------------
+        console.log("Seeding status types...");
+        await seedStatusTypes();
+        console.log("Status types seeded.");
+
+        // -----------------------------------------
+        // Regions
+        // -----------------------------------------
+        console.log("Seeding regions...");
+        await seedRegions();
+        console.log("Regions seeded.");
+
+        console.log("Database seeded successfully.");
+        await commitTransaction();
+    } catch (err) {
+        console.error("Error seeding database:", err);
+        await rollbackTransaction();
+    }
+}
+
+module.exports = {seed};
