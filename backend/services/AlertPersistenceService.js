@@ -18,192 +18,116 @@ const AlertLinkDAO = require("../database/dao/AlertLinkDAO");
 class AlertPersistenceService {
 
     async save(alert, sourceName, sourceWebsite = null) {
+        return AlertDAO.transaction(async () => {
+            const categoryId =
+                await CategoryDAO.getOrCreate(alert.category);
 
-        // -----------------------------------------
-        // Resolve lookup IDs
-        // -----------------------------------------
+            const sourceId =
+                await SourceDAO.getOrCreate(
+                    sourceName,
+                    sourceWebsite
+                );
 
-        const categoryId =
-            await CategoryDAO.getOrCreate(alert.category);
+            const statusTypeId =
+                await StatusTypeDAO.getOrCreate(
+                    alert.status || "Unknown"
+                );
 
-        const sourceId =
-            await SourceDAO.getOrCreate(
-                sourceName,
-                sourceWebsite
+            const severityLevelId =
+                await SeverityLevelDAO.getOrCreate(
+                    alert.alertLevel || "Unknown"
+                );
+
+            let regionId = null;
+            let councilAreaId = null;
+            let locationId = null;
+
+            if (alert.region) {
+                regionId =
+                    await RegionDAO.getOrCreate(alert.region);
+            }
+
+            if (alert.councilArea) {
+                councilAreaId =
+                    await CouncilAreaDAO.getOrCreate(
+                        alert.councilArea,
+                        regionId
+                    );
+            }
+
+            if (alert.location) {
+                locationId =
+                    await LocationDAO.getOrCreate(
+                        alert.location,
+                        null,
+                        councilAreaId
+                    );
+            }
+
+            const existingAlert =
+                await AlertDAO.exists(alert.id);
+
+            const alertData = this.buildAlertData(
+                alert,
+                categoryId,
+                sourceId,
+                locationId,
+                statusTypeId,
+                severityLevelId
             );
 
-        const statusTypeId =
-            await StatusTypeDAO.getOrCreate(
-                alert.status || "Unknown"
-            );
+            if (existingAlert) {
+                await AlertDAO.update(existingAlert.id, alertData);
+                await this.replaceSpatialData(existingAlert.id, alert);
+                await this.replaceRoadData(existingAlert.id, alert);
+                await this.replaceAdviceData(existingAlert.id, alert);
+                await this.replaceLinkData(existingAlert.id, alert);
 
-        const severityLevelId =
-            await SeverityLevelDAO.getOrCreate(
-                alert.alertLevel || "Unknown"
-            );
+                return {
+                    action: "updated",
+                    alertId: existingAlert.id
+                };
+            }
 
-        // -----------------------------------------
-        // Geographic resolution
-        // -----------------------------------------
-
-        let regionId = null;
-        let councilAreaId = null;
-        let locationId = null;
-
-        if (alert.region) {
-
-            regionId =
-                await RegionDAO.getOrCreate(
-                    alert.region
-                );
-        }
-
-        if (alert.councilArea) {
-
-            councilAreaId =
-                await CouncilAreaDAO.getOrCreate(
-                    alert.councilArea,
-                    regionId
-                );
-        }
-
-        if (alert.location) {
-
-            locationId =
-                await LocationDAO.getOrCreate(
-                    alert.location,
-                    null,
-                    councilAreaId
-                );
-        }
-
-        // -----------------------------------------
-        // Check for existing alert
-        // -----------------------------------------
-
-        const existingAlert =
-            await AlertDAO.exists(alert.id);
-
-        // -----------------------------------------
-        // UPDATE EXISTING ALERT
-        // -----------------------------------------
-
-        if (existingAlert) {
-
-            await AlertDAO.update(existingAlert.id, {
-
-                title: alert.title,
-                description:
-                    alert.headline ||
-                    alert.description ||
-                    alert.title,
-
-                category_id: categoryId,
-                source_id: sourceId,
-                location_id: locationId,
-                status_type_id: statusTypeId,
-                severity_level_id: severityLevelId,
-
-                issued_at: alert.pubDate,
-                updated_at: alert.lastUpdated,
-
-                source_url: alert.link,
-
-                planned: alert.planned || false,
-                is_major: alert.isMajor || false,
-                impacting_network:
-                    alert.impactingNetwork || false,
-
-                delay: alert.delay || 0,
-
-                start_date: alert.startDate || null,
-                end_date: alert.endDate || null,
-
-                raw_payload: alert
+            const result = await AlertDAO.create({
+                external_id: alert.id,
+                ...alertData
             });
 
-            // -----------------------------------------
-            // Replace related child records
-            // -----------------------------------------
+            const alertId = result.id;
 
-            await this.replaceSpatialData(
-                existingAlert.id,
-                alert
-            );
-
-            await this.replaceRoadData(
-                existingAlert.id,
-                alert
-            );
-
-            await this.replaceAdviceData(
-                existingAlert.id,
-                alert
-            );
-
-            await this.replaceLinkData(
-                existingAlert.id,
-                alert
-            );
+            await this.insertSpatialData(alertId, alert);
+            await this.insertRoadData(alertId, alert);
+            await this.insertAdviceData(alertId, alert);
+            await this.insertLinkData(alertId, alert);
 
             return {
-                action: "updated",
-                alertId: existingAlert.id
+                action: "created",
+                alertId
             };
-        }
+        });
+    }
 
-        // -----------------------------------------
-        // CREATE NEW ALERT
-        // -----------------------------------------
-
-        const result = await AlertDAO.create({
-
-            external_id: alert.id,
-
+    buildAlertData(alert, categoryId, sourceId, locationId, statusTypeId, severityLevelId) {
+        return {
             title: alert.title,
-
             description:
-                alert.headline ||
-                alert.description ||
-                alert.title,
-
+                alert.headline || alert.description || alert.title,
             category_id: categoryId,
             source_id: sourceId,
             location_id: locationId,
             status_type_id: statusTypeId,
             severity_level_id: severityLevelId,
-
             issued_at: alert.pubDate,
             updated_at: alert.lastUpdated,
-
             source_url: alert.link,
-
             planned: alert.planned || false,
             is_major: alert.isMajor || false,
-            impacting_network:
-                alert.impactingNetwork || false,
-
+            impacting_network: alert.impactingNetwork || false,
             delay: alert.delay || 0,
-
             start_date: alert.startDate || null,
             end_date: alert.endDate || null,
-
             raw_payload: alert
-        });
-
-        const alertId = result.id;
-
-        await this.insertSpatialData(alertId, alert);
-
-        await this.insertRoadData(alertId, alert);
-
-        await this.insertAdviceData(alertId, alert);
-
-        await this.insertLinkData(alertId, alert);
-
-        return {
-            action: "created",
-            alertId
         };
     }
 
