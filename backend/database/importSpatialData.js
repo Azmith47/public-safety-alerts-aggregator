@@ -1,5 +1,10 @@
 const XLSX = require("xlsx");
 const path = require("path");
+const {
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction
+} = require("./db");
 
 const CouncilAreaDAO = require("./dao/CouncilAreaDAO");
 const LocationDAO = require("./dao/LocationDAO");
@@ -7,7 +12,6 @@ const RegionDAO = require("./dao/RegionDAO");
 
 const lgaRegionMap =
     require("./seeds/lgaRegionMap");
-const RegionDAO = require("./dao/RegionDAO");
 
 function normalizeString(str) {
     return String(str || "")
@@ -17,23 +21,73 @@ function normalizeString(str) {
 }
 
 function normalizeLGAName(name) {
-    return String(name || "")
-        // Removes 'Unincorporated -' from the beginning
-        .replace(/^Unincorporated\s*-\s*/i, "")
-        // Removes 'Regional', 'Shire', or 'Council' only if they appear at the end
-        .replace(/\b(Regional|Shire|Council)\b$/gi, "")
-        // Cleans up extra spaces
-        .replace(/\s+/g, " ")
-        .trim();
+    let s = String(name || "").trim();
+
+    // early return for Unincorporated
+    if (/^unincorporated/i.test(s)) return "";
+
+    // Normalize common verbose forms
+    s = s.replace(/^the\s+council\s+of\s+the\s+/i, "");
+    s = s.replace(/^the\s+council\s+of\s+/i, "");
+    s = s.replace(/^council\s+of\s+the\s+/i, "");
+    s = s.replace(/^council\s+of\s+/i, "");
+    s = s.replace(/^municipality\s+of\s+/i, "");
+    s = s.replace(/^(city|shire|municipality|municipal|regional|council)\s+of\s+/i, "");
+
+    // Remove trailing administrative words like 'Shire', 'City', 'Council', etc.
+    s = s.replace(/\s+(shire|city|municipality|municipal|regional|council)\b/gi, "");
+
+    // Remove stray ' of ' occurrences (e.g. 'Shire of Hornsby' -> 'Hornsby')
+    s = s.replace(/\s+of\s+/gi, " ");
+
+    // Remove punctuation and repeated whitespace
+    s = s.replace(/[\,\'\`\"\:\.]/g, "");
+    s = s.replace(/\s+/g, " ").trim();
+
+    return s;
 }
 
+function findCanonicalSeedName(councilKey) {
+    // exact match
+    if (normalizedSeedLgaMap.has(councilKey)) return normalizedSeedLgaMap.get(councilKey);
 
-async function importSpatialData() {
+    // try substring matches: seed contains councilKey or councilKey contains seed
+    for (const [seedKeyNormalized, canonical] of normalizedSeedLgaMap.entries()) {
+        if (!seedKeyNormalized) continue;
+        if (seedKeyNormalized.includes(councilKey) || councilKey.includes(seedKeyNormalized)) {
+            return canonical;
+        }
+        // also try removing common trailing words from councilKey and retry
+    }
 
-    console.log("Loading spreadsheet...");
+    // try removing words like VALLEY, PLAINS, HILLS and retry
+    const stripped = councilKey.replace(/\b(VALLEY|PLAINS|HILLS|REGIONAL|REGION|DISTRICT)\b/g, "").replace(/\s+/g, " ").trim();
+    if (stripped && normalizedSeedLgaMap.has(stripped)) return normalizedSeedLgaMap.get(stripped);
+    for (const [seedKeyNormalized, canonical] of normalizedSeedLgaMap.entries()) {
+        if (seedKeyNormalized.includes(stripped) || stripped.includes(seedKeyNormalized)) return canonical;
+    }
 
+    return null;
+}
+
+function normalizeLGAKey(name) {
+    // Normalized key used for matching: applies LGA-specific cleaning then uppercase/spaces normalized
+    return normalizeString(normalizeLGAName(String(name || "")));
+}
+
+// Build a map of normalized LGA keys -> canonical LGA name from the seed file
+const normalizedSeedLgaMap = (() => {
+    const map = new Map();
+    for (const key of Object.keys(lgaRegionMap)) {
+        const k = normalizeLGAKey(key);
+        map.set(k, key);
+    }
+    return map;
+})();
+
+async function loadSpreadsheet() {
     const workbook = XLSX.readFile(
-        path.join(__dirname, "./seeds/nsw-spatial.xlsx")
+        path.join(__dirname, "./seeds/nsw-spatial.csv")
     );
 
     const sheetName = workbook.SheetNames[0];
@@ -42,129 +96,213 @@ async function importSpatialData() {
 
     const rows = XLSX.utils.sheet_to_json(worksheet);
 
-    console.log(`Loaded ${rows.length} rows`);
+    return rows;
+}
 
-    // -------------------------------------------------
-    // Step 1:
-    // Deduplicate suburbs using highest percentage
-    // -------------------------------------------------
-
+async function createSuburbMap(rows) {
     const suburbMap = new Map();
 
     for (const row of rows) {
 
-        const suburbName =
-            normalizeString(row.suburbname);
 
-        const councilName =
-            normalizeLGAName(row.councilname);
+        const suburbName = normalizeString(row.suburbname);
 
-        const postcode =
-            normalizeString(row.postcode);
+        const councilRaw = String(row.councilname || "").trim();
+        const councilName = normalizeLGAName(councilRaw);
+        const councilKey = normalizeLGAKey(councilRaw);
 
-        const percentage =
-            Number(row.percentage || 0);
+        const postcode = normalizeString(row.postcode);
+
+        const percentage = Number(row.percentage || 0);
 
         if (!suburbName || !councilName) {
             continue;
         }
 
-        const suburbKey =
-            `${suburbName}_${postcode}`;
+        const suburbKey = `${suburbName}_${postcode}`;
 
-        const existing =
-            suburbMap.get(suburbKey);
+        const existing = suburbMap.get(suburbKey);
 
         // Keep highest percentage match
         if (!existing || percentage > existing.percentage) {
-
             suburbMap.set(suburbKey, {
                 suburbName,
+                councilRaw,
                 councilName,
+                councilKey,
                 postcode,
                 percentage
             });
         }
     }
+    return suburbMap;
+}
 
-    console.log(
-        `Reduced to ${suburbMap.size} unique suburbs`
-    );
+async function importCouncilAreas(suburbMap) {
+    let insertedCouncils = 0;
+    let unmatchedRegions = 0;
 
-    // -------------------------------------------------
-    // Step 2:
-    // Insert council areas
-    // -------------------------------------------------
+    // Map existing council areas by normalized key -> id
+    const councilRows = await CouncilAreaDAO.getAll();
+    const councilMap = new Map(councilRows.map(row => [normalizeLGAKey(row.name), row.id]));
 
-    const councilMap = new Map();
-    const regionMap = new Map( 
-        await RegionDAO.getAll().then(rows => 
-            rows.map(row => [row.name, row.id])) );
+    // Map regions by normalized name -> id for robust matching
+    const regionRows = await RegionDAO.getAll();
+    const regionMap = new Map(regionRows.map(row => [normalizeString(row.name), row.id]));
+
+    if (regionMap.size === 0) {
+        throw new Error(
+            "No regions found in database. Please seed regions before importing spatial data."
+        );
+    }
 
     for (const suburb of suburbMap.values()) {
         let regionId = null;
 
-        if (!councilMap.has(suburb.councilName)) {
+        // Use normalized key to check existing council
+        const cKey = suburb.councilKey;
 
-            const regionName =
-                lgaRegionMap[suburb.councilName] || null;
-            
-            if (!regionName) {
-                console.warn(
-                    `No region found for council: ${suburb.councilName}`
-                );
+        if (!councilMap.has(cKey)) {
+
+            // Try to resolve canonical seed LGA name (fuzzy)
+            const canonicalSeedName = findCanonicalSeedName(cKey);
+            let regionName = null;
+
+            if (canonicalSeedName) {
+                regionName = lgaRegionMap[canonicalSeedName];
+            } else {
+                // fallback to using the cleaned council name as present in CSV
+                regionName = lgaRegionMap[suburb.councilName] || null;
+                // if still not found, try using a fuzzy lookup from the cleaned councilName
+                if (!regionName) {
+                    const tryFromClean = findCanonicalSeedName(normalizeLGAKey(suburb.councilName));
+                    if (tryFromClean) regionName = lgaRegionMap[tryFromClean];
+                }
             }
 
-            regionId = regionMap.get(regionName);
+            if (!regionName) {
+                    unmatchedRegions++;
+                    console.warn(`No region found for council: ${suburb.councilRaw}`);
+                }
 
-            const councilId =
-                await CouncilAreaDAO.getOrCreate(
-                    suburb.councilName,
-                    regionId,
-                );
 
-            councilMap.set(
-                suburb.councilName,
-                councilId
-            );
+            regionId = regionMap.get(normalizeString(regionName));
+
+            const canonicalNameToCreate = canonicalSeedName || suburb.councilName;
+
+            const council = await CouncilAreaDAO.getOrCreate(canonicalNameToCreate, regionId);
+            
+            if (council.created) {
+                insertedCouncils++;
+            }
+            
+            // store using normalized key
+            councilMap.set(cKey, council.id);
         }
     }
-
     console.log(
-        `Inserted ${councilMap.size} council areas`
+        `Unmatched regions: ${unmatchedRegions}`
     );
+    console.log(
+        `Inserted ${insertedCouncils} new council areas`
+    );
+    return councilMap;
+}
 
-    // -------------------------------------------------
-    // Step 3:
-    // Insert locations
-    // -------------------------------------------------
-
+async function importLocations(suburbMap, councilMap) {
     let insertedLocations = 0;
 
     for (const suburb of suburbMap.values()) {
 
-        const councilAreaId =
-            councilMap.get(suburb.councilName);
+        const councilAreaId = councilMap.get(suburb.councilKey);
 
-        await LocationDAO.getOrCreate(
+        const result = await LocationDAO.getOrCreate(
             suburb.suburbName,
             suburb.postcode,
             councilAreaId
         );
-
-        insertedLocations++;
+        if (result.created) {
+            insertedLocations++;
+        }
+        
     }
-
-    console.log(
-        `Inserted ${insertedLocations} locations`
-    );
-
-    console.log("Spatial import completed.");
+    return insertedLocations;
 }
 
-importSpatialData()
-    .then(() => process.exit(0))
-    .catch(err => {
-        console.error(err);
-        process.exit(1);
-    });
+
+async function importSpatialData() {
+
+    await beginTransaction();
+
+    try {
+
+        console.log("Loading spreadsheet...");
+
+        const rows = await loadSpreadsheet();
+
+        console.log(`Loaded ${rows.length} rows`);
+
+        // -----------------------------------------
+        // Step 1
+        // -----------------------------------------
+
+        const suburbMap =
+            await createSuburbMap(rows);
+
+        console.log(
+            `Total of ${suburbMap.size} unique suburbs`
+        );
+
+        // -----------------------------------------
+        // Step 2
+        // -----------------------------------------
+
+        const councilMap =
+            await importCouncilAreas(suburbMap);
+
+        console.log(
+            `Total ${councilMap.size} council areas in database after import`
+        );
+
+        // -----------------------------------------
+        // Step 3
+        // -----------------------------------------
+
+        const insertedLocations =
+            await importLocations(
+                suburbMap,
+                councilMap
+            );
+
+        console.log(
+            `Inserted ${insertedLocations} locations`
+        );
+
+        // -----------------------------------------
+        // COMMIT
+        // -----------------------------------------
+
+        await commitTransaction();
+
+        console.log(
+            "Spatial import completed."
+        );
+
+    } catch (err) {
+
+        // -----------------------------------------
+        // ROLLBACK
+        // -----------------------------------------
+
+        await rollbackTransaction();
+
+        console.error(
+            "Import failed. Rolled back transaction."
+        );
+
+        throw err;
+    }
+}
+
+module.exports = {importSpatialData};
+
