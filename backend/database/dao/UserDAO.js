@@ -6,12 +6,19 @@ class UserDAO extends BaseDAO {
         super("users");
     }
 
-    async create(email) {
+    async create(email, unsubscribe_token) {
         if (await this.exists(email)) {
             throw new Error(`User with email ${email} already exists`);
         }
 
-        return super.insert(this.tableName, { email });
+        return super.insert(this.tableName, { 
+            email: email,
+            verified: false,
+            verification_token: null,
+            verification_sent_at: null,
+            unsubscribe_token: unsubscribe_token,
+            created_at: new Date(),
+        });
     }
 
     async exists(email) {

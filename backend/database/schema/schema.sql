@@ -48,8 +48,12 @@ CREATE TABLE IF NOT EXISTS locations (
 -- Users
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    email TEXT NOT NULL UNIQUE,    
+    verified BOOLEAN DEFAULT FALSE,
+    verification_token TEXT,
+    verification_sent_at DATETIME,
+    unsubscribe_token TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- Alerts
@@ -89,6 +93,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     region_id INTEGER,
     council_area_id INTEGER,
     severity_level_id INTEGER,
+    enabled BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
