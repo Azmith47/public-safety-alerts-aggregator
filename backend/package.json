@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "nodemon server.js",
     "db:init": "node database/init.js",
-    "db:seed": "node database/seed.js",
-    "db:geospatial": "node database/importSpatialData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
