@@ -2,24 +2,27 @@ const BaseDAO = require("./BaseDAO");
 
 class SourceDAO extends BaseDAO {
 
-    async getOrCreate(name, websiteUrl = null) {
+    constructor() {
+        super("sources");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM sources WHERE name = ?`,
+    async getOrCreate(name, websiteUrl = null) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO sources (name, website_url)
-             VALUES (?, ?)`,
-            [name, websiteUrl]
-        );
+        const result = await super.insert(this.tableName, {
+            name,
+            website_url: websiteUrl
+        });
 
-        return result.id;
+        return { id: result.id, created: true };
     }
 }
 

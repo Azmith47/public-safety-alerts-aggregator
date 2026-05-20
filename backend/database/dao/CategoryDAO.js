@@ -2,29 +2,27 @@ const BaseDAO = require("./BaseDAO");
 
 class CategoryDAO extends BaseDAO {
 
-    async getOrCreate(name) {
+    constructor() {
+        super("categories");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM categories WHERE name = ?`,
+    async getOrCreate(name) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO categories (name) VALUES (?)`,
-            [name]
-        );
-
-        return result.id;
+        const result = await super.insert(this.tableName, { name });
+        return { id: result.id, created: true };
     }
 
     async getAll() {
-        return this.all(
-            `SELECT * FROM categories ORDER BY name`
-        );
+        return this.findAll(this.tableName, "1=1", [], "name");
     }
 }
 

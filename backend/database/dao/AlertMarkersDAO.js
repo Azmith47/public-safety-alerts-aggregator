@@ -2,27 +2,21 @@ const BaseDAO = require("./BaseDAO");
 
 class AlertMarkerDAO extends BaseDAO {
 
-    async create(alertId, latitude, longitude) {
+    constructor() {
+        super("alert_markers");
+    }
 
-        return this.run(
-            `INSERT INTO alert_markers (
-                alert_id,
-                latitude,
-                longitude
-            )
-            VALUES (?, ?, ?)`,
-            [alertId, latitude, longitude]
-        );
+    async create(alertId, latitude, longitude) {
+        return super.insert(this.tableName, {
+            alert_id: alertId,
+            latitude,
+            longitude
+        });
     }
 
     async deleteByAlert(alertId) {
-
-    return this.run(
-        `DELETE FROM alert_markers
-         WHERE alert_id = ?`,
-        [alertId]
-    );
-}
+        return super.delete(this.tableName, "alert_id = ?", [alertId]);
+    }
 }
 
 module.exports = new AlertMarkerDAO();

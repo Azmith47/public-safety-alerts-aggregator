@@ -2,21 +2,16 @@ const BaseDAO = require("./BaseDAO");
 
 class NotificationDAO extends BaseDAO {
 
-    async create(notification) {
+    constructor() {
+        super("notifications");
+    }
 
-        return this.run(
-            `INSERT INTO notifications (
-                user_id,
-                alert_id,
-                sent_status
-            )
-            VALUES (?, ?, ?)`,
-            [
-                notification.user_id,
-                notification.alert_id,
-                notification.sent_status
-            ]
-        );
+    async create(notification) {
+        return super.insert(this.tableName, {
+            user_id: notification.user_id,
+            alert_id: notification.alert_id,
+            sent_status: notification.sent_status
+        });
     }
 }
 

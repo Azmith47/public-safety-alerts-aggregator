@@ -2,24 +2,27 @@ const BaseDAO = require("./BaseDAO");
 
 class SeverityLevelDAO extends BaseDAO {
 
-    async getOrCreate(name, description = null) {
+    constructor() {
+        super("severity_levels");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM severity_levels WHERE name = ?`,
+    async getOrCreate(name, description = null) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO severity_levels (name, description)
-             VALUES (?, ?)`,
-            [name, description]
-        );
+        const result = await super.insert(this.tableName, {
+            name,
+            description
+        });
 
-        return result.id;
+        return { id: result.id, created: true };
     }
 }
 

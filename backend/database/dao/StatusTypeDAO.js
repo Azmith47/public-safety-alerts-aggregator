@@ -2,24 +2,23 @@ const BaseDAO = require("./BaseDAO");
 
 class StatusTypeDAO extends BaseDAO {
 
-    async getOrCreate(name) {
+    constructor() {
+        super("status_types");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM status_types WHERE name = ?`,
+    async getOrCreate(name) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO status_types (name)
-             VALUES (?)`,
-            [name]
-        );
-
-        return result.id;
+        const result = await super.insert(this.tableName, { name });
+        return { id: result.id, created: true };
     }
 }
 

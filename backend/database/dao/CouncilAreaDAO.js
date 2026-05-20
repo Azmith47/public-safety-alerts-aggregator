@@ -2,25 +2,31 @@ const BaseDAO = require("./BaseDAO");
 
 class CouncilAreaDAO extends BaseDAO {
 
+    constructor() {
+        super("council_areas");
+    }
+    
     async getOrCreate(name, regionId = null) {
-
-        let row = await this.get(
-            `SELECT * FROM council_areas
-             WHERE name = ?`,
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO council_areas (name, region_id)
-             VALUES (?, ?)`,
-            [name, regionId]
-        );
+        const result = await super.insert(this.tableName, {
+            name,
+            region_id: regionId
+        });
 
-        return result.id;
+        return { id: result.id, created: true };
+    }
+
+    async getAll() {
+        return this.findAll(this.tableName, "1=1", [], "name");
     }
 }
 

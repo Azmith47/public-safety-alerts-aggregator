@@ -2,28 +2,32 @@ const BaseDAO = require("./BaseDAO");
 
 class LocationDAO extends BaseDAO {
 
-    async getOrCreate(name, postcode = null, councilAreaId = null) {
+    constructor() {
+        super("locations");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM locations WHERE name = ?`,
+    async getOrCreate(name, postcode = null, councilAreaId = null) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO locations (
-                name,
-                postcode,
-                council_area_id
-            )
-            VALUES (?, ?, ?)`,
-            [name, postcode, councilAreaId]
-        );
+        const result = await super.insert(this.tableName, {
+            name,
+            postcode,
+            council_area_id: councilAreaId
+        });
 
-        return result.id;
+        return { id: result.id, created: true };
+    }
+
+    async getAll() {
+        return this.findAll(this.tableName, "1=1", [], "name");
     }
 }
 

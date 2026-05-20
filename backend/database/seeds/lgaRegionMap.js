@@ -11,7 +11,8 @@ module.exports = {
     "Camden": "Greater Sydney",
     "Campbelltown": "Greater Sydney",
     "Canada Bay": "Greater Sydney",
-    "Canterbury-Bankstown": "Greater Sydney",
+    "Canterbury": "Greater Sydney",
+    "Bankstown": "Greater Sydney",
     "Cumberland": "Greater Sydney",
     "Fairfield": "Greater Sydney",
     "Georges River": "Greater Sydney",
@@ -75,7 +76,11 @@ module.exports = {
     "Central Darling": "Far West",
     "Wentworth": "Far West",
     "Far West": "Far West",
-    
+    "Cobar" : "Far West",
+    "Bourke": "Far West",
+    "Brewarrina": "Far West",
+    "Walgett": "Far West",
+        
     // -----------------------------------------
     // Hunter
     // -----------------------------------------

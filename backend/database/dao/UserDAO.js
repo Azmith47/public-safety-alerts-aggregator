@@ -2,20 +2,30 @@ const BaseDAO = require("./BaseDAO");
 
 class UserDAO extends BaseDAO {
 
-    async create(email) {
+    constructor() {
+        super("users");
+    }
 
-        return this.run(
-            `INSERT INTO users (email)
-             VALUES (?)`,
+    async create(email) {
+        if (await this.exists(email)) {
+            throw new Error(`User with email ${email} already exists`);
+        }
+
+        return super.insert(this.tableName, { email });
+    }
+
+    async exists(email) {
+        return this.findOne(
+            this.tableName,
+            "email = ?",
             [email]
         );
     }
 
     async getByEmail(email) {
-
-        return this.get(
-            `SELECT * FROM users
-             WHERE email = ?`,
+        return this.findOne(
+            this.tableName,
+            "email = ?",
             [email]
         );
     }

@@ -2,24 +2,27 @@ const BaseDAO = require("./BaseDAO");
 
 class RegionDAO extends BaseDAO {
 
-    async getOrCreate(name) {
+    constructor() {
+        super("regions");
+    }
 
-        let row = await this.get(
-            `SELECT * FROM regions WHERE name = ?`,
+    async getOrCreate(name) {
+        const row = await this.findOne(
+            this.tableName,
+            "name = ?",
             [name]
         );
 
         if (row) {
-            return row.id;
+            return { id: row.id, created: false };
         }
 
-        const result = await this.run(
-            `INSERT INTO regions (name)
-             VALUES (?)`,
-            [name]
-        );
+        const result = await super.insert(this.tableName, { name });
+        return { id: result.id, created: true };
+    }
 
-        return result.id;
+    async getAll() {
+        return this.findAll(this.tableName, "1=1", [], "name");
     }
 }
 

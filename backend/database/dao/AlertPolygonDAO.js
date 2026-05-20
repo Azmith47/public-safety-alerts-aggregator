@@ -2,28 +2,22 @@ const BaseDAO = require("./BaseDAO");
 
 class AlertPolygonDAO extends BaseDAO {
 
-    async create(alertId, pointOrder, latitude, longitude) {
+    constructor() {
+        super("alert_polygons");
+    }
 
-        return this.run(
-            `INSERT INTO alert_polygons (
-                alert_id,
-                point_order,
-                latitude,
-                longitude
-            )
-            VALUES (?, ?, ?, ?)`,
-            [alertId, pointOrder, latitude, longitude]
-        );
+    async create(alertId, pointOrder, latitude, longitude) {
+        return super.insert(this.tableName, {
+            alert_id: alertId,
+            point_order: pointOrder,
+            latitude,
+            longitude
+        });
     }
 
     async deleteByAlert(alertId) {
-
-    return this.run(
-        `DELETE FROM alert_polygons
-         WHERE alert_id = ?`,
-        [alertId]
-    );
-}
+        return super.delete(this.tableName, "alert_id = ?", [alertId]);
+    }
 }
 
 module.exports = new AlertPolygonDAO();
