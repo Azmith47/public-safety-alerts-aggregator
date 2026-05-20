@@ -1,17 +1,63 @@
 const fs = require("fs");
 const path = require("path");
-const db = require("./db");
 
-const sqlPath = path.join(__dirname, "init.sql");
+const {
+    db,
+    exec,    
+    beginImmediateTransaction,
+    commitTransaction,
+} = require("./db");
 
-const sql = fs.readFileSync(sqlPath, "utf8");
+const {seed} = require("./seed")
+const {importSpatialData} = require("./importSpatialData");
 
-db.exec(sql, (err) => {
-    if (err) {
-        console.error("Error creating tables:", err.message);
-    } else {
-        console.log("Database schema created successfully.");
+async function initializeDatabase() {
+
+    try {
+
+        const sqlSchemaPath =
+            path.join(__dirname, "schema/schema.sql");
+
+        const sqlSchema =
+            fs.readFileSync(sqlSchemaPath, "utf8");
+        
+        const sqlIndexesPath = 
+            path.join(__dirname, "indexes/indexes.sql");
+
+        const sqlIndexes = 
+            fs.readFileSync(sqlIndexesPath, "utf-8");
+
+        await exec("PRAGMA foreign_keys = OFF");
+        await beginImmediateTransaction();
+
+        await exec(sqlSchema);
+
+        await exec(sqlIndexes);
+
+        await commitTransaction();
+        await exec("PRAGMA foreign_keys = ON");
+
+        console.log(
+            "Database schema created successfully."
+        );
+
+        await seed();
+        await importSpatialData();
+        
+        console.log("Database initialization completed successfully.");
+
+    } catch (err) {
+
+        console.error(
+            "Error during database initialization:",
+            err.message
+        );
+        process.exit(1);
+
+    } finally {
+
+        db.close();
     }
+}
 
-    db.close();
-});
+initializeDatabase();
