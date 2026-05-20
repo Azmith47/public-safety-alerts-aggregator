@@ -6,6 +6,7 @@ const cors = require("cors")
 const corsOptions = require('./config/corsOptions')
 const port = 3001
 const db = require("./database/db");
+const NotificationService = require("./services/NotificationService");
 
 const app = express()
 
@@ -27,4 +28,6 @@ app.use('/alerts', require('./routes/alerts'))
 
 app.listen(port, () => {
     console.log("App listening on port 3000")
+  // start background notification processing
+  NotificationService.startProcessing();
   })

@@ -1,13 +1,5 @@
 const AlertDAO = require("../database/dao/AlertDAO");
-
-const CategoryDAO = require("../database/dao/CategoryDAO");
-const SourceDAO = require("../database/dao/SourceDAO");
-const StatusTypeDAO = require("../database/dao/StatusTypeDAO");
-const SeverityLevelDAO = require("../database/dao/SeverityLevelDAO");
-
-const RegionDAO = require("../database/dao/RegionDAO");
-const CouncilAreaDAO = require("../database/dao/CouncilAreaDAO");
-const LocationDAO = require("../database/dao/LocationDAO");
+const LookupService = require("./LookupService");
 
 const AlertMarkerDAO = require("../database/dao/AlertMarkerDAO");
 const AlertPolygonDAO = require("../database/dao/AlertPolygonDAO");
@@ -16,56 +8,30 @@ const AlertAdviceDAO = require("../database/dao/AlertAdviceDAO");
 const AlertLinkDAO = require("../database/dao/AlertLinkDAO");
 
 class AlertPersistenceService {
-
     async save(alert, sourceName, sourceWebsite = null) {
         return AlertDAO.transaction(async () => {
-            const categoryId =
-                await CategoryDAO.getOrCreate(alert.category);
-
-            const sourceId =
-                await SourceDAO.getOrCreate(
-                    sourceName,
-                    sourceWebsite
-                );
-
-            const statusTypeId =
-                await StatusTypeDAO.getOrCreate(
-                    alert.status || "Unknown"
-                );
-
-            const severityLevelId =
-                await SeverityLevelDAO.getOrCreate(
-                    alert.alertLevel || "Unknown"
-                );
+            const categoryId = await LookupService.getOrCreateCategory(alert.category);
+            const sourceId = await LookupService.getOrCreateSource(sourceName, sourceWebsite);
+            const statusTypeId = await LookupService.getOrCreateStatusType(alert.status || "Unknown");
+            const severityLevelId = await LookupService.getOrCreateSeverityLevel(alert.alertLevel || "Unknown");
 
             let regionId = null;
             let councilAreaId = null;
             let locationId = null;
 
             if (alert.region) {
-                regionId =
-                    await RegionDAO.getOrCreate(alert.region);
+                regionId = await LookupService.getOrCreateRegion(alert.region);
             }
 
             if (alert.councilArea) {
-                councilAreaId =
-                    await CouncilAreaDAO.getOrCreate(
-                        alert.councilArea,
-                        regionId
-                    );
+                councilAreaId = await LookupService.getOrCreateCouncilArea(alert.councilArea, regionId);
             }
 
             if (alert.location) {
-                locationId =
-                    await LocationDAO.getOrCreate(
-                        alert.location,
-                        null,
-                        councilAreaId
-                    );
+                locationId = await LookupService.getOrCreateLocation(alert.location, null, councilAreaId);
             }
 
-            const existingAlert =
-                await AlertDAO.exists(alert.id);
+            const existingAlert = await AlertDAO.exists(alert.id);
 
             const alertData = this.buildAlertData(
                 alert,
@@ -83,17 +49,10 @@ class AlertPersistenceService {
                 await this.replaceAdviceData(existingAlert.id, alert);
                 await this.replaceLinkData(existingAlert.id, alert);
 
-                return {
-                    action: "updated",
-                    alertId: existingAlert.id
-                };
+                return { action: "updated", alertId: existingAlert.id };
             }
 
-            const result = await AlertDAO.create({
-                external_id: alert.id,
-                ...alertData
-            });
-
+            const result = await AlertDAO.create({ external_id: alert.id, ...alertData });
             const alertId = result.id;
 
             await this.insertSpatialData(alertId, alert);
@@ -101,18 +60,14 @@ class AlertPersistenceService {
             await this.insertAdviceData(alertId, alert);
             await this.insertLinkData(alertId, alert);
 
-            return {
-                action: "created",
-                alertId
-            };
+            return { action: "created", alertId };
         });
     }
 
     buildAlertData(alert, categoryId, sourceId, locationId, statusTypeId, severityLevelId) {
         return {
             title: alert.title,
-            description:
-                alert.headline || alert.description || alert.title,
+            description: alert.headline || alert.description || alert.title,
             category_id: categoryId,
             source_id: sourceId,
             location_id: locationId,
@@ -136,38 +91,21 @@ class AlertPersistenceService {
     // ==================================================
 
     async insertSpatialData(alertId, alert) {
-
         if (alert.markerPoint) {
-
-            await AlertMarkerDAO.create(
-                alertId,
-                alert.markerPoint.lat,
-                alert.markerPoint.lng
-            );
+            await AlertMarkerDAO.create(alertId, alert.markerPoint.lat, alert.markerPoint.lng);
         }
 
         if (alert.polygon) {
-
             for (let i = 0; i < alert.polygon.length; i++) {
-
                 const point = alert.polygon[i];
-
-                await AlertPolygonDAO.create(
-                    alertId,
-                    i,
-                    point.lat,
-                    point.lng
-                );
+                await AlertPolygonDAO.create(alertId, i, point.lat, point.lng);
             }
         }
     }
 
     async replaceSpatialData(alertId, alert) {
-
         await AlertMarkerDAO.deleteByAlert(alertId);
-
         await AlertPolygonDAO.deleteByAlert(alertId);
-
         await this.insertSpatialData(alertId, alert);
     }
 
@@ -176,39 +114,21 @@ class AlertPersistenceService {
     // ==================================================
 
     async insertRoadData(alertId, alert) {
-
-        if (!alert.roads) {
-            return;
-        }
-
+        if (!alert.roads) return;
         for (const road of alert.roads) {
-
             await AlertRoadDAO.create({
-
                 alert_id: alertId,
-
-                main_street:
-                    road.mainStreet || null,
-
-                cross_street:
-                    road.crossStreet || null,
-
-                second_location:
-                    road.secondLocation || null,
-
-                suburb:
-                    road.suburb || null,
-
-                region:
-                    road.region || null
+                main_street: road.mainStreet || null,
+                cross_street: road.crossStreet || null,
+                second_location: road.secondLocation || null,
+                suburb: road.suburb || null,
+                region: road.region || null
             });
         }
     }
 
     async replaceRoadData(alertId, alert) {
-
         await AlertRoadDAO.deleteByAlert(alertId);
-
         await this.insertRoadData(alertId, alert);
     }
 
@@ -217,28 +137,15 @@ class AlertPersistenceService {
     // ==================================================
 
     async insertAdviceData(alertId, alert) {
-
-        if (!alert.advice) {
-            return;
-        }
-
+        if (!alert.advice) return;
         for (const message of alert.advice) {
-
-            if (!message) {
-                continue;
-            }
-
-            await AlertAdviceDAO.create(
-                alertId,
-                message
-            );
+            if (!message) continue;
+            await AlertAdviceDAO.create(alertId, message);
         }
     }
 
     async replaceAdviceData(alertId, alert) {
-
         await AlertAdviceDAO.deleteByAlert(alertId);
-
         await this.insertAdviceData(alertId, alert);
     }
 
@@ -247,25 +154,14 @@ class AlertPersistenceService {
     // ==================================================
 
     async insertLinkData(alertId, alert) {
-
-        if (!alert.otherLinks) {
-            return;
-        }
-
+        if (!alert.otherLinks) return;
         for (const link of alert.otherLinks) {
-
-            await AlertLinkDAO.create(
-                alertId,
-                link.text || "Link",
-                link.url || null
-            );
+            await AlertLinkDAO.create(alertId, link.text || "Link", link.url || null);
         }
     }
 
     async replaceLinkData(alertId, alert) {
-
         await AlertLinkDAO.deleteByAlert(alertId);
-
         await this.insertLinkData(alertId, alert);
     }
 }

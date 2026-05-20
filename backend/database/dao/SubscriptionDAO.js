@@ -23,6 +23,14 @@ class SubscriptionDAO extends BaseDAO {
             [userId]
         );
     }
+
+    async getById(id) {
+        return this.findOne(this.tableName, "id = ?", [id]);
+    }
+
+    async deleteById(id) {
+        return super.delete(this.tableName, "id = ?", [id]);
+    }
 }
 
 module.exports = new SubscriptionDAO();

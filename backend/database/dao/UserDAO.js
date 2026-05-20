@@ -29,6 +29,10 @@ class UserDAO extends BaseDAO {
             [email]
         );
     }
+
+    async getById(id) {
+        return this.findOne(this.tableName, "id = ?", [id]);
+    }
 }
 
 module.exports = new UserDAO();
