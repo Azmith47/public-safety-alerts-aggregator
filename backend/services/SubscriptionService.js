@@ -23,7 +23,9 @@ class SubscriptionService {
             category_id: subscription.category_id || null,
             region_id: subscription.region_id || null,
             council_area_id: subscription.council_area_id || null,
-            severity_level_id: subscription.severity_level_id || null
+            severity_level_id: subscription.severity_level_id || null,
+            is_enabled: subscription.is_enabled || false, // default to disabled if not set
+            created_at: new Date(),
         });
     }
 
