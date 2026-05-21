@@ -7,6 +7,7 @@ const corsOptions = require('./config/corsOptions')
 const port = 3001
 const db = require("./database/db");
 const NotificationService = require("./services/NotificationService");
+const { initializeIngestScheduler } = require("./services/SchedulerService");
 
 const app = express()
 
@@ -30,4 +31,6 @@ app.listen(port, () => {
     console.log("App listening on port 3000")
   // start background notification processing
   NotificationService.startProcessing();
+  // start background ingest scheduler (every 5 minutes)
+  initializeIngestScheduler('*/5 * * * *');
   })
