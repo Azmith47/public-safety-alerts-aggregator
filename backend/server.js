@@ -26,6 +26,7 @@ app.use(express.urlencoded({extended : false}))
 
 //routes
 app.use('/alerts', require('./routes/alerts'))
+app.use('/sources', require('./routes/sources'))
 
 app.listen(port, () => {
     console.log("App listening on port 3000")
