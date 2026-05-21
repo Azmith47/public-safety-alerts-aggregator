@@ -76,11 +76,17 @@ class IngestOrchestratorService {
         let alerts = [];
         try {
             const result = await run();
-            if (!result) return { source: sourceName, processed: 0 };
+            if (!result) {
+                const emptyResult = { source: sourceName, processed: 0, success: false };
+                await SourceHealthService.recordRun(sourceName, sourceWebsite, emptyResult);
+                return emptyResult;
+            }
             alerts = Array.isArray(result) ? result : [result];
         } catch (err) {
             console.error(`Collector ${name} failed:`, err && err.message);
-            return { source: sourceName, processed: 0, error: err.message };
+            const failureResult = { source: sourceName, processed: 0, error: err.message, success: false };
+            await SourceHealthService.recordRun(sourceName, sourceWebsite, failureResult);
+            return failureResult;
         }
 
         let created = 0;
