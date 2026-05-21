@@ -7,7 +7,7 @@ const corsOptions = require('./config/corsOptions')
 const port = 3001
 const db = require("./database/db");
 const NotificationService = require("./services/NotificationService");
-const { initializeIngestScheduler } = require("./services/SchedulerService");
+const { initializeIngestScheduler, initializeMaintenanceScheduler } = require("./services/SchedulerService");
 
 const app = express()
 
@@ -33,4 +33,6 @@ app.listen(port, () => {
   NotificationService.startProcessing();
   // start background ingest scheduler (every 5 minutes)
   initializeIngestScheduler('*/5 * * * *');
+  // start maintenance scheduler (daily cleanup)
+  initializeMaintenanceScheduler(process.env.MAINTENANCE_CRON || '0 4 * * *');
   })
