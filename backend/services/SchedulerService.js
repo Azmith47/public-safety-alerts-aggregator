@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const IngestOrchestratorService = require('./IngestOrchestratorService');
+const MaintenanceService = require('./MaintenanceService');
 
 class SchedulerService {
     constructor() {
@@ -98,4 +99,17 @@ function initializeIngestScheduler(schedule = '*/5 * * * *') {
     return scheduler;
 }
 
-module.exports = { SchedulerService, initializeIngestScheduler };
+function initializeMaintenanceScheduler(schedule = process.env.MAINTENANCE_CRON || '0 4 * * *') {
+    const scheduler = new SchedulerService();
+
+    scheduler.schedule('maintenance', schedule, async () => {
+        console.log('[Maintenance] Running retention cleanup...');
+        const summary = await MaintenanceService.cleanup();
+        console.log('[Maintenance] Cleanup summary:', JSON.stringify(summary, null, 2));
+    });
+
+    scheduler.start();
+    return scheduler;
+}
+
+module.exports = { SchedulerService, initializeIngestScheduler, initializeMaintenanceScheduler };
