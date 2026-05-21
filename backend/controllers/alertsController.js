@@ -1,144 +1,9 @@
 const Parser = require('rss-parser');
 const parser = new Parser();
 
-class Alert{
-    constructor(title, link, pubDate, markerPoint, type, lastUpdated, category, id){
-        this.title = title || 'No title';
-        this.link = link || 'No link';
-        this.pubDate = pubDate || null;
-        this.markerPoint = markerPoint || null;
-        this.type = type || 'No type';
-        this.category = category || 'No Category'
-        this.lastUpdated = lastUpdated || null;
-        this.id = id || null;
-    }
-}
-
-class FireAlert extends Alert{
-    constructor(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id){
-        const type = 'Fire'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id);
-        this.location = location || 'No location';
-        this.councilArea = councilArea || 'No council area';
-        this.size = size || 0;
-        this.fire = fire || null;
-        this.agency = agency || 'No agency';
-        this.polygon = polygon || null;
-        this.status = status || 'No status';
-        this.alertLevel = alertLevel || 'No alert level';
-    }
-}
-
-class TrafficAlert extends Alert{
-    constructor(title, id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice){
-        const type = 'Traffic'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id)
-        this.planned = planned || false
-        this.startDate = startDate || null
-        this.endDate = endDate || null
-        this.polyline = polyline || null
-        this.ended = ended || false
-        this.delay = delay || 0
-        this.headline = headline || null
-        this.impactingNetwork = impactingNetwork || false
-        this.isMajor = isMajor || false
-        this.queueLength = this.queueLength || 0
-        this.roads = roads || null
-        this.speedLimit = speedLimit || 0
-        this.subCategory = subCategory || null
-        this.otherLinks = otherLinks || null
-        this.diversions = diversions || null
-        this.attendingGroups = attendingGroups || null
-        this.advice = advice || null
-    }
-}
-
-class WeatherAlert extends Alert{
-    constructor(title, link, pubDate, markerPoint, lastUpdated, category, id, polygon, status, alertLevel, location){
-        const type = 'Weather'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id)
-        this.polygon = polygon || null;
-        this.status = status || 'No status';
-        this.alertLevel = alertLevel || 'No alert level';
-        this.location = location || 'No location';
-        this.category = category || 'No category';
-    }
-}
-
-const geoJsonToPaths = (geoJson) => {
-  return geoJson.coordinates[0].map(([lng, lat]) => ({
-  lat,
-  lng
-}))
-};
-
-const geoJsonToMarker = (geoJson) => {
-    return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]}
-}
-
-const splitDescription = (description) => {
-    const parts = description.split('<br />').map(part => part.trim());
-    
-    const values = {
-        location: '',
-        councilArea: '',
-        size: 0,
-        fire: false,
-        agency: '',
-        lastUpdated: '',
-        status: '',
-        category: ''
-    };
-
-    parts.forEach(part => {
-        const partSplit = part.split(':');
-
-        switch (partSplit[0].toLowerCase()) {
-            case 'location':
-                values.location = partSplit[1].trim();
-                break;
-            case 'council area':
-                values.councilArea = partSplit[1].trim();
-                break;
-            case 'size':
-                values.size = parseInt(partSplit[1].trim());
-                break;
-            case 'fire':
-                values.fire = partSplit[1].trim() === 'Yes';
-                break;
-            case 'responsible agency':
-                values.agency = partSplit[1].trim();
-                break;
-            case 'updated':
-                values.lastUpdated = partSplit[1].trim() + ':' + partSplit[2].trim();
-                break;
-            case 'status':
-                values.status = partSplit[1].trim();
-                break;
-            case 'category':
-                values.category = partSplit[1].trim();
-                break;
-        }
-    });
-
-    return values
-}
-
-const parsePubDate = (dateString) => {
-    // 1. Split date and time components
-    const [datePart, timePart, ampm] = dateString.split(' ');
-    const [day, month, year] = datePart.split('/').map(Number);
-    let [hours, minutes, seconds] = timePart.split(':').map(Number);
-
-    // 2. Adjust hours for AM/PM
-    if (ampm === "PM" && hours < 12) hours += 12;
-    if (ampm === "AM" && hours === 12) hours = 0;
-
-    // 3. Create Date object (Note: months are 0-indexed in JS, so subtract 1)
-    const date = new Date(year, month - 1, day, hours, minutes, seconds);
-
-    return date;
-}
+const { FireAlert, TrafficAlert, WeatherAlert } = require('../models/alertClasses');
+const { geoJsonToPaths, geoJsonToMarker, splitDescription, parsePubDate } = require('../utils/alertUtilities');
+const AlertQueryService = require('../services/AlertQueryService');
 
 const getAlerts = async (req, res) => {
     const feedURL = 'https://www.rfs.nsw.gov.au/feeds/majorIncidents.json'
@@ -251,8 +116,6 @@ const getTrafficAlerts = async (req, res) => {
     res.status(200).json(alerts);
 };
 
-const AlertQueryService = require('../services/AlertQueryService');
-
 const getAlertsFromDb = async (req, res) => {
     try {
         const filters = {};
@@ -295,4 +158,28 @@ const getAlertById = async (req, res) => {
     }
 };
 
-module.exports = { getAlerts, getTrafficAlerts, getAlertsFromDb, getAlertById };
+const unsubscribe = async (req, res) => {
+
+    const { token } = req.params;
+
+    const user =
+        await UserDAO.getByUnsubscribeToken(
+            token
+        );
+
+    if (!user) {
+        return res
+            .status(404)
+            .send("Invalid token");
+    }
+
+    await SubscriptionDAO.disableForUser(
+        user.id
+    );
+
+    res.send(
+        "You have been unsubscribed."
+    );
+};
+
+module.exports = { getAlerts, getTrafficAlerts, getAlertsFromDb, getAlertById, unsubscribe };
