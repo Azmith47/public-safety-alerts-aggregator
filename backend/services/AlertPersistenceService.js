@@ -1,7 +1,7 @@
 const AlertDAO = require("../database/dao/AlertDAO");
 const LookupService = require("./LookupService");
 
-const AlertMarkerDAO = require("../database/dao/AlertMarkerDAO");
+const AlertMarkerDAO = require("../database/dao/AlertMarkersDAO");
 const AlertPolygonDAO = require("../database/dao/AlertPolygonDAO");
 const AlertRoadDAO = require("../database/dao/AlertRoadDAO");
 const AlertAdviceDAO = require("../database/dao/AlertAdviceDAO");
