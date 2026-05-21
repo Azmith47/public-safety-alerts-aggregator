@@ -32,3 +32,6 @@ ON alerts(status_type_id);
 -- ordering by issued time (common for list endpoints and dashboards).
 CREATE INDEX IF NOT EXISTS idx_alerts_category_severity_issued
 ON alerts(category_id, severity_level_id, issued_at);
+
+CREATE INDEX IF NOT EXISTS idx_source_health_source_id
+ON source_health(source_id);

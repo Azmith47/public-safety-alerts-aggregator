@@ -178,3 +178,25 @@ CREATE TABLE IF NOT EXISTS alert_polygons (
 
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
 );
+
+-- Source Health Tracking
+CREATE TABLE IF NOT EXISTS source_health (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_id INTEGER NOT NULL UNIQUE,
+    last_run_at DATETIME,
+    last_success_at DATETIME,
+    last_failure_at DATETIME,
+    last_status TEXT,
+    last_message TEXT,
+    run_count INTEGER DEFAULT 0,
+    success_count INTEGER DEFAULT 0,
+    failure_count INTEGER DEFAULT 0,
+    processed_count INTEGER DEFAULT 0,
+    created_count INTEGER DEFAULT 0,
+    updated_count INTEGER DEFAULT 0,
+    failed_count INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (source_id) REFERENCES sources(id)
+);
