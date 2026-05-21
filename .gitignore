@@ -34,3 +34,6 @@ next-env.d.ts
 .DS_Store
 .vscode/
 .idea/
+
+# Database Files
+*.sqlite
