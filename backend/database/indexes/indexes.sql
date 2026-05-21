@@ -33,5 +33,11 @@ ON alerts(status_type_id);
 CREATE INDEX IF NOT EXISTS idx_alerts_category_severity_issued
 ON alerts(category_id, severity_level_id, issued_at);
 
+CREATE INDEX IF NOT EXISTS idx_alert_markers_lat_lng
+ON alert_markers(latitude, longitude);
+
+CREATE INDEX IF NOT EXISTS idx_alert_polygons_lat_lng
+ON alert_polygons(latitude, longitude);
+
 CREATE INDEX IF NOT EXISTS idx_source_health_source_id
 ON source_health(source_id);
