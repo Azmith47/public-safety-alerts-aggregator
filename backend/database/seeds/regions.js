@@ -1,0 +1,15 @@
+module.exports = [
+    "Greater Sydney",
+    "Central Coast",
+    "Central West & Orana",
+    "Far West",    
+    "Hunter",
+    "Illawarra Shoalhaven",
+    "New England North West",
+    "North Coast",
+    "Northern Rivers",
+    "Riverina",
+    "Murray & Riverina Regional",
+    "South East & Tablelands",
+    "South Coast",
+];
