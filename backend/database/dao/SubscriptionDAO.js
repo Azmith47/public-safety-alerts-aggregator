@@ -26,6 +26,10 @@ class SubscriptionDAO extends BaseDAO {
         );
     }
 
+    async getForUser(userId) {
+        return this.getByUser(userId);
+    }
+
     async getById(id) {
         return this.findOne(this.tableName, "id = ?", [id]);
     }
