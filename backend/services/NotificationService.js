@@ -1,5 +1,6 @@
 const NotificationDAO = require("../database/dao/NotificationDAO");
 const UserDAO = require("../database/dao/UserDAO");
+const SubscriptionDAO = require("../database/dao/SubscriptionDAO");
 
 class NotificationService {
     constructor(options = {}) {
@@ -16,6 +17,20 @@ class NotificationService {
         for (const n of pending) {
             try {
                 const user = await UserDAO.getById(n.user_id);
+                const subscription = await SubscriptionDAO.getForUser(n.user_id);
+
+                if (!subscription) {
+                    console.warn(`No subscription for user ${n.user_id}, marking notification ${n.id} failed`);
+                    await NotificationDAO.markFailed(n.id);
+                    continue;
+                }
+
+                if (!subscription.is_enabled && !user.verified) {
+                    console.warn(`Subscription disabled for user ${n.user_id}, marking notification ${n.id} failed`);
+                    await NotificationDAO.markFailed(n.id);
+                    continue;
+                }
+
                 if (!user || !user.email) {
                     console.warn(`No email for user ${n.user_id}, marking notification ${n.id} failed`);
                     await NotificationDAO.markFailed(n.id);
