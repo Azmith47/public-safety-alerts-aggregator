@@ -14,9 +14,6 @@ const app = express()
 //use request logger middleware
 app.use(logger)
 
-//errorhandler middleware
-app.use(errorHandler)
-
 //use cors
 app.use(cors(corsOptions));
 
@@ -27,9 +24,13 @@ app.use(express.urlencoded({extended : false}))
 //routes
 app.use('/alerts', require('./routes/alerts'))
 app.use('/sources', require('./routes/sources'))
+app.use('/geo', require('./routes/geo'))
+
+//errorhandler middleware
+app.use(errorHandler)
 
 app.listen(port, () => {
-    console.log("App listening on port 3000")
+    console.log(`App listening on port ${port}`)
   // start background notification processing
   NotificationService.startProcessing();
   // start background ingest scheduler (every 5 minutes)
