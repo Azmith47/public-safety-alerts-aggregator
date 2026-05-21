@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const AlertPersistenceService = require("./AlertPersistenceService");
+const SourceHealthService = require("./SourceHealthService");
 
 class IngestOrchestratorService {
     constructor() {
@@ -84,6 +85,7 @@ class IngestOrchestratorService {
 
         let created = 0;
         let updated = 0;
+        let failed = 0;
 
         for (const alert of alerts) {
             try {
@@ -92,10 +94,13 @@ class IngestOrchestratorService {
                 if (res.action === "updated") updated++;
             } catch (err) {
                 console.error(`Failed to persist alert from ${name}:`, err && err.message);
+                failed++;
             }
         }
 
-        return { source: sourceName, processed: alerts.length, created, updated };
+        const result = { source: sourceName, processed: alerts.length, created, updated, failed, success: failed === 0 };
+        await SourceHealthService.recordRun(sourceName, sourceWebsite, result);
+        return result;
     }
 
     /** Run all registered collectors sequentially. */
@@ -108,6 +113,14 @@ class IngestOrchestratorService {
                 summary.push({ name, ...res });
             } catch (err) {
                 summary.push({ name, error: err && err.message });
+                await SourceHealthService.recordRun(name, null, {
+                    processed: 0,
+                    created: 0,
+                    updated: 0,
+                    failed: 0,
+                    success: false,
+                    error: err && err.message
+                });
             }
         }
 
