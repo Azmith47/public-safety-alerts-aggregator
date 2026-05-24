@@ -1,6 +1,6 @@
 // const Parser = require('rss-parser');
 // const parser = new Parser();
-const fs = require('fs')
+import fs from 'fs'
 
 //define alert class
 class Alert{
@@ -318,4 +318,4 @@ const updateDatabase = (fireAlerts, trafficAlerts) => {
     })
 }
 
-module.exports = { alertsCollector };
+export { alertsCollector };

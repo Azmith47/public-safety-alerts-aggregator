@@ -1,4 +1,4 @@
-const fs = require('fs').promises
+import fs from 'fs/promises'
 
 //get all alerts function
 const getAlerts = async (req, res) => {
@@ -84,4 +84,4 @@ const getAlert = async (req, res) => {
     }
 }    
 
- module.exports = { getAlerts, getTrafficAlerts, getFireAlerts, getAlert };
+export { getAlerts, getTrafficAlerts, getFireAlerts, getAlert };

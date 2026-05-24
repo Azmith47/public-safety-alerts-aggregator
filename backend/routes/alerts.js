@@ -1,6 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const { getAlert ,getAlerts, getTrafficAlerts, getFireAlerts } = require('../controllers/alertsController');
+import express from 'express'
+
+const router = express.Router()
+
+import {
+    getAlert,
+    getAlerts,
+    getTrafficAlerts,
+    getFireAlerts
+} from '../controllers/alertsController.js'
 
 //set all alert routes
     //get routes
@@ -12,4 +19,4 @@ router.get('/fire', getFireAlerts);
     //get alert by id
 router.get('/:id', getAlert);
 
-module.exports = router;
+export default router;
