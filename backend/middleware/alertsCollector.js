@@ -5,7 +5,7 @@ const fs = require('fs')
 //define alert class
 class Alert{
     //Alert constructor
-    constructor(title, link, pubDate, markerPoint, type, lastUpdated, category, id){
+    constructor(title, link, pubDate, markerPoint, type, lastUpdated, category, id, rawData){
         this.title = title || 'No title';
         this.link = link || 'No link';
         this.pubDate = pubDate || null;
@@ -13,16 +13,17 @@ class Alert{
         this.type = type || 'No type';
         this.category = category || 'No Category'
         this.lastUpdated = lastUpdated || null;
-        this.id = id || null;
+        this.externalID = id || null;
+        this.rawData = rawData || null;
     }
 }
 
 //define fire alert subclass
 class FireAlert extends Alert{
     //FireAlert constructor
-    constructor(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id){
+    constructor(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id, rawData){
         const type = 'Fire'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id);
+        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id, rawData);
         this.location = location || 'No location';
         this.councilArea = councilArea || 'No council area';
         this.size = size || 0;
@@ -37,9 +38,9 @@ class FireAlert extends Alert{
 //define traffic alert subclass
 class TrafficAlert extends Alert{
     //TrafficAlert constructor
-    constructor(title, id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice){
+    constructor(title, id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice, rawData){
         const type = 'Traffic'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id)
+        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id, rawData)
         this.planned = planned || false
         this.startDate = startDate || null
         this.endDate = endDate || null
@@ -64,9 +65,9 @@ class TrafficAlert extends Alert{
     //W.I.P
 class WeatherAlert extends Alert{
     //WeatherAlert constructor
-    constructor(title, link, pubDate, markerPoint, lastUpdated, category, id, polygon, status, alertLevel, location){
+    constructor(title, link, pubDate, markerPoint, lastUpdated, category, id, polygon, status, alertLevel, location, rawData){
         const type = 'Weather'
-        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id)
+        super(title, link, pubDate, markerPoint, type, lastUpdated, category, id, rawData)
         this.polygon = polygon || null;
         this.status = status || 'No status';
         this.alertLevel = alertLevel || 'No alert level';
@@ -186,6 +187,7 @@ const fetchFireAlerts = async () => {
         const pubDate = parsePubDate(feature?.properties?.pubDate) || 'No publication date';
         const alertLevel = feature?.properties?.category || 'No alert level';
         const guuid = feature?.properties?.guid || null
+        const rawData = feature || null
         let id = null
         let markerPoint = null
         let polygon = null
@@ -215,7 +217,7 @@ const fetchFireAlerts = async () => {
         lastUpdated = new Date(lastUpdated);
 
         //create a new FireAlert object and push to array
-        const alert = new FireAlert(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id);
+        const alert = new FireAlert(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id, rawData);
         alerts.push(alert);
     })
 
@@ -281,6 +283,7 @@ const fetchTrafficAlerts = async () => {
             const otherLinks = feature?.properties?.webLinks || null
             const diversions = feature?.properties?.diversions || null
             const attendingGroups = feature?.properties?.attendingGroups || null
+            const rawData = feature || null
 
             const adviceA = feature?.properties?.adviceA || null
             const adviceB = feature?.properties?.adviceB || null
@@ -293,7 +296,7 @@ const fetchTrafficAlerts = async () => {
             }
 
             //create new TrafficAlert object and push to array
-            const alert = new TrafficAlert(title, id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice);
+            const alert = new TrafficAlert(title, id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice, rawData);
             alerts.push(alert);
         })
     }

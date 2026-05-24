@@ -60,4 +60,28 @@ const getTrafficAlerts = async (req, res) => {
     }
 }
 
- module.exports = { getAlerts, getTrafficAlerts, getFireAlerts };
+const getAlert = async (req, res) => {
+    const { id } = req.params
+    let alerts = null
+
+    try {
+        const response = await fetch('http://localhost:3001/alerts');
+        if (response.ok) {
+            alerts = await response.json();
+        } else {
+            res.status(500).json({ message: 'Failed to fetch alerts', error: response.statusText });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching alerts', error: error.message });
+    }
+
+    const alert = alerts.find(a => a.externalID === id)
+
+    if(alert) {
+        res.status(200).json(alert)
+    } else {
+        res.status(404).json({ message: 'Alert not found' })
+    }
+}    
+
+ module.exports = { getAlerts, getTrafficAlerts, getFireAlerts, getAlert };
