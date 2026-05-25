@@ -1,9 +1,9 @@
-jest.mock("../../services/LookupService", () => ({ getOrCreateSource: jest.fn() }));
-jest.mock("../../database/dao/SourceHealthDAO", () => ({ getBySourceId: jest.fn(), create: jest.fn(), updateBySourceId: jest.fn(), getAll: jest.fn() }));
+jest.mock("../../services/LookupService.js", () => ({ getOrCreateSource: jest.fn() }));
+jest.mock("../../database/dao/SourceHealthDAO.js", () => ({ getBySourceId: jest.fn(), create: jest.fn(), updateBySourceId: jest.fn(), getAll: jest.fn() }));
 
-const LookupService = require("../../services/LookupService");
-const SourceHealthDAO = require("../../database/dao/SourceHealthDAO");
-const SourceHealthService = require("../../services/SourceHealthService");
+import LookupService from "../../services/LookupService.js";
+import SourceHealthDAO from "../../database/dao/SourceHealthDAO.js";
+import SourceHealthService from "../../services/SourceHealthService.js";
 
 describe("SourceHealthService", () => {
     beforeEach(() => {

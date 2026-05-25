@@ -1,4 +1,4 @@
-jest.mock("../../database/db", () => ({
+jest.mock("../../database/db.js", () => ({
     run: jest.fn(),
     get: jest.fn(),
     all: jest.fn(),
@@ -7,8 +7,8 @@ jest.mock("../../database/db", () => ({
     rollbackTransaction: jest.fn()
 }));
 
-const LocationDAO = require("../../database/dao/LocationDAO");
-const { get, run, all } = require("../../database/db");
+import LocationDAO from "../../database/dao/LocationDAO.js";
+import { get, run, all } from "../../database/db.js";
 
 describe("LocationDAO", () => {
     beforeEach(() => {

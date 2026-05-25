@@ -1,11 +1,11 @@
-const AlertDAO = require("../database/dao/AlertDAO");
-const AlertMarkerDAO = require("../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../database/dao/AlertPolygonDAO");
-const AlertRoadDAO = require("../database/dao/AlertRoadDAO");
-const AlertAdviceDAO = require("../database/dao/AlertAdviceDAO");
-const AlertLinkDAO = require("../database/dao/AlertLinkDAO");
-const AlertRegionDAO = require("../database/dao/AlertRegionDAO");
-const NotificationDAO = require("../database/dao/NotificationDAO");
+import AlertDAO from "../database/dao/AlertDAO.js";
+import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
+import AlertRoadDAO from "../database/dao/AlertRoadDAO.js";
+import AlertAdviceDAO from "../database/dao/AlertAdviceDAO.js";
+import AlertLinkDAO from "../database/dao/AlertLinkDAO.js";
+import AlertRegionDAO from "../database/dao/AlertRegionDAO.js";
+import NotificationDAO from "../database/dao/NotificationDAO.js";
 
 class MaintenanceService {
     constructor() {
@@ -84,4 +84,4 @@ class MaintenanceService {
     }
 }
 
-module.exports = new MaintenanceService();
+export default new MaintenanceService();

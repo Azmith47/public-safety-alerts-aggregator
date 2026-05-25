@@ -1,11 +1,11 @@
-const {
+import {
     run,
-    get,
-    all,
+    get as getRow,
+    all as allRows,
     beginTransaction,
     commitTransaction,
     rollbackTransaction
-} = require("../db");
+} from "../db.js";
 
 class BaseDAO {
     constructor(tableName) {
@@ -17,11 +17,11 @@ class BaseDAO {
     }
 
     get(sql, params = []) {
-        return get(sql, params);
+        return getRow(sql, params);
     }
 
     all(sql, params = []) {
-        return all(sql, params);
+        return allRows(sql, params);
     }
 
     findOne(table, whereClause, params = [], select = "*") {
@@ -89,4 +89,4 @@ class BaseDAO {
     }
 }
 
-module.exports = BaseDAO;
+export default BaseDAO;

@@ -1,10 +1,10 @@
-const CategoryDAO = require("../database/dao/CategoryDAO");
-const SourceDAO = require("../database/dao/SourceDAO");
-const StatusTypeDAO = require("../database/dao/StatusTypeDAO");
-const SeverityLevelDAO = require("../database/dao/SeverityLevelDAO");
-const RegionDAO = require("../database/dao/RegionDAO");
-const CouncilAreaDAO = require("../database/dao/CouncilAreaDAO");
-const LocationDAO = require("../database/dao/LocationDAO");
+import CategoryDAO from "../database/dao/CategoryDAO.js";
+import SourceDAO from "../database/dao/SourceDAO.js";
+import StatusTypeDAO from "../database/dao/StatusTypeDAO.js";
+import SeverityLevelDAO from "../database/dao/SeverityLevelDAO.js";
+import RegionDAO from "../database/dao/RegionDAO.js";
+import CouncilAreaDAO from "../database/dao/CouncilAreaDAO.js";
+import LocationDAO from "../database/dao/LocationDAO.js";
 
 class LookupService {
     constructor(options = {}) {
@@ -137,4 +137,4 @@ class LookupService {
     }
 }
 
-module.exports = new LookupService();
+export default new LookupService();

@@ -1,27 +1,19 @@
-const {
+import {
     beginTransaction,
     commitTransaction,
     rollbackTransaction
-} = require("./db");
+} from "./db.js";
 
-const CategoryDAO = require("./dao/CategoryDAO");
-const SeverityLevelDAO = require("./dao/SeverityLevelDAO");
-const StatusTypeDAO = require("./dao/StatusTypeDAO");
-const RegionDAO = require("./dao/RegionDAO");
-const CouncilAreaDAO = require("./dao/CouncilAreaDAO");
-const LocationDAO = require("./dao/LocationDAO");
-
-const categories =
-    require("./seeds/categories");
-
-const severityLevels =
-    require("./seeds/severityLevels");
-
-const statusTypes =
-    require("./seeds/statusTypes");
-
-const regions =
-    require("./seeds/regions");
+import CategoryDAO from "./dao/CategoryDAO.js";
+import SeverityLevelDAO from "./dao/SeverityLevelDAO.js";
+import StatusTypeDAO from "./dao/StatusTypeDAO.js";
+import RegionDAO from "./dao/RegionDAO.js";
+import CouncilAreaDAO from "./dao/CouncilAreaDAO.js";
+import LocationDAO from "./dao/LocationDAO.js";
+import categories from "./seeds/categories.js";
+import severityLevels from  "./seeds/severityLevels.js";
+import statusTypes from "./seeds/statusTypes.js";
+import regions from "./seeds/regions.js";
 
 async function seedCategories() {
     for (const category of categories) {
@@ -102,4 +94,4 @@ async function seed() {
     }
 }
 
-module.exports = {seed};
+export default { seed };

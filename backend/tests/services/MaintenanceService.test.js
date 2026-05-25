@@ -1,21 +1,21 @@
-jest.mock("../../database/dao/AlertDAO", () => ({ all: jest.fn(), transaction: jest.fn(), delete: jest.fn(), tableName: "alerts" }));
-jest.mock("../../database/dao/AlertMarkersDAO", () => ({ delete: jest.fn(), tableName: "alert_markers" }));
-jest.mock("../../database/dao/AlertPolygonDAO", () => ({ delete: jest.fn(), tableName: "alert_polygons" }));
-jest.mock("../../database/dao/AlertRoadDAO", () => ({ delete: jest.fn(), tableName: "alert_roads" }));
-jest.mock("../../database/dao/AlertAdviceDAO", () => ({ delete: jest.fn(), tableName: "alert_advice" }));
-jest.mock("../../database/dao/AlertLinkDAO", () => ({ delete: jest.fn(), tableName: "alert_links" }));
-jest.mock("../../database/dao/AlertRegionDAO", () => ({ delete: jest.fn(), tableName: "alert_region" }));
-jest.mock("../../database/dao/NotificationDAO", () => ({ delete: jest.fn(), tableName: "notifications" }));
+jest.mock("../../database/dao/AlertDAO.js", () => ({ all: jest.fn(), transaction: jest.fn(), delete: jest.fn(), tableName: "alerts" }));
+jest.mock("../../database/dao/AlertMarkersDAO.js", () => ({ delete: jest.fn(), tableName: "alert_markers" }));
+jest.mock("../../database/dao/AlertPolygonDAO.js", () => ({ delete: jest.fn(), tableName: "alert_polygons" }));
+jest.mock("../../database/dao/AlertRoadDAO.js", () => ({ delete: jest.fn(), tableName: "alert_roads" }));
+jest.mock("../../database/dao/AlertAdviceDAO.js", () => ({ delete: jest.fn(), tableName: "alert_advice" }));
+jest.mock("../../database/dao/AlertLinkDAO.js", () => ({ delete: jest.fn(), tableName: "alert_links" }));
+jest.mock("../../database/dao/AlertRegionDAO.js", () => ({ delete: jest.fn(), tableName: "alert_region" }));
+jest.mock("../../database/dao/NotificationDAO.js", () => ({ delete: jest.fn(), tableName: "notifications" }));
 
-const AlertDAO = require("../../database/dao/AlertDAO");
-const AlertMarkersDAO = require("../../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../../database/dao/AlertPolygonDAO");
-const AlertRoadDAO = require("../../database/dao/AlertRoadDAO");
-const AlertAdviceDAO = require("../../database/dao/AlertAdviceDAO");
-const AlertLinkDAO = require("../../database/dao/AlertLinkDAO");
-const AlertRegionDAO = require("../../database/dao/AlertRegionDAO");
-const NotificationDAO = require("../../database/dao/NotificationDAO");
-const MaintenanceService = require("../../services/MaintenanceService");
+import AlertDAO from "../../database/dao/AlertDAO.js";
+import AlertMarkersDAO from "../../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../../database/dao/AlertPolygonDAO.js";
+import AlertRoadDAO from "../../database/dao/AlertRoadDAO.js";
+import AlertAdviceDAO from "../../database/dao/AlertAdviceDAO.js";
+import AlertLinkDAO from "../../database/dao/AlertLinkDAO.js";
+import AlertRegionDAO from "../../database/dao/AlertRegionDAO.js";
+import NotificationDAO from "../../database/dao/NotificationDAO.js";
+import MaintenanceService from "../../services/MaintenanceService.js";
 
 describe("MaintenanceService", () => {
     beforeEach(() => {

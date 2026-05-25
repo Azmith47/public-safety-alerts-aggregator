@@ -1,5 +1,5 @@
-const SubscriptionDAO = require("../database/dao/SubscriptionDAO");
-const UserDAO = require("../database/dao/UserDAO");
+import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
+import UserDAO from "../database/dao/UserDAO.js";
 
 class SubscriptionService {
     // subscription: { email, category_id, region_id, council_area_id, severity_level_id }
@@ -40,4 +40,4 @@ class SubscriptionService {
     }
 }
 
-module.exports = new SubscriptionService();
+export default new SubscriptionService();

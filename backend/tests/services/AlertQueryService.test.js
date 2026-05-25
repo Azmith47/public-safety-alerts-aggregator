@@ -1,17 +1,17 @@
-jest.mock("../../database/dao/AlertDAO", () => ({ get: jest.fn(), all: jest.fn(), getById: jest.fn() }));
-jest.mock("../../database/dao/AlertMarkersDAO", () => ({ findAll: jest.fn(), tableName: "alert_markers" }));
-jest.mock("../../database/dao/AlertPolygonDAO", () => ({ findAll: jest.fn(), tableName: "alert_polygons" }));
-jest.mock("../../database/dao/AlertRoadDAO", () => ({ findAll: jest.fn(), tableName: "alert_roads" }));
-jest.mock("../../database/dao/AlertAdviceDAO", () => ({ findAll: jest.fn(), tableName: "alert_advice" }));
-jest.mock("../../database/dao/AlertLinkDAO", () => ({ findAll: jest.fn(), tableName: "alert_links" }));
+jest.mock("../../database/dao/AlertDAO.js", () => ({ get: jest.fn(), all: jest.fn(), getById: jest.fn() }));
+jest.mock("../../database/dao/AlertMarkersDAO.js", () => ({ findAll: jest.fn(), tableName: "alert_markers" }));
+jest.mock("../../database/dao/AlertPolygonDAO.js", () => ({ findAll: jest.fn(), tableName: "alert_polygons" }));
+jest.mock("../../database/dao/AlertRoadDAO.js", () => ({ findAll: jest.fn(), tableName: "alert_roads" }));
+jest.mock("../../database/dao/AlertAdviceDAO.js", () => ({ findAll: jest.fn(), tableName: "alert_advice" }));
+jest.mock("../../database/dao/AlertLinkDAO.js", () => ({ findAll: jest.fn(), tableName: "alert_links" }));
 
-const AlertDAO = require("../../database/dao/AlertDAO");
-const AlertMarkersDAO = require("../../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../../database/dao/AlertPolygonDAO");
-const AlertRoadDAO = require("../../database/dao/AlertRoadDAO");
-const AlertAdviceDAO = require("../../database/dao/AlertAdviceDAO");
-const AlertLinkDAO = require("../../database/dao/AlertLinkDAO");
-const AlertQueryService = require("../../services/AlertQueryService");
+import AlertDAO from "../../database/dao/AlertDAO.js";
+import AlertMarkersDAO from "../../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../../database/dao/AlertPolygonDAO.js";
+import AlertRoadDAO from "../../database/dao/AlertRoadDAO.js";
+import AlertAdviceDAO from "../../database/dao/AlertAdviceDAO.js";
+import AlertLinkDAO from "../../database/dao/AlertLinkDAO.js";
+import AlertQueryService from "../../services/AlertQueryService.js";
 
 describe("AlertQueryService", () => {
     beforeEach(() => {

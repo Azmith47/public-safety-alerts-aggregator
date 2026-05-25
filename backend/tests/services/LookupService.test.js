@@ -1,19 +1,19 @@
-jest.mock("../../database/dao/CategoryDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/SourceDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/StatusTypeDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/SeverityLevelDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/RegionDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/CouncilAreaDAO", () => ({ getOrCreate: jest.fn() }));
-jest.mock("../../database/dao/LocationDAO", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/CategoryDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/SourceDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/StatusTypeDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/SeverityLevelDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/RegionDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/CouncilAreaDAO.js", () => ({ getOrCreate: jest.fn() }));
+jest.mock("../../database/dao/LocationDAO.js", () => ({ getOrCreate: jest.fn() }));
 
-const CategoryDAO = require("../../database/dao/CategoryDAO");
-const SourceDAO = require("../../database/dao/SourceDAO");
-const StatusTypeDAO = require("../../database/dao/StatusTypeDAO");
-const SeverityLevelDAO = require("../../database/dao/SeverityLevelDAO");
-const RegionDAO = require("../../database/dao/RegionDAO");
-const CouncilAreaDAO = require("../../database/dao/CouncilAreaDAO");
-const LocationDAO = require("../../database/dao/LocationDAO");
-const LookupService = require("../../services/LookupService");
+import CategoryDAO from "../../database/dao/CategoryDAO.js";
+import SourceDAO from "../../database/dao/SourceDAO.js";
+import StatusTypeDAO from "../../database/dao/StatusTypeDAO.js";
+import SeverityLevelDAO from "../../database/dao/SeverityLevelDAO.js";
+import RegionDAO from "../../database/dao/RegionDAO.js";
+import CouncilAreaDAO from "../../database/dao/CouncilAreaDAO.js";
+import LocationDAO from "../../database/dao/LocationDAO.js";
+import LookupService from "../../services/LookupService.js";
 
 describe("LookupService", () => {
     beforeEach(() => {

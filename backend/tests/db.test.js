@@ -1,4 +1,4 @@
-const db = require("../database/db");
+import db from "../database/db.js";
 
 describe("database/db exports", () => {
     test("should export db helpers and transaction functions", () => {

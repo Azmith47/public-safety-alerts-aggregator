@@ -1,5 +1,5 @@
-const LookupService = require("./LookupService");
-const SourceHealthDAO = require("../database/dao/SourceHealthDAO");
+import LookupService from "./LookupService.js";
+import SourceHealthDAO from "../database/dao/SourceHealthDAO.js";
 
 class SourceHealthService {
     constructor() {
@@ -75,4 +75,4 @@ class SourceHealthService {
     }
 }
 
-module.exports = new SourceHealthService();
+export default new SourceHealthService();

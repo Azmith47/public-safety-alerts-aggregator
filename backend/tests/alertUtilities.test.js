@@ -1,9 +1,9 @@
-const {
+import {
     geoJsonToPaths,
     geoJsonToMarker,
     splitDescription,
     parsePubDate
-} = require("../utils/alertUtilities");
+} from "../utils/alertUtilities.js";
 
 describe("alertUtilities", () => {
     test("geoJsonToPaths should convert polygon coordinates to path points", () => {

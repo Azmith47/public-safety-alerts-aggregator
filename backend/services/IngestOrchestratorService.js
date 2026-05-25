@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const AlertPersistenceService = require("./AlertPersistenceService");
-const SourceHealthService = require("./SourceHealthService");
+import AlertPersistenceService from "./AlertPersistenceService.js";
+import SourceHealthService from "./SourceHealthService.js";
 
 class IngestOrchestratorService {
     constructor() {
@@ -146,4 +146,4 @@ class IngestOrchestratorService {
     }
 }
 
-module.exports = new IngestOrchestratorService();
+export default new IngestOrchestratorService();

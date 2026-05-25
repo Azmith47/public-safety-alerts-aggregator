@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class CouncilAreaDAO extends BaseDAO {
 
@@ -30,4 +30,4 @@ class CouncilAreaDAO extends BaseDAO {
     }
 }
 
-module.exports = new CouncilAreaDAO();
+export default new CouncilAreaDAO();

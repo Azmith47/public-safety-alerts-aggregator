@@ -1,6 +1,6 @@
-const NotificationDAO = require("../database/dao/NotificationDAO");
-const UserDAO = require("../database/dao/UserDAO");
-const SubscriptionDAO = require("../database/dao/SubscriptionDAO");
+import NotificationDAO from "../database/dao/NotificationDAO.js";
+import UserDAO from "../database/dao/UserDAO.js";
+import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
 
 class NotificationService {
     constructor(options = {}) {
@@ -61,4 +61,4 @@ class NotificationService {
     }
 }
 
-module.exports = new NotificationService();
+export default new NotificationService();

@@ -1,4 +1,4 @@
-module.exports = [
+export default [
     "Greater Sydney",
     "Central Coast",
     "Central West & Orana",

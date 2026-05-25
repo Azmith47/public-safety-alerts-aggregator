@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class NotificationDAO extends BaseDAO {
 
@@ -31,4 +31,4 @@ class NotificationDAO extends BaseDAO {
     }
 }
 
-module.exports = new NotificationDAO();
+export default new NotificationDAO();

@@ -1,6 +1,6 @@
-const AlertDAO = require("../database/dao/AlertDAO");
-const AlertMarkerDAO = require("../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../database/dao/AlertPolygonDAO");
+import AlertDAO from "../database/dao/AlertDAO.js";
+import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
 
 class GeoSpatialService {
     _haversineDistanceKm(lat1, lng1, lat2, lng2) {
@@ -157,4 +157,4 @@ class GeoSpatialService {
     }
 }
 
-module.exports = new GeoSpatialService();
+export default new GeoSpatialService();

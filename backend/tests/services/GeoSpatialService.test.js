@@ -1,11 +1,11 @@
-jest.mock("../../database/dao/AlertDAO", () => ({ get: jest.fn(), all: jest.fn(), getById: jest.fn() }));
-jest.mock("../../database/dao/AlertMarkersDAO", () => ({ all: jest.fn(), findAll: jest.fn(), tableName: "alert_markers" }));
-jest.mock("../../database/dao/AlertPolygonDAO", () => ({ all: jest.fn(), findAll: jest.fn(), tableName: "alert_polygons" }));
+jest.mock("../../database/dao/AlertDAO.js", () => ({ get: jest.fn(), all: jest.fn(), getById: jest.fn() }));
+jest.mock("../../database/dao/AlertMarkersDAO.js", () => ({ all: jest.fn(), findAll: jest.fn(), tableName: "alert_markers" }));
+jest.mock("../../database/dao/AlertPolygonDAO.js", () => ({ all: jest.fn(), findAll: jest.fn(), tableName: "alert_polygons" }));
 
-const AlertDAO = require("../../database/dao/AlertDAO");
-const AlertMarkersDAO = require("../../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../../database/dao/AlertPolygonDAO");
-const GeoSpatialService = require("../../services/GeoSpatialService");
+import AlertDAO from "../../database/dao/AlertDAO.js";
+import AlertMarkersDAO from "../../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../../database/dao/AlertPolygonDAO.js";
+import GeoSpatialService from "../../services/GeoSpatialService.js";
 
 describe("GeoSpatialService", () => {
     beforeEach(() => {

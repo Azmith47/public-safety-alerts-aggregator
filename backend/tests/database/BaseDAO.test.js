@@ -1,4 +1,4 @@
-jest.mock("../../database/db", () => ({
+jest.mock("../../database/db.js", () => ({
     run: jest.fn(),
     get: jest.fn(),
     all: jest.fn(),
@@ -7,8 +7,8 @@ jest.mock("../../database/db", () => ({
     rollbackTransaction: jest.fn()
 }));
 
-const { run, get, all, beginTransaction, commitTransaction, rollbackTransaction } = require("../../database/db");
-const BaseDAO = require("../../database/dao/BaseDAO");
+import { run, get, all, beginTransaction, commitTransaction, rollbackTransaction } from "../../database/db.js";
+import BaseDAO from "../../database/dao/BaseDAO.js";
 
 describe("BaseDAO", () => {
     let dao;

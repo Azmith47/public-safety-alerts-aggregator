@@ -1,4 +1,4 @@
-class Alert {
+export class Alert {
     constructor(id, title, link, pubDate, markerPoint, type, lastUpdated, category, external_id) {
         this.id = id || null;
         this.external_id = id || null;
@@ -12,7 +12,7 @@ class Alert {
     }
 }
 
-class FireAlert extends Alert {
+export class FireAlert extends Alert {
     constructor(title, link, pubDate, alertLevel, status, markerPoint, polygon, category, location, councilArea, size, fire, agency, lastUpdated, id, external_id) {
         const type = 'Fire';
         super(id, title, link, pubDate, markerPoint, type, lastUpdated, category, external_id);
@@ -27,7 +27,7 @@ class FireAlert extends Alert {
     }
 }
 
-class TrafficAlert extends Alert {
+export class TrafficAlert extends Alert {
     constructor(title, id, external_id, link, pubDate, markerPoint, polyline, lastUpdated, category, planned, startDate, endDate, ended, delay, headline, impactingNetwork, isMajor, queueLength, roads, speedLimit, subCategory, otherLinks, diversions, attendingGroups, advice) {
         const type = 'Traffic';
         super(id, title, link, pubDate, markerPoint, type, lastUpdated, category, external_id);
@@ -51,7 +51,7 @@ class TrafficAlert extends Alert {
     }
 }
 
-class WeatherAlert extends Alert {
+export class WeatherAlert extends Alert {
     constructor(title, link, pubDate, markerPoint, lastUpdated, category, id, polygon, status, alertLevel, location, external_id) {
         const type = 'Weather';
         super(id, title, link, pubDate, markerPoint, type, lastUpdated, category, external_id);
@@ -63,4 +63,4 @@ class WeatherAlert extends Alert {
     }
 }
 
-module.exports = { Alert, FireAlert, TrafficAlert, WeatherAlert };
+export default Alert;

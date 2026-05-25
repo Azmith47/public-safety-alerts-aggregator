@@ -1,11 +1,11 @@
-const AlertDAO = require("../database/dao/AlertDAO");
-const LookupService = require("./LookupService");
+import AlertDAO from "../database/dao/AlertDAO.js";
+import LookupService from "./LookupService.js";
 
-const AlertMarkerDAO = require("../database/dao/AlertMarkersDAO");
-const AlertPolygonDAO = require("../database/dao/AlertPolygonDAO");
-const AlertRoadDAO = require("../database/dao/AlertRoadDAO");
-const AlertAdviceDAO = require("../database/dao/AlertAdviceDAO");
-const AlertLinkDAO = require("../database/dao/AlertLinkDAO");
+import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
+import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
+import AlertRoadDAO from "../database/dao/AlertRoadDAO.js";
+import AlertAdviceDAO from "../database/dao/AlertAdviceDAO.js";
+import AlertLinkDAO from "../database/dao/AlertLinkDAO.js";
 
 class AlertPersistenceService {
     async save(alert, sourceName, sourceWebsite = null) {
@@ -166,4 +166,4 @@ class AlertPersistenceService {
     }
 }
 
-module.exports = new AlertPersistenceService();
+export default new AlertPersistenceService();

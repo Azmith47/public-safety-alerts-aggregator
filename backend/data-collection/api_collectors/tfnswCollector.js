@@ -1,10 +1,10 @@
-const { TrafficAlert } = require('../../models/alertClasses');
-const { geoJsonToMarker } = require('../../utils/alertUtilities');
+import { TrafficAlert } from '../../models/alertClasses.js';
+import { geoJsonToMarker } from '../../utils/alertUtilities.js';
 
-const sourceName = 'Transport NSW';
-const sourceWebsite = 'https://www.livetraffic.com';
+export const sourceName = 'Transport NSW';
+export const sourceWebsite = 'https://www.livetraffic.com';
 
-const run = async () => {
+export const run = async () => {
     const apiURLs = [
         'https://api.transport.nsw.gov.au/v1/live/hazards/incident/all',
         'https://api.transport.nsw.gov.au/v1/live/hazards/roadwork/all',
@@ -82,4 +82,4 @@ const run = async () => {
     }
 };
 
-module.exports = { run, sourceName, sourceWebsite };
+export default run;

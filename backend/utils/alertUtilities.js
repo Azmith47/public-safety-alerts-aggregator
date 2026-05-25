@@ -1,15 +1,15 @@
-const geoJsonToPaths = (geoJson) => {
+export const geoJsonToPaths = (geoJson) => {
     return geoJson.coordinates[0].map(([lng, lat]) => ({
         lat,
         lng
     }));
 };
 
-const geoJsonToMarker = (geoJson) => {
+export const geoJsonToMarker = (geoJson) => {
     return { lat: geoJson.coordinates[1], lng: geoJson.coordinates[0] };
 };
 
-const splitDescription = (description) => {
+export const splitDescription = (description) => {
     const parts = description.split('<br />').map(part => part.trim());
 
     const values = {
@@ -57,7 +57,7 @@ const splitDescription = (description) => {
     return values;
 };
 
-const parsePubDate = (dateString) => {
+export const parsePubDate = (dateString) => {
     // 1. Split date and time components
     const [datePart, timePart, ampm] = dateString.split(' ');
     const [day, month, year] = datePart.split('/').map(Number);
@@ -73,9 +73,4 @@ const parsePubDate = (dateString) => {
     return date;
 };
 
-module.exports = {
-    geoJsonToPaths,
-    geoJsonToMarker,
-    splitDescription,
-    parsePubDate
-};
+export default geoJsonToPaths;

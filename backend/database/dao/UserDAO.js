@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class UserDAO extends BaseDAO {
 
@@ -42,4 +42,4 @@ class UserDAO extends BaseDAO {
     }
 }
 
-module.exports = new UserDAO();
+export default new UserDAO();

@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class SourceHealthDAO extends BaseDAO {
     constructor() {
@@ -38,4 +38,4 @@ class SourceHealthDAO extends BaseDAO {
     }
 }
 
-module.exports = new SourceHealthDAO();
+export default new SourceHealthDAO();

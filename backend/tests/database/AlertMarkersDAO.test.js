@@ -1,4 +1,4 @@
-jest.mock("../../database/db", () => ({
+jest.mock("../../database/db.js", () => ({
     run: jest.fn(),
     get: jest.fn(),
     all: jest.fn(),
@@ -7,8 +7,8 @@ jest.mock("../../database/db", () => ({
     rollbackTransaction: jest.fn()
 }));
 
-const AlertMarkersDAO = require("../../database/dao/AlertMarkersDAO");
-const { run } = require("../../database/db");
+import AlertMarkersDAO from "../../database/dao/AlertMarkersDAO.js";
+import { run } from "../../database/db.js";
 
 describe("AlertMarkersDAO", () => {
     beforeEach(() => {

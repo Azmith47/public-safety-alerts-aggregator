@@ -1,9 +1,9 @@
-jest.mock("../../services/AlertPersistenceService", () => ({ save: jest.fn() }));
-jest.mock("../../services/SourceHealthService", () => ({ recordRun: jest.fn() }));
+jest.mock("../../services/AlertPersistenceService.js", () => ({ save: jest.fn() }));
+jest.mock("../../services/SourceHealthService.js", () => ({ recordRun: jest.fn() }));
 
-const IngestOrchestratorService = require("../../services/IngestOrchestratorService");
-const AlertPersistenceService = require("../../services/AlertPersistenceService");
-const SourceHealthService = require("../../services/SourceHealthService");
+import IngestOrchestratorService from "../../services/IngestOrchestratorService.js";
+import AlertPersistenceService from "../../services/AlertPersistenceService.js";
+import SourceHealthService from "../../services/SourceHealthService.js";
 
 describe("IngestOrchestratorService", () => {
     beforeEach(() => {

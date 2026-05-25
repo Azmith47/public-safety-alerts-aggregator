@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class SeverityLevelDAO extends BaseDAO {
 
@@ -26,4 +26,4 @@ class SeverityLevelDAO extends BaseDAO {
     }
 }
 
-module.exports = new SeverityLevelDAO();
+export default new SeverityLevelDAO();

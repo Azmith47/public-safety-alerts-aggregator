@@ -1,4 +1,4 @@
-module.exports = [
+export default [
     {
         name: "Advice",
         description: "Lowest alert level"

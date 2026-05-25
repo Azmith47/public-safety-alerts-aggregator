@@ -1,11 +1,12 @@
-const Parser = require('rss-parser');
+import Parser from 'rss-parser';
 const parser = new Parser();
 
-const { FireAlert, TrafficAlert, WeatherAlert } = require('../models/alertClasses');
-const { geoJsonToPaths, geoJsonToMarker, splitDescription, parsePubDate } = require('../utils/alertUtilities');
-const AlertQueryService = require('../services/AlertQueryService');
+import { FireAlert, TrafficAlert, WeatherAlert } from '../models/alertClasses.js';
+import { geoJsonToPaths, geoJsonToMarker, splitDescription, parsePubDate } from '../utils/alertUtilities.js';
+import AlertQueryService from '../services/AlertQueryService.js';
 
-const getAlerts = async (req, res) => {
+
+export const getAlerts = async (req, res) => {
     const feedURL = 'https://www.rfs.nsw.gov.au/feeds/majorIncidents.json'
     const response = await fetch(feedURL)
     const data = await response.json()
@@ -47,7 +48,7 @@ const getAlerts = async (req, res) => {
     res.status(200).json(alerts)
 }
 
-const getTrafficAlerts = async (req, res) => {
+export const getTrafficAlerts = async (req, res) => {
     const apiURLs = [
         'https://api.transport.nsw.gov.au/v1/live/hazards/incident/all',
         'https://api.transport.nsw.gov.au/v1/live/hazards/roadwork/all',
@@ -116,7 +117,7 @@ const getTrafficAlerts = async (req, res) => {
     res.status(200).json(alerts);
 };
 
-const getAlertsFromDb = async (req, res) => {
+export const getAlertsFromDb = async (req, res) => {
     try {
         const filters = {};
         if (req.query.active !== undefined) filters.active = req.query.active === 'true';
@@ -146,7 +147,7 @@ const getAlertsFromDb = async (req, res) => {
     }
 };
 
-const getAlertById = async (req, res) => {
+export const getAlertById = async (req, res) => {
     try {
         const id = req.params.id;
         const result = await AlertQueryService.getAlertDetails(id);
@@ -158,7 +159,7 @@ const getAlertById = async (req, res) => {
     }
 };
 
-const unsubscribe = async (req, res) => {
+export const unsubscribe = async (req, res) => {
 
     const { token } = req.params;
 
@@ -182,4 +183,4 @@ const unsubscribe = async (req, res) => {
     );
 };
 
-module.exports = { getAlerts, getTrafficAlerts, getAlertsFromDb, getAlertById, unsubscribe };
+export default getAlerts;

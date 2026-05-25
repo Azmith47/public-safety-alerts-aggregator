@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { getAlerts, getTrafficAlerts } from '../controllers/alertsController.js';
+import { getAlertsFromDb, getAlertById, unsubscribe } from '../controllers/alertsController.js';
+
 const router = express.Router();
-const { getAlerts, getTrafficAlerts } = require('../controllers/alertsController');
-const { getAlertsFromDb, getAlertById, unsubscribe } = require('../controllers/alertsController');
 
 router.get('/', getAlerts);
 router.get('/traffic', getTrafficAlerts);
@@ -9,4 +10,4 @@ router.get('/db', getAlertsFromDb);
 router.get('/db/:id', getAlertById);
 router.get('/unsubscribe/:token', unsubscribe);
 
-module.exports = router;
+export default router;

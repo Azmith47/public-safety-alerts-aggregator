@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class AlertPolygonDAO extends BaseDAO {
 
@@ -20,4 +20,4 @@ class AlertPolygonDAO extends BaseDAO {
     }
 }
 
-module.exports = new AlertPolygonDAO();
+export default new AlertPolygonDAO();

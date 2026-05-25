@@ -8,8 +8,8 @@ jest.mock("node-cron", () => ({
     }))
 }));
 
-const { SchedulerService, initializeIngestScheduler, initializeMaintenanceScheduler } = require("../../services/SchedulerService");
-const cron = require("node-cron");
+import { SchedulerService, initializeIngestScheduler, initializeMaintenanceScheduler } from "../../services/SchedulerService.js";
+import cron from "node-cron";
 
 describe("SchedulerService", () => {
     beforeEach(() => {

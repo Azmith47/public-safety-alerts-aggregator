@@ -1,6 +1,6 @@
-const SourceHealthService = require('../services/SourceHealthService');
+import SourceHealthService from '../services/SourceHealthService.js';
 
-const getAllSourceHealth = async (req, res) => {
+export const getAllSourceHealth = async (req, res) => {
     try {
         const health = await SourceHealthService.getAllHealth();
         res.json({ data: health });
@@ -10,7 +10,7 @@ const getAllSourceHealth = async (req, res) => {
     }
 };
 
-const getSourceHealth = async (req, res) => {
+export const getSourceHealth = async (req, res) => {
     try {
         const sourceId = parseInt(req.params.sourceId, 10);
         if (Number.isNaN(sourceId)) {
@@ -29,4 +29,4 @@ const getSourceHealth = async (req, res) => {
     }
 };
 
-module.exports = { getAllSourceHealth, getSourceHealth };
+export default getAllSourceHealth;

@@ -1,11 +1,11 @@
-jest.mock("../../database/dao/NotificationDAO", () => ({ create: jest.fn(), getPending: jest.fn(), markSent: jest.fn(), markFailed: jest.fn() }));
-jest.mock("../../database/dao/UserDAO", () => ({ getById: jest.fn() }));
-jest.mock("../../database/dao/SubscriptionDAO", () => ({ getForUser: jest.fn() }));
+jest.mock("../../database/dao/NotificationDAO.js", () => ({ create: jest.fn(), getPending: jest.fn(), markSent: jest.fn(), markFailed: jest.fn() }));
+jest.mock("../../database/dao/UserDAO.js", () => ({ getById: jest.fn() }));
+jest.mock("../../database/dao/SubscriptionDAO.js", () => ({ getForUser: jest.fn() }));
 
-const NotificationService = require("../../services/NotificationService");
-const NotificationDAO = require("../../database/dao/NotificationDAO");
-const UserDAO = require("../../database/dao/UserDAO");
-const SubscriptionDAO = require("../../database/dao/SubscriptionDAO");
+import NotificationService from "../../services/NotificationService.js";
+import NotificationDAO from "../../database/dao/NotificationDAO.js";
+import UserDAO from "../../database/dao/UserDAO.js";
+import SubscriptionDAO from "../../database/dao/SubscriptionDAO.js";
 
 describe("NotificationService", () => {
     beforeEach(() => {

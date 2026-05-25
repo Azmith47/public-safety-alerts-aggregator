@@ -1,4 +1,4 @@
-module.exports = [
+export default [
     "Active",
     "Under Control",
     "Being Controlled",

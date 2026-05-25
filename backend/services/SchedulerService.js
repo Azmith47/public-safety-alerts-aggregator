@@ -1,6 +1,6 @@
-const cron = require('node-cron');
-const IngestOrchestratorService = require('./IngestOrchestratorService');
-const MaintenanceService = require('./MaintenanceService');
+import cron from 'node-cron';
+import IngestOrchestratorService from './IngestOrchestratorService.js';
+import MaintenanceService from './MaintenanceService.js';
 
 class SchedulerService {
     constructor() {
@@ -85,7 +85,7 @@ class SchedulerService {
  * Initialize the ingestion scheduler.
  * Run orchestrator every 5 minutes by default.
  */
-function initializeIngestScheduler(schedule = '*/5 * * * *') {
+export function initializeIngestScheduler(schedule = '*/5 * * * *') {
     const scheduler = new SchedulerService();
 
     // Schedule orchestrator to autodiscover and run collectors
@@ -99,7 +99,7 @@ function initializeIngestScheduler(schedule = '*/5 * * * *') {
     return scheduler;
 }
 
-function initializeMaintenanceScheduler(schedule = process.env.MAINTENANCE_CRON || '0 4 * * *') {
+export function initializeMaintenanceScheduler(schedule = process.env.MAINTENANCE_CRON || '0 4 * * *') {
     const scheduler = new SchedulerService();
 
     scheduler.schedule('maintenance', schedule, async () => {
@@ -112,4 +112,4 @@ function initializeMaintenanceScheduler(schedule = process.env.MAINTENANCE_CRON 
     return scheduler;
 }
 
-module.exports = { SchedulerService, initializeIngestScheduler, initializeMaintenanceScheduler };
+export default SchedulerService;

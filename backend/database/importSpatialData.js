@@ -1,17 +1,21 @@
-const XLSX = require("xlsx");
-const path = require("path");
-const {
+import XLSX from "xlsx";
+import path from "path";
+import { fileURLToPath } from 'url'
+
+
+import {
     beginTransaction,
     commitTransaction,
     rollbackTransaction
-} = require("./db");
+} from "./db.js";
 
-const CouncilAreaDAO = require("./dao/CouncilAreaDAO");
-const LocationDAO = require("./dao/LocationDAO");
-const RegionDAO = require("./dao/RegionDAO");
+import CouncilAreaDAO from "./dao/CouncilAreaDAO.js";
+import LocationDAO from "./dao/LocationDAO.js";
+import RegionDAO from "./dao/RegionDAO.js";
+import lgaRegionMap from "./seeds/lgaRegionMap.js";
 
-const lgaRegionMap =
-    require("./seeds/lgaRegionMap");
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 function normalizeString(str) {
     return String(str || "")
@@ -304,5 +308,5 @@ async function importSpatialData() {
     }
 }
 
-module.exports = {importSpatialData};
+export default { importSpatialData };
 

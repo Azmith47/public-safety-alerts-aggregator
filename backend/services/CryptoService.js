@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
 function generateToken() {
 
@@ -6,3 +6,5 @@ function generateToken() {
         .randomBytes(32)
         .toString("hex");
 }
+
+export default generateToken;

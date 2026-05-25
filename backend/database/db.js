@@ -1,19 +1,24 @@
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+import sqlite3 from "sqlite3";
 
-const db = new sqlite3.Database(
+import path from "path";
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+sqlite3.verbose();
+
+export const db = new sqlite3.Database(
     path.join(__dirname, "database.sqlite")
 );
 
 db.serialize(() => {
     db.run("PRAGMA foreign_keys = ON");
-
     db.run("PRAGMA journal_mode = WAL");
-
     db.run("PRAGMA synchronous = NORMAL");
 });
 
-function run(sql, params = []) {
+export function run(sql, params = []) {
 
     return new Promise((resolve, reject) => {
 
@@ -28,7 +33,7 @@ function run(sql, params = []) {
     });
 }
 
-function get(sql, params = []) {
+export function get(sql, params = []) {
 
     return new Promise((resolve, reject) => {
 
@@ -43,7 +48,7 @@ function get(sql, params = []) {
     });
 }
 
-function all(sql, params = []) {
+export function all(sql, params = []) {
 
     return new Promise((resolve, reject) => {
 
@@ -58,7 +63,7 @@ function all(sql, params = []) {
     });
 }
 
-function exec(sql) {
+export function exec(sql) {
 
     return new Promise((resolve, reject) => {
 
@@ -77,30 +82,20 @@ function exec(sql) {
 // Transaction Helpers
 // -----------------------------------------
 
-async function beginImmediateTransaction() {
+export async function beginImmediateTransaction() {
     await run("BEGIN IMMEDIATE TRANSACTION");
 }
 
-async function beginTransaction() {
+export async function beginTransaction() {
     await run("BEGIN TRANSACTION");
 }
 
-async function commitTransaction() {
+export async function commitTransaction() {
     await run("COMMIT");
 }
 
-async function rollbackTransaction() {
+export async function rollbackTransaction() {
     await run("ROLLBACK");
 }
 
-module.exports = {
-    db,
-    run,
-    get,
-    all,
-    exec,
-    beginImmediateTransaction,
-    beginTransaction,
-    commitTransaction,
-    rollbackTransaction
-};
+export default db;

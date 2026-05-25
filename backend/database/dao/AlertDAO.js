@@ -1,4 +1,4 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class AlertDAO extends BaseDAO {
 
@@ -88,4 +88,4 @@ class AlertDAO extends BaseDAO {
     }
 }
 
-module.exports = new AlertDAO();
+export default new AlertDAO();

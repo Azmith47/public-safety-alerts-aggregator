@@ -1,15 +1,18 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const {
+import {
     db,
     exec,    
     beginImmediateTransaction,
     commitTransaction,
-} = require("./db");
+} from "./db.js";
+import {seed} from "./seed.js";
+import {importSpatialData} from "./importSpatialData.js";
+import { fileURLToPath } from 'url'
 
-const {seed} = require("./seed")
-const {importSpatialData} = require("./importSpatialData");
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 async function initializeDatabase() {
 

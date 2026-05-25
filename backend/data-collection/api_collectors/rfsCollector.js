@@ -1,10 +1,10 @@
-const { FireAlert } = require('../../models/alertClasses');
-const { geoJsonToPaths, geoJsonToMarker, splitDescription, parsePubDate } = require('../../utils/alertUtilities');
+import { FireAlert } from '../../models/alertClasses.js';
+import { geoJsonToPaths, geoJsonToMarker, splitDescription, parsePubDate } from '../../utils/alertUtilities.js';
 
-const sourceName = 'NSW RFS';
-const sourceWebsite = 'https://www.rfs.nsw.gov.au';
+export const sourceName = 'NSW RFS';
+export const sourceWebsite = 'https://www.rfs.nsw.gov.au';
 
-const run = async () => {
+export const run = async () => {
     const feedURL = 'https://www.rfs.nsw.gov.au/feeds/majorIncidents.json';
     try {
         const response = await fetch(feedURL);
@@ -51,4 +51,4 @@ const run = async () => {
     }
 };
 
-module.exports = { run, sourceName, sourceWebsite };
+export default run;
