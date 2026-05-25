@@ -83,9 +83,9 @@ class SchedulerService {
 
 /**
  * Initialize the ingestion scheduler.
- * Run orchestrator every 5 minutes by default.
+ * Run orchestrator every 10 minutes by default.
  */
-export function initializeIngestScheduler(schedule = '*/5 * * * *') {
+export function initializeIngestScheduler(schedule = '*/10 * * * *') {
     const scheduler = new SchedulerService();
 
     // Schedule orchestrator to autodiscover and run collectors

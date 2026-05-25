@@ -9,7 +9,7 @@ import {
 } from "./db.js";
 import {seed} from "./seed.js";
 import {importSpatialData} from "./importSpatialData.js";
-import { fileURLToPath } from 'url'
+import {fileURLToPath} from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

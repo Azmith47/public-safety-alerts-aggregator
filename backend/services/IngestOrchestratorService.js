@@ -3,6 +3,15 @@ import path from "path";
 
 import AlertPersistenceService from "./AlertPersistenceService.js";
 import SourceHealthService from "./SourceHealthService.js";
+import AlertQueryService from "./AlertQueryService.js";
+
+import {
+    fileURLToPath,
+    pathToFileURL
+} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class IngestOrchestratorService {
     constructor() {
@@ -38,7 +47,10 @@ class IngestOrchestratorService {
             if (!file.endsWith(".js")) continue;
             const full = path.join(dir, file);
             try {
-                const mod = require(full);
+                const mod = await import(
+                        pathToFileURL(full).href
+                    );
+
                 let fn = null;
                 let sourceName = null;
                 let sourceWebsite = null;
@@ -135,7 +147,7 @@ class IngestOrchestratorService {
 
     /** Convenience: run collectors found in the project's data-collection folders. */
     async autodiscoverAndRun(basePath) {
-        const projectRoot = basePath || path.join(__dirname, "..", "..");
+        const projectRoot = basePath || path.join(__dirname, "..");
         const rssDir = path.join(projectRoot, "data-collection", "rss_collectors");
         const apiDir = path.join(projectRoot, "data-collection", "api_collectors");
 
@@ -143,6 +155,17 @@ class IngestOrchestratorService {
         await this.loadCollectorsFromDir(apiDir);
 
         return this.runAll();
+    }
+
+    async initialAlertDataLoad() {
+        const isEmpty = await AlertQueryService.isAlertsEmpty();
+        if (isEmpty) {
+            console.log("Alerts table is empty, running initial data load...");
+            const summary = await this.autodiscoverAndRun();
+            console.log('Initial data load summary:', JSON.stringify(summary, null, 2));
+        } else {
+            console.log("Alerts table already has data, skipping initial load.");
+        }
     }
 }
 

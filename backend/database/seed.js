@@ -53,7 +53,7 @@ async function seedRegions() {
 }
 
 
-async function seed() {
+export async function seed() {
     await beginTransaction();
 
     try {
@@ -94,4 +94,4 @@ async function seed() {
     }
 }
 
-export default { seed };
+export default seed;

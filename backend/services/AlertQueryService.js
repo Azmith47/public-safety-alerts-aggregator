@@ -114,6 +114,13 @@ class AlertQueryService {
             links
         };
     }
+    
+    async isAlertsEmpty() {
+        const row = await AlertDAO.get("SELECT COUNT(*) as count FROM alerts");
+        return row ? row.count === 0 : true;
+    };
 }
+
+    
 
 export default new AlertQueryService();

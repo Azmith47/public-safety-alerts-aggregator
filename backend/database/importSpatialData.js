@@ -234,7 +234,7 @@ async function importLocations(suburbMap, councilMap) {
 }
 
 
-async function importSpatialData() {
+export async function importSpatialData() {
 
     await beginTransaction();
 
@@ -308,5 +308,5 @@ async function importSpatialData() {
     }
 }
 
-export default { importSpatialData };
+export default importSpatialData;
 

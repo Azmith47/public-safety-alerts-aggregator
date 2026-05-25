@@ -8,6 +8,7 @@ import corsOptions from './config/corsOptions.js'
 import db from "./database/db.js";
 import NotificationService from "./services/NotificationService.js";
 import { initializeIngestScheduler, initializeMaintenanceScheduler } from "./services/SchedulerService.js";
+import IngestOrchestratorService from "./services/IngestOrchestratorService.js";
 import alertsRouter from './routes/alerts.js'
 import sourcesRouter from './routes/sources.js'
 import geoRouter from './routes/geo.js'
@@ -33,10 +34,12 @@ app.use('/geo', geoRouter)
 //errorhandler middleware
 app.use(errorHandler)
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
+app.listen(port, async () => {
+  console.log(`App listening on port ${port}`)
+  // run orchestrator once on startup to populate initial data
+  await IngestOrchestratorService.initialAlertDataLoad();
   // start background notification processing
-  NotificationService.startProcessing();
+  NotificationService.startProcessing();  
   // start background ingest scheduler (every 10 minutes)
   initializeIngestScheduler('*/10 * * * *');
   // start maintenance scheduler (daily cleanup)
