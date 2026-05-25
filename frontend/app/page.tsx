@@ -1,11 +1,12 @@
 "use client";
-import Modal from "./components/Modal";
+import AlertMenuModal from "./components/AlertMenuModal";
 import Footer from "./components/Footer";
 import AlertList from "./components/AlertList";
 import Navbar from "./components/Navbar";
 import MenuDrawer from "./components/Drawer";
 import FilterArea from "./components/FilterArea";
 import { useState } from "react";
+import GoogleMap from "./components/Map";
 
 export default function Home() {
   //useState for navbar-menu-button
@@ -34,10 +35,11 @@ export default function Home() {
         <AlertList />
         <div className="map-area">
           <FilterArea />
+          <GoogleMap />
         </div>
       </main>
       <Footer />
-      <Modal alertsMenuOpen={alertsOpen} />
+      <AlertMenuModal alertsMenuOpen={alertsOpen} />
     </>
   );
 }

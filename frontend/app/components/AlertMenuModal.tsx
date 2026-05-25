@@ -1,4 +1,8 @@
-export default function Modal({ alertsMenuOpen }: { alertsMenuOpen: boolean }) {
+export default function AlertMenuModal({
+  alertsMenuOpen,
+}: {
+  alertsMenuOpen: boolean;
+}) {
   return (
     <div
       className={
