@@ -1,4 +1,4 @@
-import { SEVERITY } from "../models/enums.js";
+import { SeverityLevels } from "../models/enums.js";
 /**
  * Internal canonical severity mappings.
  *
@@ -9,44 +9,43 @@ import { SEVERITY } from "../models/enums.js";
  * - canonical internal severity enum
  */
 export const SEVERITY_MAPPINGS = {
+	/**
+	 * NSW RFS warning levels
+	 */
+	EMERGENCY_WARNING: SeverityLevels.EMERGENCY_WARNING,
 
-    /**
-     * NSW RFS warning levels
-     */
-    EMERGENCY_WARNING: SEVERITY.EMERGENCY_WARNING,
+	WATCH_AND_ACT: SeverityLevels.WATCH_AND_ACT,
 
-    WATCH_AND_ACT: SEVERITY.WATCH_AND_ACT,
+	ADVICE: SeverityLevels.ADVICE,
 
-    ADVICE: SEVERITY.ADVICE,
+	/**
+	 * Generic operational severities
+	 */
+	MAJOR: SeverityLevels.MAJOR,
 
-    /**
-     * Generic operational severities
-     */
-    MAJOR: SEVERITY.MAJOR,
+	MODERATE: SeverityLevels.MODERATE,
 
-    MODERATE: SEVERITY.MODERATE,
+	MINOR: SeverityLevels.MINOR,
 
-    MINOR: SEVERITY.MINOR,
+	INFORMATION: SeverityLevels.INFORMATION,
 
-    INFORMATION: SEVERITY.INFORMATION,
+	INFO: SeverityLevels.INFORMATION,
 
-    INFO: SEVERITY.INFORMATION,
+	/**
+	 * TFNSW / generic transport wording
+	 */
+	HIGH: SeverityLevels.MAJOR,
 
-    /**
-     * TFNSW / generic transport wording
-     */
-    HIGH: SEVERITY.MAJOR,
+	MEDIUM: SeverityLevels.MODERATE,
 
-    MEDIUM: SEVERITY.MODERATE,
+	LOW: SeverityLevels.MINOR,
 
-    LOW: SEVERITY.MINOR,
+	/**
+	 * Common aliases
+	 */
+	CRITICAL: SeverityLevels.EMERGENCY_WARNING,
 
-    /**
-     * Common aliases
-     */
-    CRITICAL: SEVERITY.EMERGENCY_WARNING,
+	SEVERE: SeverityLevels.MAJOR,
 
-    SEVERE: SEVERITY.MAJOR,
-
-    WARNING: SEVERITY.WATCH_AND_ACT
+	WARNING: SeverityLevels.WATCH_AND_ACT,
 };

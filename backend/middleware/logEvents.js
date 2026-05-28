@@ -1,31 +1,34 @@
-import {format} from 'date-fns'
-import {v4 as uuid} from 'uuid'
+import { format } from "date-fns";
+import { v4 as uuid } from "uuid";
 
-import fs from 'fs'
-import fsPromises from 'fs/promises'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import fs from "fs";
+import fsPromises from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export const logEvents =  async (message) => {
-    const dateTime = `${format(new Date(), 'yyyyMMdd\tHH:mm:ss')}`
-    const logItem = `${dateTime} \t ${uuid()} \t ${message} \n`
+export const logEvents = async (message) => {
+	const dateTime = `${format(new Date(), "yyyyMMdd\tHH:mm:ss")}`;
+	const logItem = `${dateTime} \t ${uuid()} \t ${message} \n`;
 
-    try{
-        if(!fs.existsSync(path.join(__dirname, '..', 'logs'))){
-            await fsPromises.mkdir(path.join(__dirname, '..', 'logs'))
-        }
-        await fsPromises.appendFile(path.join(__dirname, '..', 'logs', 'eventLog.txt'), logItem)
-    } catch(err){
-        console.log(err)
-    }
-}
+	try {
+		if (!fs.existsSync(path.join(__dirname, "..", "logs"))) {
+			await fsPromises.mkdir(path.join(__dirname, "..", "logs"));
+		}
+		await fsPromises.appendFile(
+			path.join(__dirname, "..", "logs", "eventLog.txt"),
+			logItem,
+		);
+	} catch (err) {
+		console.log(err);
+	}
+};
 
 export const logger = (req, res, next) => {
-    logEvents(`${req.method}\t${req.headers.origin}\t${req.url}`, 'reqLog.txt')
-    next()
-}
+	logEvents(`${req.method}\t${req.headers.origin}\t${req.url}`, "reqLog.txt");
+	next();
+};
 
-export default logEvents
+export default logEvents;

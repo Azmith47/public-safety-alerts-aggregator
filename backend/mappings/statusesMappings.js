@@ -9,64 +9,63 @@ import { Statuses } from "../models/enums.js";
  * - canonical internal status enum
  */
 export const STATUS_MAPPINGS = {
+	/**
+	 * Generic active statuses
+	 */
+	ACTIVE: Statuses.ACTIVE,
 
-    /**
-     * Generic active statuses
-     */
-    ACTIVE: Statuses.ACTIVE,
+	OPEN: Statuses.ACTIVE,
 
-    OPEN: Statuses.ACTIVE,
+	ONGOING: Statuses.ACTIVE,
 
-    ONGOING: Statuses.ACTIVE,
+	IN_PROGRESS: Statuses.ACTIVE,
 
-    IN_PROGRESS: Statuses.ACTIVE,
+	/**
+	 * Monitoring states
+	 */
+	MONITORING: Statuses.MONITORING,
 
-    /**
-     * Monitoring states
-     */
-    MONITORING: Statuses.MONITORING,
+	WATCHING: Statuses.MONITORING,
 
-    WATCHING: Statuses.MONITORING,
+	OBSERVING: Statuses.MONITORING,
 
-    OBSERVING: Statuses.MONITORING,
+	/**
+	 * Fire containment/control states
+	 */
+	UNDER_CONTROL: Statuses.UNDER_CONTROL,
 
-    /**
-     * Fire containment/control states
-     */
-    UNDER_CONTROL: Statuses.UNDER_CONTROL,
+	BEING_CONTROLLED: Statuses.UNDER_CONTROL,
 
-    BEING_CONTROLLED: Statuses.UNDER_CONTROL,
+	CONTAINED: Statuses.CONTAINED,
 
-    CONTAINED: Statuses.CONTAINED,
+	CONTROLLED: Statuses.CONTROLLED,
 
-    CONTROLLED: Statuses.CONTROLLED,
+	/**
+	 * Planned incidents/events
+	 */
+	PLANNED: Statuses.PLANNED,
 
-    /**
-     * Planned incidents/events
-     */
-    PLANNED: Statuses.PLANNED,
+	SCHEDULED: Statuses.PLANNED,
 
-    SCHEDULED: Statuses.PLANNED,
+	UPCOMING: Statuses.PLANNED,
 
-    UPCOMING: Statuses.PLANNED,
+	/**
+	 * Completed/resolved states
+	 */
+	COMPLETED: Statuses.COMPLETED,
 
-    /**
-     * Completed/resolved states
-     */
-    COMPLETED: Statuses.COMPLETED,
+	FINISHED: Statuses.COMPLETED,
 
-    FINISHED: Statuses.COMPLETED,
+	RESOLVED: Statuses.RESOLVED,
 
-    RESOLVED: Statuses.RESOLVED,
+	CLOSED: Statuses.CLOSED,
 
-    CLOSED: Statuses.CLOSED,
+	ENDED: Statuses.CLOSED,
 
-    ENDED: Statuses.CLOSED,
+	/**
+	 * Cancellation states
+	 */
+	CANCELLED: Statuses.CANCELLED,
 
-    /**
-     * Cancellation states
-     */
-    CANCELLED: Statuses.CANCELLED,
-
-    CANCELED: Statuses.CANCELLED
+	CANCELED: Statuses.CANCELLED,
 };
