@@ -1,4 +1,4 @@
-/* ── RESET ── */
+/* RESET */
 body {
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ nextjs-portal {
   display: none;
 }
 
-/* ── VARIABLES ── */
+/* VARIABLES */
 :root {
   --nav-footer-bg-color: #1b2f6e;
   --body-bg-color: #2e2e2e;
@@ -31,7 +31,7 @@ nextjs-portal {
   --card-bg: #f5f5f5;
 }
 
-/* ── NAV ── */
+/* NAV */
 nav {
   display: flex;
   justify-content: space-between;
@@ -73,7 +73,7 @@ nav button {
   max-height: 3em;
 }
 
-/* ── DRAWER ── */
+/* DRAWER */
 .drawer-hidden {
   display: none;
 }
@@ -92,7 +92,8 @@ nav button {
 
 .drawer-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  padding-left: 0.8em;
 }
 
 .drawer-header button {
@@ -115,14 +116,14 @@ nav button {
   background-color: var(--accent-color);
 }
 
-/* ── MAIN LAYOUT ── */
+/* MAIN LAYOUT */
 main {
   flex: 1;
   border: 1px solid var(--border-color);
   display: flex;
 }
 
-/* ── ALERT LIST ── */
+/* ALERT LIST */
 
 aside {
   /* Play around with width */
@@ -186,7 +187,7 @@ aside {
   max-height: 45px;
 }
 
-/* ── FILTER ── */
+/* FILTER */
 .filter-bar {
   position: absolute;
   top: 6em;
@@ -211,13 +212,13 @@ aside {
   font-size: 0.8rem;
 }
 
-/* ── MAP ── */
+/* MAP */
 .map-area {
   flex: 1;
   height: 100%;
 }
 
-/* ── FOOTER ── */
+/* FOOTER */
 footer {
   background-color: var(--nav-footer-bg-color);
   color: var(--text-primary);
@@ -228,7 +229,7 @@ footer p {
   margin-left: 3em;
 }
 
-/* ── MODALS ── */
+/* MODALS */
 .modal-container-hidden {
   display: none;
 }
@@ -264,4 +265,13 @@ footer p {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   font-size: 0.9rem;
+}
+
+/* OVERLAYS */
+.page-overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
 }

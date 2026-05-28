@@ -24,6 +24,14 @@ export default function Home() {
 
   return (
     <>
+      <PageOverlay
+        menuOpen={menuOpen}
+        alertsOpen={alertsOpen}
+        onClick={() => {
+          setMenuOpen(false);
+          setAlertsOpen(false);
+        }}
+      />
       <Navbar
         onMenuClick={handleMenuClick}
         onAlertsClick={handleAlertMenuClick}
@@ -38,7 +46,25 @@ export default function Home() {
         </div>
       </main>
       <Footer />
-      <AlertMenuModal alertsMenuOpen={alertsOpen} />
+      <AlertMenuModal
+        alertsMenuOpen={alertsOpen}
+        menuClose={() => setAlertsOpen(false)}
+      />
     </>
   );
+}
+
+// Page overlay component - closes menuDrawer and modal by clicking anywhere outside
+function PageOverlay({
+  menuOpen,
+  alertsOpen,
+  onClick,
+}: {
+  menuOpen: boolean;
+  alertsOpen: boolean;
+  onClick: () => void;
+}) {
+  if (menuOpen === true || alertsOpen === true) {
+    return <div className="page-overlay" onClick={onClick}></div>;
+  }
 }

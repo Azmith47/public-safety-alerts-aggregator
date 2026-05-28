@@ -1,7 +1,9 @@
 export default function AlertMenuModal({
   alertsMenuOpen,
+  menuClose,
 }: {
   alertsMenuOpen: boolean;
+  menuClose: () => void;
 }) {
   return (
     <div
@@ -9,6 +11,7 @@ export default function AlertMenuModal({
         alertsMenuOpen ? "modal-container-visible" : "modal-container-hidden"
       }
     >
+      <button onClick={menuClose}>✕</button>
       <form action="" className="modal-form">
         <label htmlFor="">Service</label>
         <select name="" id="">
