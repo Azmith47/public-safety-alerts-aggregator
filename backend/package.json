@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "db:init": "node database/init.js",
-    "test": "jest --runInBand"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
   "author": "",

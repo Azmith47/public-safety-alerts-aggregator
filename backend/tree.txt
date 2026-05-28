@@ -1,0 +1,138 @@
+D:\Programming learning\Uni-Computer_Science\public-safety-alerts-aggregator\backend
+├── api
+├── config
+|  ├── allowedOrigins.js
+|  ├── corsOptions.js
+|  └── PLACEHOLDER.md
+├── controllers
+|  ├── alertsController.js
+|  ├── geoController.js
+|  ├── PLACEHOLDER.md
+|  └── sourceHealthController.js
+├── data-collection
+|  └── api_collectors
+|     ├── rfsCollector.js
+|     └── tfnswCollector.js
+├── database
+|  ├── dao
+|  |  ├── AlertAdviceDAO.js
+|  |  ├── AlertDAO.js
+|  |  ├── AlertLinkDAO.js
+|  |  ├── AlertMarkersDAO.js
+|  |  ├── AlertPolygonDAO.js
+|  |  ├── AlertRegionDAO.js
+|  |  ├── AlertRoadDAO.js
+|  |  ├── BaseDAO.js
+|  |  ├── CategoryDAO.js
+|  |  ├── CouncilAreaDAO.js
+|  |  ├── LocationDAO.js
+|  |  ├── NotificationDAO.js
+|  |  ├── RegionDAO.js
+|  |  ├── SeverityLevelDAO.js
+|  |  ├── SourceDAO.js
+|  |  ├── SourceHealthDAO.js
+|  |  ├── StatusTypeDAO.js
+|  |  ├── SubscriptionDAO.js
+|  |  └── UserDAO.js
+|  ├── db.js
+|  ├── importSpatialData.js
+|  ├── indexes
+|  |  └── indexes.sql
+|  ├── init.js
+|  ├── README.md
+|  ├── schema
+|  |  ├── mySQL_schema.sql
+|  |  └── schema.sql
+|  ├── seed.js
+|  └── seeds
+|     └── nsw-spatial.csv
+├── jest.config.js
+├── logs
+|  ├── eventLog.txt
+|  └── PLACEHOLDER.md
+├── mappings
+|  ├── categoryMappings.js
+|  ├── lgaRegionMappings.js
+|  ├── severityLevelsMappings.js
+|  └── statusesMappings.js
+├── middleware
+|  ├── errorHandler.js
+|  ├── logEvents.js
+|  └── PLACEHOLDER.md
+├── models
+|  ├── alertClasses.js
+|  └── enums.js
+├── normalization
+|  ├── canonical
+|  |  ├── CanonicalAlert.js
+|  |  ├── CanonicalFireAlert.js
+|  |  ├── CanonicalTrafficAlert.js
+|  |  └── CanonicalWeatherAlert.js
+|  ├── normalizers
+|  |  ├── rfsNormalizer.js
+|  |  └── tfnswNormalizer.js
+|  └── transformers
+|     ├── categoryTransformer.js
+|     ├── dateTransformer.js
+|     ├── locationTransformer.js
+|     ├── severityTransformer.js
+|     └── statusTransformer.js
+├── package-lock.json
+├── package.json
+├── README.md
+├── routes
+|  ├── alerts.js
+|  ├── geo.js
+|  ├── PLACEHOLDER.md
+|  └── sources.js
+├── server.js
+├── services
+|  ├── AlertLifecycleService.js
+|  ├── AlertPersistenceService.js
+|  ├── AlertQueryService.js
+|  ├── CryptoService.js
+|  ├── GeoSpatialService.js
+|  ├── IngestOrchestratorService.js
+|  ├── LookupService.js
+|  ├── MaintenanceService.js
+|  ├── NotificationService.js
+|  ├── SchedulerService.js
+|  ├── SourceHealthService.js
+|  └── SubscriptionService.js
+├── tests
+|  ├── alertUtilities.test.js
+|  ├── data
+|  |  ├── rfs_test_json_data.json
+|  |  └── tfnsw_test_json_data.json
+|  ├── database
+|  |  ├── AlertMarkersDAO.test.js
+|  |  ├── BaseDAO.test.js
+|  |  └── LocationDAO.test.js
+|  ├── db.test.js
+|  ├── moduleExports.test.js
+|  ├── normalizers
+|  |  ├── rfsNormalizer.test.js
+|  |  └── tfnswNormalizer.test.js
+|  ├── services
+|  |  ├── AlertPersistenceService.test.js
+|  |  ├── AlertQueryService.test.js
+|  |  ├── GeoSpatialService.test.js
+|  |  ├── IngestOrchestratorService.test.js
+|  |  ├── LookupService.test.js
+|  |  ├── MaintenanceService.test.js
+|  |  ├── NotificationService.test.js
+|  |  ├── SchedulerService.test.js
+|  |  └── SourceHealthService.test.js
+|  └── transformers
+|     ├── categoryTransformer.test.js
+|     ├── dateTransformer.test.js
+|     ├── locationTransformer.test.js
+|     ├── severityTransformer.test.js
+|     └── statusTransformer.test.js
+├── tree.txt
+└── utils
+   └── alertUtilities.js
+
+directory: 678 file: 2792
+
+ignored: directory (13)
