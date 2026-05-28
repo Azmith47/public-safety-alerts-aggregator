@@ -14,59 +14,57 @@ import CanonicalAlert from "./CanonicalAlert.js";
  */
 
 export default class CanonicalFireAlert extends CanonicalAlert {
+	/**
+	 * @param {Object} data
+	 */
+	constructor(data = {}) {
+		/**
+		 * Initialize shared/base alert properties.
+		 */
+		super(data);
 
-    /**
-     * @param {Object} data
-     */
-    constructor(data = {}) {
+		/**
+		 * Fire classification.
+		 * Example:
+		 * "BUSH_FIRE"
+		 * "GRASS_FIRE"
+		 * "STRUCTURE_FIRE"
+		 */
+		this.fireType = data.fireType || null;
 
-        /**
-         * Initialize shared/base alert properties.
-         */
-        super(data);
+		/**
+		 * Public-facing fire warning level.
+		 * Example:
+		 * "EMERGENCY_WARNING"
+		 * "WATCH_AND_ACT"
+		 * "ADVICE"
+		 */
+		this.alertLevel = data.alertLevel || null;
 
-        /**
-         * Fire classification.
-         * Example:
-         * "BUSH_FIRE"
-         * "GRASS_FIRE"
-         * "STRUCTURE_FIRE"
-         */
-        this.fireType = data.fireType || null;
+		/**
+		 * Approximate fire size in hectares.
+		 */
+		this.fireSize = data.fireSize || null;
 
-        /**
-         * Public-facing fire warning level.
-         * Example:
-         * "EMERGENCY_WARNING"
-         * "WATCH_AND_ACT"
-         * "ADVICE"
-         */
-        this.alertLevel = data.alertLevel || null;
+		/**
+		 * Containment/control status.
+		 * Example:
+		 * "OUT_OF_CONTROL"
+		 * "BEING_CONTROLLED"
+		 * "UNDER_CONTROL"
+		 */
+		this.containmentStatus = data.containmentStatus || null;
 
-        /**
-         * Approximate fire size in hectares.
-         */
-        this.fireSize = data.fireSize || null;
+		/**
+		 * Evacuation instructions or warnings.
+		 */
+		this.evacuationAdvice = Array.isArray(data.evacuationAdvice)
+			? data.evacuationAdvice
+			: [];
 
-        /**
-         * Containment/control status.
-         * Example:
-         * "OUT_OF_CONTROL"
-         * "BEING_CONTROLLED"
-         * "UNDER_CONTROL"
-         */
-        this.containmentStatus = data.containmentStatus || null;
-
-        /**
-         * Evacuation instructions or warnings.
-         */
-        this.evacuationAdvice = Array.isArray(data.evacuationAdvice)
-            ? data.evacuationAdvice
-            : [];
-
-        /**
-         * Primary responding agency.
-         */
-        this.agency = data.agency || "NSW_RFS";
-    }
+		/**
+		 * Primary responding agency.
+		 */
+		this.agency = data.agency || "NSW_RFS";
+	}
 }

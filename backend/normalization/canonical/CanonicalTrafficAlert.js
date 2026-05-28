@@ -13,84 +13,80 @@ import CanonicalAlert from "./CanonicalAlert.js";
  */
 
 export default class CanonicalTrafficAlert extends CanonicalAlert {
+	/**
+	 * @param {Object} data
+	 */
+	constructor(data = {}) {
+		/**
+		 * Initialize shared/base alert properties.
+		 */
+		super(data);
 
-    /**
-     * @param {Object} data
-     */
-    constructor(data = {}) {
+		/**
+		 * Indicates whether incident is planned.
+		 * Example:
+		 * roadworks, scheduled closures, events
+		 */
+		this.planned = Boolean(data.planned);
 
-        /**
-         * Initialize shared/base alert properties.
-         */
-        super(data);
+		/**
+		 * Planned start datetime.
+		 */
+		this.startDate = data.startDate || null;
 
-        /**
-         * Indicates whether incident is planned.
-         * Example:
-         * roadworks, scheduled closures, events
-         */
-        this.planned = Boolean(data.planned);
+		/**
+		 * Planned end datetime.
+		 */
+		this.endDate = data.endDate || null;
 
-        /**
-         * Planned start datetime.
-         */
-        this.startDate = data.startDate || null;
+		/**
+		 * Estimated traffic delay in minutes.
+		 */
+		this.delayMinutes = data.delayMinutes || null;
 
-        /**
-         * Planned end datetime.
-         */
-        this.endDate = data.endDate || null;
+		/**
+		 * Estimated queue length in kilometres.
+		 */
+		this.queueLength = data.queueLength || null;
 
-        /**
-         * Estimated traffic delay in minutes.
-         */
-        this.delayMinutes = data.delayMinutes || null;
+		/**
+		 * Temporary restricted speed limit.
+		 */
+		this.speedLimit = data.speedLimit || null;
 
-        /**
-         * Estimated queue length in kilometres.
-         */
-        this.queueLength = data.queueLength || null;
+		/**
+		 * Indicates impact to road network operations.
+		 */
+		this.impactingNetwork = Boolean(data.impactingNetwork);
 
-        /**
-         * Temporary restricted speed limit.
-         */
-        this.speedLimit = data.speedLimit || null;
+		/**
+		 * Roads affected by incident.
+		 *
+		 * Example:
+		 * [
+		 *   {
+		 *     roadName: "M1 Pacific Motorway",
+		 *     direction: "Northbound"
+		 *   }
+		 * ]
+		 */
+		this.roads = Array.isArray(data.roads) ? data.roads : [];
 
-        /**
-         * Indicates impact to road network operations.
-         */
-        this.impactingNetwork = Boolean(data.impactingNetwork);
+		/**
+		 * Traffic diversion information.
+		 */
+		this.diversions = data.diversions || null;
 
-        /**
-         * Roads affected by incident.
-         *
-         * Example:
-         * [
-         *   {
-         *     roadName: "M1 Pacific Motorway",
-         *     direction: "Northbound"
-         *   }
-         * ]
-         */
-        this.roads = Array.isArray(data.roads)
-            ? data.roads
-            : [];
+		/**
+		 * Agencies/groups attending the incident.
+		 */
+		this.attendingGroups = Array.isArray(data.attendingGroups)
+			? data.attendingGroups
+			: [];
 
-        /**
-         * Traffic diversion information.
-         */
-        this.diversions = data.diversions || null;
-
-        /**
-         * Agencies/groups attending the incident.
-         */
-        this.attendingGroups = Array.isArray(data.attendingGroups)
-            ? data.attendingGroups
-            : [];
-
-        /**
-         * Public transport impact information.
-         */
-        this.publicTransport = data.publicTransport || null;
-    }
+		/**
+		 * Public transport impact information.
+		 */
+		this.publicTransport = data.publicTransport || null;
+	}
 }
