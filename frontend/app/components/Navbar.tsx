@@ -12,13 +12,25 @@ export default function Navbar({
   return (
     <nav>
       <div className="nav-logo">
-        <span className="nav-logo-icon">👽</span>
+        <img className="nav-icon" src="icons/logo.svg" />
         <p>Critical Signal</p>
       </div>
       <div className="nav-controls">
-        <input type="text" placeholder="Search alerts" />
-        <IconButton onClick={onMenuClick} icon="☰" />
-        <IconButton onClick={onAlertsClick} icon="Alerts" />
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search alerts"
+        />
+        <IconButton
+          onClick={onMenuClick}
+          icon="icons/hamburger-menu.svg"
+          alt="Open menu"
+        />
+        <IconButton
+          onClick={onAlertsClick}
+          icon="icons/bell.svg"
+          alt="Open alert preferences"
+        />
       </div>
     </nav>
   );
@@ -27,12 +39,30 @@ export default function Navbar({
 //Note: Button/drawer would normally be in separate files but they are only used once in this project
 
 //Button component(s)
-function IconButton({ onClick, icon }: { onClick: () => void; icon: string }) {
-  return <button onClick={onClick}>{icon}</button>;
+function IconButton({
+  onClick,
+  icon,
+  alt,
+}: {
+  onClick: () => void;
+  icon: string;
+  alt: string;
+}) {
+  return (
+    <button onClick={onClick}>
+      <img className="nav-icon" src={icon} alt={alt} />
+    </button>
+  );
 }
 
 //Drawer component
-export function MenuDrawer({ menuOpen }: { menuOpen: boolean }) {
+export function MenuDrawer({
+  menuOpen,
+  onClick,
+}: {
+  menuOpen: boolean;
+  onClick: () => void;
+}) {
   return (
     <div className={menuOpen ? "drawer-visible" : "drawer-hidden"}>
       <div className="drawer-header">

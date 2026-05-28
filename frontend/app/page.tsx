@@ -12,8 +12,6 @@ export default function Home() {
   //useState for navbar-menu-button
   const [menuOpen, setMenuOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
-  //Modal
-  const [alertsModalOpen, setAlertsModalOpen] = useState(false);
 
   //   Event handlers
   function handleMenuClick() {
@@ -30,7 +28,8 @@ export default function Home() {
         onMenuClick={handleMenuClick}
         onAlertsClick={handleAlertMenuClick}
       />
-      <MenuDrawer menuOpen={menuOpen} />
+      {/*Arrow function => only runs on click NOT on render*/}
+      <MenuDrawer menuOpen={menuOpen} menuClose={() => setMenuOpen(false)} />
       <main>
         <AlertList />
         <div className="map-area">

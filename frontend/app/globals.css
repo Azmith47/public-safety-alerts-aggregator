@@ -16,16 +16,19 @@ ul {
   margin: 0;
 }
 
+nextjs-portal {
+  display: none;
+}
+
 /* ── VARIABLES ── */
 :root {
-  --nav-footer-bg-color: #4a4a4a;
+  --nav-footer-bg-color: #1b2f6e;
   --body-bg-color: #2e2e2e;
   --surface-color: #3a3a3a;
   --border-color: #555555;
   --text-primary: #f0f0f0;
-  --text-secondary: #b0b0b0;
-  --accent-color: #888888;
-  --card-bg: rgb(181, 181, 181);
+  --accent-color: #ffc72c;
+  --card-bg: #f5f5f5;
 }
 
 /* ── NAV ── */
@@ -34,19 +37,40 @@ nav {
   justify-content: space-between;
   align-items: center;
   background-color: var(--nav-footer-bg-color);
-  height: 3em;
+  height: 4.5em;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
-  margin-left: 1em;
+  margin-left: 3em;
+  gap: 0.8em;
+}
+
+.nav-logo p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+nav button {
+  background: none;
+  border: none;
 }
 
 .nav-controls {
   display: flex;
-  gap: 0.8em;
-  margin-right: 1em;
+  gap: 1.5em;
+  margin-right: 4em;
+  width: 35em;
+}
+
+.search-input {
+  width: 25em;
+}
+
+.nav-icon {
+  max-height: 3em;
 }
 
 /* ── DRAWER ── */
@@ -57,9 +81,9 @@ nav {
 .drawer-visible {
   display: block;
   position: fixed;
-  top: 3em;
+  top: 4.5em;
   right: 0;
-  height: calc(100vh - 6.1em);
+  height: calc(100vh - 8.05em);
   width: 10%;
   z-index: 100;
   background-color: var(--card-bg);
@@ -88,7 +112,7 @@ nav {
 }
 
 .drawer-menu-button:hover {
-  background-color: aqua;
+  background-color: var(--accent-color);
 }
 
 /* ── MAIN LAYOUT ── */
@@ -104,6 +128,10 @@ aside {
   /* Play around with width */
   width: 20%;
   background-color: var(--surface-color);
+  height: calc(100vh - 8.05em);
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .alert-card {
@@ -111,11 +139,14 @@ aside {
   color: var(--body-bg-color);
   border-radius: 5px;
   position: relative;
+  margin: 0.8em 1.2em 0.8em 1.2em;
+  overflow: hidden;
+  text-align: left;
 }
 
 .dot-active {
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width: 15px;
   background-color: #00fa9a;
   border-radius: 50%;
   /* Give span width/height without taking up the full width of the div*/
@@ -127,28 +158,41 @@ aside {
 
 .alert-card-top {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
   gap: 2em;
-  /* background-color: lightskyblue; */
-  padding-left: 1em;
+  padding: 0 0.8em;
+  font-size: 0.75rem;
+}
+
+.alert-card-middle {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.5em 0.8em;
+}
+
+.alert-card-middle p {
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .alert-card-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1em;
-  /* background-color: lightyellow; */
+  padding: 0.3em 0.8em 0.8em 0.8em;
+  font-size: 0.75rem;
+}
+
+.icon {
+  max-height: 45px;
 }
 
 /* ── FILTER ── */
 .filter-bar {
   position: absolute;
-  top: 4em;
+  top: 6em;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--card-bg);
+  background: var(--accent-color);
   border-radius: 8px;
   padding: 0.5em 1em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -177,11 +221,11 @@ aside {
 footer {
   background-color: var(--nav-footer-bg-color);
   color: var(--text-primary);
-  height: 3em;
+  height: 3.5em;
 }
 
 footer p {
-  margin-left: 1em;
+  margin-left: 3em;
 }
 
 /* ── MODALS ── */
@@ -190,13 +234,6 @@ footer p {
 }
 
 .modal-container-visible {
-  /* position: fixed;
-  left: 50%;
-  top: 20%;
-  width: 500px;
-  height: 500px;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 200; */
   position: fixed;
   left: 60%;
   top: 45%;

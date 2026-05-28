@@ -1,8 +1,14 @@
-export default function MenuDrawer({ menuOpen }: { menuOpen: boolean }) {
+export default function MenuDrawer({
+  menuOpen,
+  menuClose,
+}: {
+  menuOpen: boolean;
+  menuClose: () => void;
+}) {
   return (
     <div className={menuOpen ? "drawer-visible" : "drawer-hidden"}>
       <div className="drawer-header">
-        <button>✕</button>
+        <button onClick={menuClose}>✕</button>
       </div>
       <ul>
         <li>
