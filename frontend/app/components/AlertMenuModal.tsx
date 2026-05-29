@@ -11,7 +11,10 @@ export default function AlertMenuModal({
         alertsMenuOpen ? "modal-container-visible" : "modal-container-hidden"
       }
     >
-      <button onClick={menuClose}>✕</button>
+      <div className="modal-header">
+        <button onClick={menuClose}>✕</button>
+      </div>
+      <h4>Subscribe to alerts:</h4>
       <form action="" className="modal-form">
         <label htmlFor="">Service</label>
         <select name="" id="">

@@ -12,6 +12,7 @@ export default function AlertList() {
               suburb: "St Clair to Erskine Park",
             }}
             datePublished="18 hours ago"
+            active={false}
           />
         </li>
         <li>
@@ -21,6 +22,7 @@ export default function AlertList() {
             category="Flood Watch"
             alertLocation={{ region: "Hawkesbury", suburb: "Windsor" }}
             datePublished="2 hours ago"
+            active={true}
           />
         </li>
         <li>
@@ -30,6 +32,7 @@ export default function AlertList() {
             category="Bush Fire Warning"
             alertLocation={{ region: "Blue Mountains", suburb: "Katoomba" }}
             datePublished="45 minutes ago"
+            active={true}
           />
         </li>
         <li>
@@ -39,6 +42,7 @@ export default function AlertList() {
             category="Severe Thunderstorm Warning"
             alertLocation={{ region: "Newcastle", suburb: "Cessnock" }}
             datePublished="5 hours ago"
+            active={true}
           />
         </li>
         <li>
@@ -48,6 +52,7 @@ export default function AlertList() {
             category="Road Closure"
             alertLocation={{ region: "Central Coast", suburb: "Gosford" }}
             datePublished="30 minutes ago"
+            active={true}
           />
         </li>
         <li>
@@ -57,6 +62,7 @@ export default function AlertList() {
             category="Bush Fire Emergency Warning"
             alertLocation={{ region: "Northern Sydney", suburb: "Turramurra" }}
             datePublished="20 minutes ago"
+            active={false}
           />
         </li>
         <li>
@@ -66,6 +72,7 @@ export default function AlertList() {
             category="Lane Closure"
             alertLocation={{ region: "Sydney", suburb: "Berowra" }}
             datePublished="3 hours ago"
+            active={true}
           />
         </li>
         <li>
@@ -75,6 +82,7 @@ export default function AlertList() {
             category="Lane Closure"
             alertLocation={{ region: "Sydney", suburb: "Berowra" }}
             datePublished="3 hours ago"
+            active={true}
           />
         </li>
         <li>
@@ -84,6 +92,7 @@ export default function AlertList() {
             category="Lane Closure"
             alertLocation={{ region: "Sydney", suburb: "Berowra" }}
             datePublished="3 hours ago"
+            active={false}
           />
         </li>
       </ul>
@@ -96,16 +105,18 @@ function AlertCard({
   type,
   alertLocation: { region, suburb },
   datePublished,
+  active,
 }: {
   title: string;
   type: string;
   category: string;
   alertLocation: { region: string; suburb: string };
   datePublished: string;
+  active: boolean;
 }) {
   return (
     <article className="alert-card">
-      <span className="dot-active"></span>
+      <span className={active ? "dot-active" : "dot-inactive"}></span>
       <div className="alert-card-top">
         <p>{datePublished}</p>
       </div>

@@ -71,6 +71,7 @@ nav button {
 
 .nav-icon {
   max-height: 3em;
+  cursor: pointer;
 }
 
 /* DRAWER */
@@ -157,6 +158,19 @@ aside {
   left: 0.7em;
 }
 
+.dot-inactive {
+  height: 15px;
+  width: 15px;
+  background-color: #555555;
+  opacity: 70%;
+  border-radius: 50%;
+  /* Give span width/height without taking up the full width of the div*/
+  display: inline-block;
+  position: absolute;
+  top: 0.7em;
+  left: 0.7em;
+}
+
 .alert-card-top {
   display: flex;
   justify-content: flex-end;
@@ -179,7 +193,7 @@ aside {
 }
 
 .alert-card-bottom {
-  padding: 0.3em 0.8em 0.8em 1.2em;
+  padding: 0.3em 0.8em 0.8em 2em;
   font-size: 0.75rem;
 }
 
@@ -245,6 +259,29 @@ footer p {
   padding: 2em;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   z-index: 200;
+}
+
+.modal-container-visible h4 {
+  margin-bottom: 1em;
+  color: var(--body-bg-color);
+}
+
+.modal-header {
+  float: right;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.modal-header button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.modal-header p {
+  color: var(--body-bg-color);
 }
 
 .modal-form {
