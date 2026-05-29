@@ -110,7 +110,7 @@ function AlertCard({
         <p>{datePublished}</p>
       </div>
       <div className="alert-card-middle">
-        {/* <p>{getIcon(type)}</p> */}
+        <p>{getIcon(type)}</p>
         <p>{title}</p>
       </div>
       <div className="alert-card-bottom">
@@ -124,7 +124,11 @@ function AlertCard({
 
 function getIcon(type: string) {
   if (type === "traffic")
+    return <img className="icon" src="\icons\traffic.svg" alt="" />;
+  if (type === "fire")
     return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if (type === "fire") return "🚒";
-  if (type === "flood") return "⛆";
+  if (type === "flood")
+    return <img className="icon" src="\icons\flood.svg" alt="" />;
+  if (type === "storm")
+    return <img className="icon" src="\icons\storm.svg" alt="" />;
 }

@@ -179,12 +179,12 @@ aside {
 }
 
 .alert-card-bottom {
-  padding: 0.3em 0.8em 0.8em 0.8em;
+  padding: 0.3em 0.8em 0.8em 1.2em;
   font-size: 0.75rem;
 }
 
 .icon {
-  max-height: 45px;
+  max-height: 4rem;
 }
 
 /* FILTER */
