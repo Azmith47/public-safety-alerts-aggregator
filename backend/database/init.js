@@ -9,6 +9,7 @@ import {
 } from "./db.js";
 import { seed } from "./seed.js";
 import { importSpatialData } from "./importSpatialData.js";
+import { migrateDatabase } from "./migrate.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,8 @@ async function initializeDatabase() {
 		await beginImmediateTransaction();
 
 		await exec(sqlSchema);
+
+		await migrateDatabase();
 
 		await exec(sqlIndexes);
 

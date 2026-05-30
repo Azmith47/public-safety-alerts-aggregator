@@ -25,6 +25,7 @@ class AlertDAO extends BaseDAO {
             delay: alert.delay,
             start_date: alert.start_date,
             end_date: alert.end_date,
+            is_active: alert.is_active,
             raw_payload: alert.raw_payload
         });
     }
@@ -49,6 +50,7 @@ class AlertDAO extends BaseDAO {
                 delay: alert.delay,
                 start_date: alert.start_date,
                 end_date: alert.end_date,
+                is_active: alert.is_active,
                 raw_payload: alert.raw_payload
             },
             "id = ?",
@@ -56,7 +58,15 @@ class AlertDAO extends BaseDAO {
         );
     }
 
-    async exists(externalId) {
+    async exists(externalId, sourceId = null) {
+        if (sourceId) {
+            return this.findOne(
+                this.tableName,
+                "external_id = ? AND source_id = ?",
+                [externalId, sourceId]
+            );
+        }
+
         return this.findOne(
             this.tableName,
             "external_id = ?",
@@ -83,8 +93,12 @@ class AlertDAO extends BaseDAO {
         return this.findAll(this.tableName, "1=1", [], "issued_at DESC");
     }
 
-    async delete(id) {
-        return super.delete(this.tableName, "id = ?", [id]);
+    async delete(idOrTable, whereClause = null, params = []) {
+        if (whereClause) {
+            return super.delete(idOrTable, whereClause, params);
+        }
+
+        return super.delete(this.tableName, "id = ?", [idOrTable]);
     }
 }
 

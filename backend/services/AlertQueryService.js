@@ -1,9 +1,11 @@
 import AlertDAO from "../database/dao/AlertDAO.js";
 import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
 import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
+import AlertPolylineDAO from "../database/dao/AlertPolylineDAO.js";
 import AlertRoadDAO from "../database/dao/AlertRoadDAO.js";
 import AlertAdviceDAO from "../database/dao/AlertAdviceDAO.js";
 import AlertLinkDAO from "../database/dao/AlertLinkDAO.js";
+import AlertFireDetailDAO from "../database/dao/AlertFireDetailDAO.js";
 
 class AlertQueryService {
 	/**
@@ -129,6 +131,11 @@ class AlertQueryService {
 			"alert_id = ?",
 			[id],
 		);
+		const polylines = await AlertPolylineDAO.findAll(
+			AlertPolylineDAO.tableName,
+			"alert_id = ?",
+			[id],
+		);
 		const roads = await AlertRoadDAO.findAll(
 			AlertRoadDAO.tableName,
 			"alert_id = ?",
@@ -144,14 +151,21 @@ class AlertQueryService {
 			"alert_id = ?",
 			[id],
 		);
+		const fireDetails = await AlertFireDetailDAO.findOne(
+			AlertFireDetailDAO.tableName,
+			"alert_id = ?",
+			[id],
+		);
 
 		return {
 			alert,
 			markers,
 			polygons,
+			polylines,
 			roads,
 			advice,
 			links,
+			fireDetails,
 		};
 	}
 

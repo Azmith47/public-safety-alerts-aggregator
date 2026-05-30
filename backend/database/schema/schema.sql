@@ -137,6 +137,12 @@ CREATE TABLE IF NOT EXISTS alert_roads (
     second_location TEXT,
     suburb TEXT,
     region TEXT,
+    location_qualifier TEXT,
+    condition_tendency TEXT,
+    delay TEXT,
+    queue_length REAL,
+    traffic_volume TEXT,
+    impacted_lanes TEXT,
 
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
 );
@@ -160,6 +166,18 @@ CREATE TABLE IF NOT EXISTS alert_advice (
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
 );
 
+-- Alert Fire Details
+CREATE TABLE IF NOT EXISTS alert_fire_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alert_id INTEGER NOT NULL UNIQUE,
+    fire_type TEXT,
+    fire_size REAL,
+    containment_status TEXT,
+    responsible_agency TEXT,
+
+    FOREIGN KEY (alert_id) REFERENCES alerts(id)
+);
+
 -- Alert Markers
 CREATE TABLE IF NOT EXISTS alert_markers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -174,6 +192,20 @@ CREATE TABLE IF NOT EXISTS alert_markers (
 CREATE TABLE IF NOT EXISTS alert_polygons (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     alert_id INTEGER NOT NULL,
+    polygon_index INTEGER DEFAULT 0,
+    ring_index INTEGER DEFAULT 0,
+    point_order INTEGER,
+    latitude REAL,
+    longitude REAL,
+
+    FOREIGN KEY (alert_id) REFERENCES alerts(id)
+);
+
+-- Alert Polylines
+CREATE TABLE IF NOT EXISTS alert_polylines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alert_id INTEGER NOT NULL,
+    line_index INTEGER DEFAULT 0,
     point_order INTEGER,
     latitude REAL,
     longitude REAL,

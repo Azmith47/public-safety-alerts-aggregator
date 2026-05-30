@@ -6,9 +6,11 @@ class AlertPolygonDAO extends BaseDAO {
         super("alert_polygons");
     }
 
-    async create(alertId, pointOrder, latitude, longitude) {
+    async create(alertId, pointOrder, latitude, longitude, polygonIndex = 0, ringIndex = 0) {
         return super.insert(this.tableName, {
             alert_id: alertId,
+            polygon_index: polygonIndex,
+            ring_index: ringIndex,
             point_order: pointOrder,
             latitude,
             longitude

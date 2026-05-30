@@ -13,7 +13,13 @@ class AlertRoadDAO extends BaseDAO {
             cross_street: road.cross_street,
             second_location: road.second_location,
             suburb: road.suburb,
-            region: road.region
+            region: road.region,
+            location_qualifier: road.location_qualifier,
+            condition_tendency: road.condition_tendency,
+            delay: road.delay,
+            queue_length: road.queue_length,
+            traffic_volume: road.traffic_volume,
+            impacted_lanes: road.impacted_lanes
         });
     }
 

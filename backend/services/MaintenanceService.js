@@ -1,9 +1,11 @@
 import AlertDAO from "../database/dao/AlertDAO.js";
 import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
 import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
+import AlertPolylineDAO from "../database/dao/AlertPolylineDAO.js";
 import AlertRoadDAO from "../database/dao/AlertRoadDAO.js";
 import AlertAdviceDAO from "../database/dao/AlertAdviceDAO.js";
 import AlertLinkDAO from "../database/dao/AlertLinkDAO.js";
+import AlertFireDetailDAO from "../database/dao/AlertFireDetailDAO.js";
 import AlertRegionDAO from "../database/dao/AlertRegionDAO.js";
 import NotificationDAO from "../database/dao/NotificationDAO.js";
 
@@ -44,6 +46,11 @@ class MaintenanceService {
 			`alert_id IN (${placeholders})`,
 			alertIds,
 		);
+		await AlertPolylineDAO.delete(
+			AlertPolylineDAO.tableName,
+			`alert_id IN (${placeholders})`,
+			alertIds,
+		);
 		await AlertRoadDAO.delete(
 			AlertRoadDAO.tableName,
 			`alert_id IN (${placeholders})`,
@@ -56,6 +63,11 @@ class MaintenanceService {
 		);
 		await AlertLinkDAO.delete(
 			AlertLinkDAO.tableName,
+			`alert_id IN (${placeholders})`,
+			alertIds,
+		);
+		await AlertFireDetailDAO.delete(
+			AlertFireDetailDAO.tableName,
 			`alert_id IN (${placeholders})`,
 			alertIds,
 		);

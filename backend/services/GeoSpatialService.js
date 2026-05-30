@@ -1,6 +1,7 @@
 import AlertDAO from "../database/dao/AlertDAO.js";
 import AlertMarkerDAO from "../database/dao/AlertMarkersDAO.js";
 import AlertPolygonDAO from "../database/dao/AlertPolygonDAO.js";
+import AlertPolylineDAO from "../database/dao/AlertPolylineDAO.js";
 
 class GeoSpatialService {
 	_haversineDistanceKm(lat1, lng1, lat2, lng2) {
@@ -121,10 +122,20 @@ class GeoSpatialService {
 		).then((rows) => rows.map((row) => row.alert_id));
 	}
 
+	async _collectMatchIdsFromPolylineBox(box) {
+		return AlertPolylineDAO.all(
+			`SELECT DISTINCT alert_id FROM ${AlertPolylineDAO.tableName} WHERE latitude BETWEEN ? AND ? AND longitude BETWEEN ? AND ?`,
+			[box.minLat, box.maxLat, box.minLng, box.maxLng],
+		).then((rows) => rows.map((row) => row.alert_id));
+	}
+
 	async findAlertsInBoundingBox(box, filters = {}, options = {}) {
 		const markerIds = await this._collectMatchIdsFromMarkerBox(box);
 		const polygonIds = await this._collectMatchIdsFromPolygonBox(box);
-		const alertIds = Array.from(new Set([...markerIds, ...polygonIds]));
+		const polylineIds = await this._collectMatchIdsFromPolylineBox(box);
+		const alertIds = Array.from(
+			new Set([...markerIds, ...polygonIds, ...polylineIds]),
+		);
 		return this._queryAlertsByIds(alertIds, filters, options);
 	}
 
@@ -176,7 +187,26 @@ class GeoSpatialService {
 			)
 			.map((row) => row.alert_id);
 
-		const alertIds = Array.from(new Set([...markerIds, ...polygonIds]));
+		const polylineRows = await AlertPolylineDAO.all(
+			`SELECT DISTINCT alert_id, latitude, longitude FROM ${AlertPolylineDAO.tableName} WHERE latitude BETWEEN ? AND ? AND longitude BETWEEN ? AND ?`,
+			[box.minLat, box.maxLat, box.minLng, box.maxLng],
+		);
+
+		const polylineIds = polylineRows
+			.filter(
+				(row) =>
+					this._haversineDistanceKm(
+						lat,
+						lng,
+						row.latitude,
+						row.longitude,
+					) <= radiusKm,
+			)
+			.map((row) => row.alert_id);
+
+		const alertIds = Array.from(
+			new Set([...markerIds, ...polygonIds, ...polylineIds]),
+		);
 		return this._queryAlertsByIds(alertIds, filters, options);
 	}
 
@@ -194,12 +224,18 @@ class GeoSpatialService {
 			"alert_id = ?",
 			[alertId],
 		);
+		const polylines = await AlertPolylineDAO.findAll(
+			AlertPolylineDAO.tableName,
+			"alert_id = ?",
+			[alertId],
+		);
 
 		return {
 			alert,
 			geometry: {
 				markers,
 				polygons,
+				polylines,
 			},
 		};
 	}
