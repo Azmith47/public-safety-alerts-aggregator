@@ -1,5 +1,6 @@
 import { describe, it, expect } from "@jest/globals";
 
+import rfsFixture from "../data/rfs_test_json_data.json" with { type: "json" };
 import {
 	normalizeRfsFeature,
 	normalizeRfsFeed,
@@ -280,6 +281,27 @@ describe("rfsNormalizer", () => {
 
 			expect(result.externalId).toBeTruthy();
 			expect(typeof result.externalId).toBe("string");
+		});
+
+		it("should normalize a real RFS feed feature", () => {
+			const feature = rfsFixture.features[0];
+			const result = normalizeRfsFeature(feature);
+
+			expect(result).toBeInstanceOf(CanonicalFireAlert);
+			expect(result.externalId).toBe(feature.properties.guid);
+			expect(result.title).toBe(feature.properties.title);
+			expect(result.source).toBe(Sources.RFS);
+			expect(result.sourceType).toBe(SourceTypes.FIRE);
+			expect(result.severity).toBe(SeverityLevels.ADVICE);
+			expect(result.status).toBe(Statuses.UNDER_CONTROL);
+			expect(result.marker).toEqual({
+				longitude: feature.geometry.coordinates[0],
+				latitude: feature.geometry.coordinates[1],
+			});
+			expect(result.location).toBe("Castlereagh Hwy, Apple Tree Flat 2850");
+			expect(result.councilArea).toBe("MID_WESTERN_REGIONAL");
+			expect(result.region).toBe("CENTRAL_WEST_ORANA");
+			expect(result.rawPayload).toBe(feature);
 		});
 	});
 

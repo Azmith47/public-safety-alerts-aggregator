@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 /**
  * rfsNormalizer.js
  *
@@ -16,22 +18,24 @@
  * - resolve DB IDs
  */
 
+import {
+	Categories,
+	Sources,
+	SourceTypes,
+	Statuses,
+} from "../../models/globalEnums.js";
+import {
+	ContainmentStatuses,
+	FireTypes,
+	RFSDescriptionFields,
+} from "../../models/rfsEnums.js";
+import { stripHtml } from "../../utils/alertUtilities.js";
 import CanonicalFireAlert from "../canonical/CanonicalFireAlert.js";
-
 import {
-	transformCategory,
 	normalizeString,
+	transformCategory,
 } from "../transformers/categoryTransformer.js";
-
-import {
-	transformSeverity,
-	isHighSeverity,
-} from "../transformers/severityTransformer.js";
-
-import { transformStatus } from "../transformers/statusTransformer.js";
-
 import { transformDate } from "../transformers/dateTransformer.js";
-
 import {
 	normalizeLocationName,
 	normalizeMarker,
@@ -39,23 +43,32 @@ import {
 	resolveCanonicalLGA,
 	resolveRegionFromLGA,
 } from "../transformers/locationTransformer.js";
-
 import {
-	Categories,
-	Sources,
-	SourceTypes,
-	Statuses,
-} from "../../models/globalEnums.js";
+	isHighSeverity,
+	transformSeverity,
+} from "../transformers/severityTransformer.js";
+import { transformStatus } from "../transformers/statusTransformer.js";
 
-import {
-	RFSDescriptionFields,
-	FireTypes,
-	ContainmentStatuses,
-} from "../../models/rfsEnums.js";
+function firstNonEmpty(...values) {
+	return values.find((value) => {
+		if (typeof value === "string") {
+			return value.trim() !== "";
+		}
 
-import { stripHtml } from "../../utils/alertUtilities.js";
+		return value !== null && value !== undefined;
+	});
+}
 
-/** * extractMarkersFromGeometry
+function pushPresent(target, ...values) {
+	for (const value of values) {
+		if (typeof value === "string" && value.trim()) {
+			target.push(value.trim());
+		}
+	}
+}
+
+/**
+ * extractMarkersFromGeometry
  *
  * Recursively extracts Point geometries
  * from GeoJSON structures.
@@ -71,7 +84,9 @@ function extractMarkersFromGeometry(geometry) {
 	if (!geometry || typeof geometry !== "object") {
 		return [];
 	}
+
 	const markers = [];
+
 	/**
 	 * Standard Point geometry.
 	 */
@@ -88,6 +103,7 @@ function extractMarkersFromGeometry(geometry) {
 			markers.push(marker);
 		}
 	}
+
 	/**
 	 * Recursive GeometryCollection support.
 	 */
@@ -99,8 +115,10 @@ function extractMarkersFromGeometry(geometry) {
 			markers.push(...extractMarkersFromGeometry(childGeometry));
 		}
 	}
+
 	return markers;
 }
+
 /**
  * extractPolygonsFromGeometry
  *
@@ -117,7 +135,9 @@ function extractPolygonsFromGeometry(geometry) {
 	if (!geometry || typeof geometry !== "object") {
 		return [];
 	}
+
 	const polygons = [];
+
 	/**
 	 * Polygon geometry.
 	 */
@@ -129,6 +149,7 @@ function extractPolygonsFromGeometry(geometry) {
 			}
 		}
 	}
+
 	/**
 	 * MultiPolygon geometry.
 	 */
@@ -145,6 +166,7 @@ function extractPolygonsFromGeometry(geometry) {
 			}
 		}
 	}
+
 	/**
 	 * Recursive GeometryCollection support.
 	 */
@@ -156,6 +178,7 @@ function extractPolygonsFromGeometry(geometry) {
 			polygons.push(...extractPolygonsFromGeometry(childGeometry));
 		}
 	}
+
 	return polygons;
 }
 
@@ -197,26 +220,28 @@ function extractNumericValue(value) {
 }
 
 function extractCategoryFromRFS(category, descriptionFields) {
-	const res = transformCategory(category);
+	const transformedCategory = transformCategory(category);
 
-	if (res !== Categories.OTHER) {
-		return res;
+	if (transformedCategory !== Categories.OTHER) {
+		return transformedCategory;
 	}
 
 	return (
-		transformCategory(descriptionFields[RFSDescriptionFields.TYPE]) || res
+		transformCategory(descriptionFields[RFSDescriptionFields.TYPE]) ||
+		transformedCategory
 	);
 }
 
 function extractStatusFromRFS(status, descriptionFields) {
-	const res = transformStatus(status);
+	const transformedStatus = transformStatus(status);
 
-	if (res !== Statuses.UNKNOWN) {
-		return res;
+	if (transformedStatus !== Statuses.UNKNOWN) {
+		return transformedStatus;
 	}
 
 	return (
-		transformStatus(descriptionFields[RFSDescriptionFields.STATUS]) || res
+		transformStatus(descriptionFields[RFSDescriptionFields.STATUS]) ||
+		transformedStatus
 	);
 }
 
@@ -270,12 +295,12 @@ export function normalizeRfsFeature(feature) {
 		 * -------------------------------------------------
 		 */
 
-		const rawCouncilArea =
-			properties.councilArea ||
-			properties.lga ||
-			properties.localGovernmentArea ||
-			descriptionFields[RFSDescriptionFields.COUNCIL_AREA] ||
-			null;
+		const rawCouncilArea = firstNonEmpty(
+			properties.councilArea,
+			properties.lga,
+			properties.localGovernmentArea,
+			descriptionFields[RFSDescriptionFields.COUNCIL_AREA],
+		);
 
 		const canonicalLGA = resolveCanonicalLGA(rawCouncilArea);
 
@@ -288,11 +313,12 @@ export function normalizeRfsFeature(feature) {
 		 */
 
 		const locationName = normalizeLocationName(
-			properties.location ||
-				properties.suburb ||
-				properties.area ||
-				descriptionFields[RFSDescriptionFields.LOCATION] ||
-				null,
+			firstNonEmpty(
+				properties.location,
+				properties.suburb,
+				properties.area,
+				descriptionFields[RFSDescriptionFields.LOCATION],
+			),
 		);
 
 		/**
@@ -302,27 +328,31 @@ export function normalizeRfsFeature(feature) {
 		 */
 
 		const category = extractCategoryFromRFS(
-			properties.category ||
-				properties.incidentType ||
-				descriptionFields[RFSDescriptionFields.TYPE] ||
+			firstNonEmpty(
+				properties.category,
+				properties.incidentType,
+				descriptionFields[RFSDescriptionFields.TYPE],
 				Categories.FIRE,
+			),
 			descriptionFields,
 		);
 
 		const severity = transformSeverity(
-			properties.alertLevel ||
-				properties.severity ||
-				properties.warningLevel ||
-				descriptionFields[RFSDescriptionFields.ALERT_LEVEL] ||
-				null,
+			firstNonEmpty(
+				properties.alertLevel,
+				properties.severity,
+				properties.warningLevel,
+				descriptionFields[RFSDescriptionFields.ALERT_LEVEL],
+			),
 		);
 
 		const status = extractStatusFromRFS(
-			properties.status ||
-				properties.fireStatus ||
-				properties.incidentStatus ||
-				descriptionFields[RFSDescriptionFields.STATUS] ||
-				null,
+			firstNonEmpty(
+				properties.status,
+				properties.fireStatus,
+				properties.incidentStatus,
+				descriptionFields[RFSDescriptionFields.STATUS],
+			),
 			descriptionFields,
 		);
 
@@ -333,39 +363,34 @@ export function normalizeRfsFeature(feature) {
 		 */
 
 		const createdAt = transformDate(
-			properties.created || properties.pubDate || Date.now(),
+			firstNonEmpty(properties.created, properties.pubDate),
 		);
 
 		const updatedAt = transformDate(
-			properties.updated ||
-				properties.lastUpdated ||
-				descriptionFields[RFSDescriptionFields.UPDATED] ||
-				Date.now(),
+			firstNonEmpty(
+				properties.updated,
+				properties.lastUpdated,
+				descriptionFields[RFSDescriptionFields.UPDATED],
+			),
 		);
 
 		const publishedAt = transformDate(
-			properties.pubDate || properties.created,
+			firstNonEmpty(properties.pubDate, properties.created),
 		);
 
 		/**
 		 * -------------------------------------------------
-		 * Advice / Messaging - These don't exist in RFS Feeds just here for future placeholders
+		 * Advice / Messaging
 		 * -------------------------------------------------
 		 */
 
 		const advice = [];
-
-		if (properties.advice) {
-			advice.push(properties.advice);
-		}
-
-		if (properties.publicAdvice) {
-			advice.push(properties.publicAdvice);
-		}
-
-		if (properties.evacuateMessage) {
-			advice.push(properties.evacuateMessage);
-		}
+		pushPresent(
+			advice,
+			properties.advice,
+			properties.publicAdvice,
+			properties.evacuateMessage,
+		);
 
 		/**
 		 * -------------------------------------------------
@@ -386,25 +411,28 @@ export function normalizeRfsFeature(feature) {
 		const fireType =
 			FireTypes[
 				normalizeString(
-					properties.fireType ||
-						properties.incidentType ||
-						descriptionFields[RFSDescriptionFields.TYPE] ||
-						null,
+					firstNonEmpty(
+						properties.fireType,
+						properties.incidentType,
+						descriptionFields[RFSDescriptionFields.TYPE],
+					),
 				)
 			] || null;
 
 		const size = extractNumericValue(
-			properties.size ||
-				descriptionFields[RFSDescriptionFields.SIZE] ||
-				null,
+			firstNonEmpty(
+				properties.size,
+				descriptionFields[RFSDescriptionFields.SIZE],
+			),
 		);
 
 		const containment =
 			ContainmentStatuses[
 				normalizeString(
-					properties.contained ||
-						descriptionFields[RFSDescriptionFields.STATUS] ||
-						null,
+					firstNonEmpty(
+						properties.contained,
+						descriptionFields[RFSDescriptionFields.STATUS],
+					),
 				)
 			] || null;
 
@@ -466,53 +494,53 @@ export function normalizeRfsFeature(feature) {
 
 			description: properties.description || properties.caption || null,
 
-			category: category,
+			category,
 
 			subCategory: null, // Optional - Not implemented yet
 
-			severity: severity,
+			severity,
 
-			status: status,
+			status,
 
 			/**
 			 * Dates
 			 */
-			createdAt: createdAt,
-			updatedAt: updatedAt,
-			publishedAt: publishedAt,
+			createdAt,
+			updatedAt,
+			publishedAt,
 
 			/**
 			 * Geography
 			 */
 			location: locationName,
 			councilArea: canonicalLGA,
-			region: region,
+			region,
 
 			marker: primaryMarker,
-			polygons: polygons,
+			polygons,
 
 			/**
 			 * Links
 			 */
-			links: links,
+			links,
 
 			/**
 			 * Advice
 			 */
-			advice: advice,
+			advice,
 
-			isMajor: isMajor,
+			isMajor,
 
-			isActive: isActive,
+			isActive,
 
 			/**
 			 * Fire-specific fields
 			 */
-			fireType: fireType,
+			fireType,
 			fireSize: size,
 			containmentStatus: containment,
 
-			responsibleAgency: responsibleAgency,
+			responsibleAgency,
 
 			/**
 			 * Store raw payload for debugging/auditing
