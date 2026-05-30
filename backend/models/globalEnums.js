@@ -6,6 +6,12 @@ export const Sources = Object.freeze({
 	OTHER: "OTHER",
 });
 
+export const SourceTypes = Object.freeze({
+	FIRE: "FIRE",
+	TRAFFIC: "TRAFFIC",
+	WEATHER: "WEATHER",
+});
+
 export const Categories = Object.freeze({
 	FIRE: "FIRE",
 	TRAFFIC_INCIDENT: "TRAFFIC_INCIDENT",
@@ -78,6 +84,7 @@ export const LGAs = Object.freeze({
 	HAWKESBURY: "Hawkesbury",
 	HORNSBY: "Hornsby",
 	HUNTERS_HILL: "Hunter's Hill",
+	THE_HILLS: "The Hills Shire",
 	INNER_WEST: "Inner West",
 	KU_RING_GAI: "Ku-ring-gai",
 	LANE_COVE: "Lane Cove",
@@ -192,7 +199,7 @@ export const LGAs = Object.freeze({
 	UPPER_LACHLAN: "Upper Lachlan",
 	WINGECARRIBEE: "Wingecarribee",
 	YASS_VALLEY: "Yass Valley",
-	SNOWY_MONARO_REGIONAL: "Snowy Monaro Regional",
-	BEGA: "Bega",
+	SNOWY_MONARO: "Snowy Monaro Regional",
+	BEGA_VALLEY: "Bega Valley",
 	EUROBODALLA: "Eurobodalla",
 });

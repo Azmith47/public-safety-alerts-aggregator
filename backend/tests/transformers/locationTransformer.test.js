@@ -222,3 +222,24 @@ describe("normalizePolylineCoordinates", () => {
 		expect(normalizePolylineCoordinates(coordinates)).toEqual(coordinates);
 	});
 });
+
+describe("normalizeLocationName", () => {
+	it("should normalize simple location names", () => {
+		const result = normalizeLocationName("Sydney");
+
+		expect(result).toBe("Sydney");
+	});
+
+	it("should trim whitespace", () => {
+		const result = normalizeLocationName("  Sydney  ");
+
+		expect(result).toBe("Sydney");
+	});
+
+	it("should return null for invalid values", () => {
+		expect(normalizeLocationName(null)).toBeNull();
+		expect(normalizeLocationName(undefined)).toBeNull();
+		expect(normalizeLocationName("")).toBeNull();
+		expect(normalizeLocationName("   ")).toBeNull();
+	});
+});

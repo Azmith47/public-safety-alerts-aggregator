@@ -22,6 +22,31 @@
 import { LGA_REGION_MAP } from "../../mappings/lgaRegionMappings.js";
 
 /**
+ * normalizeString
+ *
+ * Converts inconsistent external values into
+ * normalized lookup keys.
+ *
+ * Example:
+ * "Bega Valley"
+ * → "BEGA_VALLEY"
+ *
+ * @param {string|null|undefined} value
+ * @returns {string|null}
+ */
+export function normalizeString(value) {
+	if (!value || typeof value !== "string") {
+		return null;
+	}
+
+	return value
+		.trim()
+		.toUpperCase()
+		.replace(/[^\w\s]/g, "")
+		.replace(/\s+/g, "_");
+}
+
+/**
  * normalizeLocationName
  *
  * Converts inconsistent human-readable location names
@@ -39,7 +64,16 @@ export function normalizeLocationName(value) {
 		return null;
 	}
 
-	return value
+	const trimmedValue = value.trim();
+
+	/**
+	 * Empty string protection after trimming.
+	 */
+	if (!trimmedValue) {
+		return null;
+	}
+
+	return trimmedValue
 		.trim()
 		.toLowerCase()
 		.split(" ")
@@ -146,6 +180,16 @@ export function normalizeLGAName(value) {
 	return normalizeLocationName(normalizedValue);
 }
 
+export function normalizePostcode(value) {
+	if (value === null || value === undefined) {
+		return null;
+	}
+
+	const normalizedValue = String(value).trim();
+
+	return normalizedValue || null;
+}
+
 /**
  * normalizeLGAKey
  *
@@ -239,9 +283,9 @@ export function resolveCanonicalLGA(value) {
 	 * Additional relaxed matching.
 	 */
 	const strippedKey = normalizedKey
-		.replace(/\b(VALLEY|PLAINS|HILLS|REGIONAL|REGION|DISTRICT)\b/g, "")
-		.replace(/\s+/g, " ")
-		.trim();
+		.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
+		.replace(/_{2,}/g, "_")
+		.replace(/^_+|_+$/g, "");
 
 	if (normalizedLgaMap.has(strippedKey)) {
 		return normalizedLgaMap.get(strippedKey);

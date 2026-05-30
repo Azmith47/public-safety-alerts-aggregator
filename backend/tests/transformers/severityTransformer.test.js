@@ -11,7 +11,7 @@ import {
 	getSeverityPriority,
 } from "../../normalization/transformers/severityTransformer.js";
 
-import { SeverityLevels } from "../../models/enums.js";
+import { SeverityLevels } from "../../models/globalEnums.js";
 
 describe("normalizeString", () => {
 	test("should normalize strings into enum-safe values", () => {

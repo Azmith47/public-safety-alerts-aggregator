@@ -1,4 +1,4 @@
-import { SeverityLevels } from "../models/enums.js";
+import { SeverityLevels } from "../models/globalEnums.js";
 /**
  * Internal canonical severity mappings.
  *
@@ -17,6 +17,8 @@ export const SEVERITY_MAPPINGS = {
 	WATCH_AND_ACT: SeverityLevels.WATCH_AND_ACT,
 
 	ADVICE: SeverityLevels.ADVICE,
+
+	NOT_APPLICABLE: SeverityLevels.UNKNOWN,
 
 	/**
 	 * Generic operational severities

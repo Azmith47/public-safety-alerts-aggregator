@@ -1,4 +1,4 @@
-import { Statuses } from "../../models/enums.js";
+import { Statuses } from "../../models/globalEnums.js";
 import { STATUS_MAPPINGS } from "../../mappings/statusesMappings.js";
 /**
  * statusTransformer.js

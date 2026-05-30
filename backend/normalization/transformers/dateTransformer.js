@@ -67,9 +67,18 @@ export function transformDate(value) {
 			return null;
 		}
 
-		const parsedDate = new Date(trimmedValue);
+		let parsedDate = new Date(trimmedValue);
 
-		return isNaN(parsedDate.getTime()) ? null : parsedDate;
+		/**
+		 * Attempt AU format fallback parsing.
+		 */
+		if (isNaN(parsedDate.getTime())) {
+			parsedDate = parseAustralianDate(trimmedValue);
+		}
+
+		if (parsedDate) {
+			return parsedDate;
+		}
 	}
 
 	/**
@@ -196,4 +205,48 @@ export function calculateAgeInMinutes(value) {
 	const ageMilliseconds = Date.now() - parsedDate.getTime();
 
 	return Math.floor(ageMilliseconds / (1000 * 60));
+}
+
+function parseAustralianDate(value) {
+	if (typeof value !== "string") {
+		return null;
+	}
+
+	/**
+	 * Matches:
+	 * 26/05/2026 7:26:00 AM
+	 */
+	const slashFormatMatch = value.match(
+		/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i,
+	);
+
+	if (slashFormatMatch) {
+		const [, day, month, year, hours, minutes, seconds = "0", meridian] =
+			slashFormatMatch;
+
+		let parsedHours = Number(hours);
+
+		if (meridian) {
+			if (meridian.toUpperCase() === "PM" && parsedHours < 12) {
+				parsedHours += 12;
+			}
+
+			if (meridian.toUpperCase() === "AM" && parsedHours === 12) {
+				parsedHours = 0;
+			}
+		}
+
+		return new Date(
+			Date.UTC(
+				Number(year),
+				Number(month) - 1,
+				Number(day),
+				parsedHours,
+				Number(minutes),
+				Number(seconds),
+			),
+		);
+	}
+
+	return null;
 }

@@ -18,9 +18,15 @@
 
 import CanonicalFireAlert from "../canonical/CanonicalFireAlert.js";
 
-import { transformCategory } from "../transformers/categoryTransformer.js";
+import {
+	transformCategory,
+	normalizeString,
+} from "../transformers/categoryTransformer.js";
 
-import { transformSeverity } from "../transformers/severityTransformer.js";
+import {
+	transformSeverity,
+	isHighSeverity,
+} from "../transformers/severityTransformer.js";
 
 import { transformStatus } from "../transformers/statusTransformer.js";
 
@@ -33,6 +39,21 @@ import {
 	resolveCanonicalLGA,
 	resolveRegionFromLGA,
 } from "../transformers/locationTransformer.js";
+
+import {
+	Categories,
+	Sources,
+	SourceTypes,
+	Statuses,
+} from "../../models/globalEnums.js";
+
+import {
+	RFSDescriptionFields,
+	FireTypes,
+	ContainmentStatuses,
+} from "../../models/rfsEnums.js";
+
+import { stripHtml } from "../../utils/alertUtilities.js";
 
 /** * extractMarkersFromGeometry
  *
@@ -137,6 +158,68 @@ function extractPolygonsFromGeometry(geometry) {
 	}
 	return polygons;
 }
+
+function extractDescriptionFields(description) {
+	const cleanedDescription = stripHtml(description);
+
+	const result = {};
+
+	const lines = cleanedDescription
+		.split("\n")
+		.map((line) => line.trim())
+		.filter(Boolean);
+
+	for (const line of lines) {
+		const separatorIndex = line.indexOf(":");
+
+		if (separatorIndex === -1) {
+			continue;
+		}
+
+		const key = normalizeString(line.slice(0, separatorIndex).trim());
+
+		const value = line.slice(separatorIndex + 1).trim();
+
+		result[key] = value;
+	}
+
+	return result;
+}
+
+function extractNumericValue(value) {
+	if (!value) {
+		return null;
+	}
+
+	const match = String(value).match(/[\d.]+/);
+
+	return match ? Number(match[0]) : null;
+}
+
+function extractCategoryFromRFS(category, descriptionFields) {
+	const res = transformCategory(category);
+
+	if (res !== Categories.OTHER) {
+		return res;
+	}
+
+	return (
+		transformCategory(descriptionFields[RFSDescriptionFields.TYPE]) || res
+	);
+}
+
+function extractStatusFromRFS(status, descriptionFields) {
+	const res = transformStatus(status);
+
+	if (res !== Statuses.UNKNOWN) {
+		return res;
+	}
+
+	return (
+		transformStatus(descriptionFields[RFSDescriptionFields.STATUS]) || res
+	);
+}
+
 /**
  * normalizeRfsFeature
  *
@@ -153,6 +236,10 @@ export function normalizeRfsFeature(feature) {
 		}
 
 		const properties = feature.properties || {};
+
+		const descriptionFields = extractDescriptionFields(
+			properties.description,
+		);
 
 		/**
 		 * -------------------------------------------------
@@ -187,6 +274,7 @@ export function normalizeRfsFeature(feature) {
 			properties.councilArea ||
 			properties.lga ||
 			properties.localGovernmentArea ||
+			descriptionFields[RFSDescriptionFields.COUNCIL_AREA] ||
 			null;
 
 		const canonicalLGA = resolveCanonicalLGA(rawCouncilArea);
@@ -200,7 +288,11 @@ export function normalizeRfsFeature(feature) {
 		 */
 
 		const locationName = normalizeLocationName(
-			properties.location || properties.suburb || properties.area || null,
+			properties.location ||
+				properties.suburb ||
+				properties.area ||
+				descriptionFields[RFSDescriptionFields.LOCATION] ||
+				null,
 		);
 
 		/**
@@ -209,20 +301,29 @@ export function normalizeRfsFeature(feature) {
 		 * -------------------------------------------------
 		 */
 
-		const category = transformCategory(
-			properties.category || properties.incidentType || "Bush Fire",
+		const category = extractCategoryFromRFS(
+			properties.category ||
+				properties.incidentType ||
+				descriptionFields[RFSDescriptionFields.TYPE] ||
+				Categories.FIRE,
+			descriptionFields,
 		);
 
 		const severity = transformSeverity(
 			properties.alertLevel ||
 				properties.severity ||
-				properties.warningLevel,
+				properties.warningLevel ||
+				descriptionFields[RFSDescriptionFields.ALERT_LEVEL] ||
+				null,
 		);
 
-		const status = transformStatus(
+		const status = extractStatusFromRFS(
 			properties.status ||
 				properties.fireStatus ||
-				properties.incidentStatus,
+				properties.incidentStatus ||
+				descriptionFields[RFSDescriptionFields.STATUS] ||
+				null,
+			descriptionFields,
 		);
 
 		/**
@@ -232,16 +333,23 @@ export function normalizeRfsFeature(feature) {
 		 */
 
 		const createdAt = transformDate(
-			properties.created || properties.pubDate,
+			properties.created || properties.pubDate || Date.now(),
 		);
 
 		const updatedAt = transformDate(
-			properties.updated || properties.lastUpdated,
+			properties.updated ||
+				properties.lastUpdated ||
+				descriptionFields[RFSDescriptionFields.UPDATED] ||
+				Date.now(),
+		);
+
+		const publishedAt = transformDate(
+			properties.pubDate || properties.created,
 		);
 
 		/**
 		 * -------------------------------------------------
-		 * Advice / Messaging
+		 * Advice / Messaging - These don't exist in RFS Feeds just here for future placeholders
 		 * -------------------------------------------------
 		 */
 
@@ -261,16 +369,44 @@ export function normalizeRfsFeature(feature) {
 
 		/**
 		 * -------------------------------------------------
+		 * Active / Closed
+		 * -------------------------------------------------
+		 */
+
+		const isMajor = isHighSeverity(severity);
+
+		const isActive = true;
+
+		/**
+		 * -------------------------------------------------
 		 * Fire-Specific Metadata
 		 * -------------------------------------------------
 		 */
 
-		const fireType = properties.fireType || properties.incidentType || null;
+		const fireType =
+			FireTypes[
+				normalizeString(
+					properties.fireType ||
+						properties.incidentType ||
+						descriptionFields[RFSDescriptionFields.TYPE] ||
+						null,
+				)
+			] || null;
 
-		const size = Number(properties.size) || null;
+		const size = extractNumericValue(
+			properties.size ||
+				descriptionFields[RFSDescriptionFields.SIZE] ||
+				null,
+		);
 
 		const containment =
-			properties.percentageContained || properties.contained || null;
+			ContainmentStatuses[
+				normalizeString(
+					properties.contained ||
+						descriptionFields[RFSDescriptionFields.STATUS] ||
+						null,
+				)
+			] || null;
 
 		/**
 		 * -------------------------------------------------
@@ -296,11 +432,23 @@ export function normalizeRfsFeature(feature) {
 
 		/**
 		 * -------------------------------------------------
+		 * Agency Responsible
+		 * -------------------------------------------------
+		 */
+
+		const responsibleAgency =
+			descriptionFields[RFSDescriptionFields.RESPONSIBLE_AGENCY] ||
+			Sources.RFS;
+
+		/**
+		 * -------------------------------------------------
 		 * Create Canonical Alert
 		 * -------------------------------------------------
 		 */
 
-		return new CanonicalFireAlert({
+		const data = {
+			source: Sources.RFS,
+			sourceType: SourceTypes.FIRE,
 			/**
 			 * Core identifiers
 			 */
@@ -311,8 +459,6 @@ export function normalizeRfsFeature(feature) {
 					crypto.randomUUID(),
 			),
 
-			source: Sources.RFS,
-
 			/**
 			 * Core alert info
 			 */
@@ -320,48 +466,61 @@ export function normalizeRfsFeature(feature) {
 
 			description: properties.description || properties.caption || null,
 
-			category,
-			severity,
-			status,
+			category: category,
 
-			/**
-			 * Geography
-			 */
-			locationName,
-			councilArea: canonicalLGA,
-			region,
+			subCategory: null, // Optional - Not implemented yet
 
-			marker: primaryMarker,
-			polygons,
+			severity: severity,
+
+			status: status,
 
 			/**
 			 * Dates
 			 */
-			createdAt,
-			updatedAt,
+			createdAt: createdAt,
+			updatedAt: updatedAt,
+			publishedAt: publishedAt,
 
 			/**
-			 * Advice
+			 * Geography
 			 */
-			advice,
+			location: locationName,
+			councilArea: canonicalLGA,
+			region: region,
+
+			marker: primaryMarker,
+			polygons: polygons,
 
 			/**
 			 * Links
 			 */
-			links,
+			links: links,
+
+			/**
+			 * Advice
+			 */
+			advice: advice,
+
+			isMajor: isMajor,
+
+			isActive: isActive,
 
 			/**
 			 * Fire-specific fields
 			 */
-			fireType,
-			size,
-			containment,
+			fireType: fireType,
+			fireSize: size,
+			containmentStatus: containment,
+
+			responsibleAgency: responsibleAgency,
 
 			/**
 			 * Store raw payload for debugging/auditing
 			 */
 			rawPayload: feature,
-		});
+		};
+
+		return new CanonicalFireAlert(data);
 	} catch (error) {
 		console.error("Failed to normalize RFS feature:", error);
 

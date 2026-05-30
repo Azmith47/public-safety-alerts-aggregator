@@ -1,5 +1,5 @@
 import CanonicalAlert from "./CanonicalAlert.js";
-
+import { Sources } from "../../models/globalEnums.js";
 /**
  * CanonicalFireAlert
  *
@@ -33,15 +33,6 @@ export default class CanonicalFireAlert extends CanonicalAlert {
 		this.fireType = data.fireType || null;
 
 		/**
-		 * Public-facing fire warning level.
-		 * Example:
-		 * "EMERGENCY_WARNING"
-		 * "WATCH_AND_ACT"
-		 * "ADVICE"
-		 */
-		this.alertLevel = data.alertLevel || null;
-
-		/**
 		 * Approximate fire size in hectares.
 		 */
 		this.fireSize = data.fireSize || null;
@@ -56,15 +47,8 @@ export default class CanonicalFireAlert extends CanonicalAlert {
 		this.containmentStatus = data.containmentStatus || null;
 
 		/**
-		 * Evacuation instructions or warnings.
-		 */
-		this.evacuationAdvice = Array.isArray(data.evacuationAdvice)
-			? data.evacuationAdvice
-			: [];
-
-		/**
 		 * Primary responding agency.
 		 */
-		this.agency = data.agency || "NSW_RFS";
+		this.responsibleAgency = data.responsibleAgency || Sources.RFS;
 	}
 }

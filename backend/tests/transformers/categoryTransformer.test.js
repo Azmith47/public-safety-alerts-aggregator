@@ -3,7 +3,7 @@ import {
 	normalizeString,
 	transformCategory,
 } from "../../normalization/transformers/categoryTransformer.js";
-import { Categories } from "../../models/enums.js";
+import { Categories } from "../../models/globalenums.js";
 
 describe("categoryTransformer", () => {
 	describe("normalizeString", () => {

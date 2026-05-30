@@ -1,4 +1,4 @@
-import { LGAs, Regions } from "../models/enums.js";
+import { LGAs, Regions } from "../models/globalEnums.js";
 export const LGA_REGION_MAP = {
 	// -----------------------------------------
 	// Greater Sydney
@@ -18,6 +18,7 @@ export const LGA_REGION_MAP = {
 	[LGAs.GEORGES_RIVER]: Regions.GREATER_SYDNEY,
 	[LGAs.HAWKESBURY]: Regions.GREATER_SYDNEY,
 	[LGAs.HORNSBY]: Regions.GREATER_SYDNEY,
+	[LGAs.THE_HILLS]: Regions.GREATER_SYDNEY,
 	[LGAs.HUNTERS_HILL]: Regions.GREATER_SYDNEY,
 	[LGAs.INNER_WEST]: Regions.GREATER_SYDNEY,
 	[LGAs.KU_RING_GAI]: Regions.GREATER_SYDNEY,
@@ -173,14 +174,14 @@ export const LGA_REGION_MAP = {
 	// -----------------------------------------
 	// South East & Tablelands
 	// -----------------------------------------
-	[LGAs.GOULBURN_MULWAREE]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.HILLTOPS]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.QUEANBEYAN_PALERANG]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.UPPER_LACHLAN]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.WINGECARRIBEE]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.YASS_VALLEY]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.SNOWY_MONARO_REGIONAL]: Regions.SOUTH_EAST_TABLELANDS,
-	[LGAs.BEGA_VALLEY]: Regions.SOUTH_EAST_TABLELANDS,
+	[LGAs.GOULBURN_MULWAREE]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.HILLTOPS]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.QUEANBEYAN_PALERANG]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.UPPER_LACHLAN]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.WINGECARRIBEE]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.YASS_VALLEY]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.SNOWY_MONARO]: Regions.SOUTH_EAST_TABLEANDS,
+	[LGAs.BEGA_VALLEY]: Regions.SOUTH_EAST_TABLEANDS,
 
 	// -----------------------------------------
 	// South Coast

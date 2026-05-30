@@ -1,4 +1,4 @@
-import { SeverityLevels } from "../../models/enums.js";
+import { SeverityLevels } from "../../models/globalEnums.js";
 import { SEVERITY_MAPPINGS } from "../../mappings/severityLevelsMappings.js";
 /**
  * severityTransformer.js

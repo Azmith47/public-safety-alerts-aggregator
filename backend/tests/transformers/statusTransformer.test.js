@@ -12,7 +12,7 @@ import {
 	getStatusPriority,
 } from "../../normalization/transformers/statusTransformer.js";
 
-import { Statuses } from "../../models/enums.js";
+import { Statuses } from "../../models/globalEnums.js";
 
 describe("normalizeString", () => {
 	test("should normalize strings into enum-safe values", () => {

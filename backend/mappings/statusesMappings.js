@@ -1,4 +1,4 @@
-import { Statuses } from "../models/enums.js";
+import { Statuses } from "../models/globalEnums.js";
 /**
  * Internal canonical status mappings.
  *
@@ -16,7 +16,9 @@ export const STATUS_MAPPINGS = {
 
 	OPEN: Statuses.ACTIVE,
 
-	ONGOING: Statuses.ACTIVE,
+	ON_GOING: Statuses.ACTIVE,
+
+	GOING: Statuses.ACTIVE,
 
 	IN_PROGRESS: Statuses.ACTIVE,
 

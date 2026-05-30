@@ -1,4 +1,4 @@
-import { Categories } from "../../models/enums.js";
+import { Categories } from "../../models/globalEnums.js";
 import CATEGORY_MAPPINGS from "../../mappings/categoryMappings.js";
 /**
  * categoryTransformer.js
