@@ -11,7 +11,7 @@ export class Alert {
 		external_id,
 	) {
 		this.id = id || null;
-		this.external_id = id || null;
+		this.external_id = external_id || null;
 		this.title = title || "No title";
 		this.link = link || "No link";
 		this.pubDate = pubDate || null;
