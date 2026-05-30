@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Alerts
 CREATE TABLE IF NOT EXISTS alerts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    external_id TEXT UNIQUE,
+    external_id TEXT NOT NULL,
     title TEXT NOT NULL,
     description TEXT,
     category_id INTEGER,
@@ -76,8 +76,10 @@ CREATE TABLE IF NOT EXISTS alerts (
     delay INTEGER DEFAULT 0,
     start_date DATETIME,
     end_date DATETIME,
+    is_active BOOLEAN DEFAULT TRUE,
     raw_payload TEXT,
 
+    UNIQUE(external_id, source_id),
     FOREIGN KEY (category_id) REFERENCES categories(id),
     FOREIGN KEY (source_id) REFERENCES sources(id),
     FOREIGN KEY (location_id) REFERENCES locations(id),
