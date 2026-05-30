@@ -7,7 +7,10 @@
     "dev": "nodemon server.js",
     "db:init": "node database/init.js",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "typecheck": "node scripts/check-syntax.js",
+    "build": "npm run typecheck",
+    "validate": "npm run lint && npm test && npm run typecheck && npm run build"
   },
   "keywords": [],
   "author": "",
