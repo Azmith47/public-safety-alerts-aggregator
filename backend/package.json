@@ -10,18 +10,18 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",  
+  "license": "ISC",
   "type": "module",
   "dependencies": {
     "better-sqlite3": "^12.9.0",
     "cors": "^2.8.6",
+    "csv-parse": "^6.2.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "node-cron": "^4.2.1",
     "rss-parser": "^3.13.0",
-    "uuid": "^13.0.0",
-    "xlsx": "^0.18.5"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "i": "^0.3.7",
