@@ -21,7 +21,7 @@ import crypto from "crypto";
 import CanonicalTrafficAlert from "../canonical/CanonicalTrafficAlert.js";
 
 import {
-	Categories,
+	SeverityLevels,
 	Sources,
 	SourceTypes,
 	Statuses,
@@ -42,6 +42,76 @@ import {
 	resolveCanonicalLGA,
 	resolveRegionFromLGA,
 } from "../transformers/locationTransformer.js";
+
+function getProperties(feature) {
+	return feature?.properties && typeof feature.properties === "object"
+		? feature.properties
+		: {};
+}
+
+function firstNonEmpty(...values) {
+	return values.find((value) => {
+		if (typeof value === "string") {
+			return value.trim() !== "";
+		}
+
+		return value !== null && value !== undefined;
+	});
+}
+
+function normalizePositiveNumber(value) {
+	const parsedValue = Number(value);
+
+	return Number.isFinite(parsedValue) && parsedValue >= 0
+		? parsedValue
+		: null;
+}
+
+function normalizeRoads(roads) {
+	if (!Array.isArray(roads)) {
+		return [];
+	}
+
+	return roads.map((road) => ({
+		roadName: road.mainStreet || null,
+		crossStreet: road.crossStreet || null,
+		suburb: road.suburb || null,
+		region: road.region || null,
+		locationQualifier: road.locationQualifier || null,
+		secondLocation: road.secondLocation || null,
+		conditionTendency: road.conditionTendency || null,
+		delay: road.delay || null,
+		impactedLanes: Array.isArray(road.impactedLanes)
+			? road.impactedLanes
+			: [],
+		queueLength: normalizePositiveNumber(road.queueLength),
+		trafficVolume: road.trafficVolume || null,
+	}));
+}
+
+function normalizeLinks(properties) {
+	const links = [];
+
+	if (Array.isArray(properties.webLinks)) {
+		for (const link of properties.webLinks) {
+			if (link?.linkURL) {
+				links.push({
+					title: link.linkText || "TFNSW Link",
+					url: link.linkURL,
+				});
+			}
+		}
+	}
+
+	if (properties.weblinkUrl) {
+		links.push({
+			title: properties.weblinkName || "TFNSW Incident",
+			url: properties.weblinkUrl,
+		});
+	}
+
+	return links;
+}
 
 /**
  * extractMarkersFromGeometry
@@ -112,6 +182,12 @@ function extractMarkersFromGeometry(geometry) {
 		}
 	}
 
+	if (Array.isArray(geometry.collections)) {
+		for (const childGeometry of geometry.collections) {
+			markers.push(...extractMarkersFromGeometry(childGeometry));
+		}
+	}
+
 	return markers;
 }
 
@@ -177,6 +253,12 @@ function extractPolylinesFromGeometry(geometry) {
 		}
 	}
 
+	if (Array.isArray(geometry.collections)) {
+		for (const childGeometry of geometry.collections) {
+			polylines.push(...extractPolylinesFromGeometry(childGeometry));
+		}
+	}
+
 	return polylines;
 }
 
@@ -194,6 +276,8 @@ export function normalizeTfnswIncident(incident) {
 		if (!incident || typeof incident !== "object") {
 			return null;
 		}
+
+		const properties = getProperties(incident);
 
 		/**
 		 * -------------------------------------------------
@@ -216,11 +300,17 @@ export function normalizeTfnswIncident(incident) {
 		 * -------------------------------------------------
 		 */
 
-		const rawCouncilArea =
-			incident.councilArea ||
-			incident.lga ||
-			incident.localGovernmentArea ||
-			null;
+		const roads = normalizeRoads(properties.roads);
+		const primaryRoad = roads[0] || null;
+
+		const rawCouncilArea = firstNonEmpty(
+			properties.councilArea,
+			properties.lga,
+			properties.localGovernmentArea,
+			incident.councilArea,
+			incident.lga,
+			incident.localGovernmentArea,
+		);
 
 		const canonicalLGA = resolveCanonicalLGA(rawCouncilArea);
 
@@ -233,11 +323,17 @@ export function normalizeTfnswIncident(incident) {
 		 */
 
 		const locationName = normalizeLocationName(
-			incident.suburb ||
-				incident.location ||
-				incident.area ||
-				incident.region ||
-				null,
+			firstNonEmpty(
+				primaryRoad?.suburb,
+				properties.suburb,
+				properties.location,
+				properties.area,
+				properties.region,
+				incident.suburb,
+				incident.location,
+				incident.area,
+				incident.region,
+			),
 		);
 
 		/**
@@ -247,22 +343,46 @@ export function normalizeTfnswIncident(incident) {
 		 */
 
 		const category = transformCategory(
-			incident.category ||
-				incident.incidentKind ||
-				incident.eventType ||
+			firstNonEmpty(
+				properties.mainCategory,
+				properties.CategoryIcon,
+				properties.incidentKind,
+				properties.eventType,
+				incident.category,
+				incident.incidentKind,
+				incident.eventType,
 				"Traffic Incident",
+			),
 		);
 
-		const severity = transformSeverity(
-			incident.severity ||
-				incident.impact ||
-				incident.trafficImpact ||
-				incident.adviceLevel,
-		);
+		const severity = properties.isMajor
+			? SeverityLevels.MAJOR
+			: transformSeverity(
+					firstNonEmpty(
+						properties.severity,
+						properties.impact,
+						properties.trafficImpact,
+						properties.adviceLevel,
+						incident.severity,
+						incident.impact,
+						incident.trafficImpact,
+						incident.adviceLevel,
+					),
+				);
 
-		const status = transformStatus(
-			incident.status || incident.incidentStatus || incident.roadStatus,
-		);
+		const status = properties.ended
+			? Statuses.CLOSED
+			: transformStatus(
+					firstNonEmpty(
+						properties.status,
+						properties.incidentStatus,
+						properties.roadStatus,
+						properties.incidentKind,
+						incident.status,
+						incident.incidentStatus,
+						incident.roadStatus,
+					),
+				);
 
 		/**
 		 * -------------------------------------------------
@@ -271,16 +391,36 @@ export function normalizeTfnswIncident(incident) {
 		 */
 
 		const createdAt = transformDate(
-			incident.created || incident.createdAt || incident.publishDate,
+			firstNonEmpty(
+				properties.created,
+				incident.created,
+				incident.createdAt,
+				incident.publishDate,
+			),
 		);
 
 		const updatedAt = transformDate(
-			incident.updated || incident.updatedAt || incident.lastUpdated,
+			firstNonEmpty(
+				properties.lastUpdated,
+				properties.updated,
+				incident.updated,
+				incident.updatedAt,
+				incident.lastUpdated,
+			),
 		);
 
 		const publishedAt = transformDate(
-			incident.publishDate || incident.created || incident.createdAt,
+			firstNonEmpty(
+				properties.publishDate,
+				properties.created,
+				incident.publishDate,
+				incident.created,
+				incident.createdAt,
+			),
 		);
+
+		const startDate = transformDate(properties.start);
+		const endDate = transformDate(properties.end);
 
 		/**
 		 * -------------------------------------------------
@@ -290,16 +430,17 @@ export function normalizeTfnswIncident(incident) {
 
 		const advice = [];
 
-		if (incident.advice) {
-			advice.push(incident.advice);
-		}
-
-		if (incident.publicAdvice) {
-			advice.push(incident.publicAdvice);
-		}
-
-		if (incident.diversions) {
-			advice.push(incident.diversions);
+		for (const value of [
+			properties.adviceA,
+			properties.adviceB,
+			properties.adviceC,
+			incident.advice,
+			incident.publicAdvice,
+			properties.diversions,
+		]) {
+			if (typeof value === "string" && value.trim()) {
+				advice.push(value.trim());
+			}
 		}
 
 		/**
@@ -308,14 +449,7 @@ export function normalizeTfnswIncident(incident) {
 		 * -------------------------------------------------
 		 */
 
-		const links = [];
-
-		if (incident.url) {
-			links.push({
-				title: "TFNSW Incident",
-				url: incident.url,
-			});
-		}
+		const links = normalizeLinks(properties);
 
 		/**
 		 * -------------------------------------------------
@@ -323,19 +457,15 @@ export function normalizeTfnswIncident(incident) {
 		 * -------------------------------------------------
 		 */
 
-		const affectedRoads = [];
-
-		if (incident.roadName) {
-			affectedRoads.push(incident.roadName);
-		}
-
-		if (incident.alternateName) {
-			affectedRoads.push(incident.alternateName);
-		}
-
-		const lanesAffected = Number(incident.lanesAffected) || null;
-
-		const trafficImpact = incident.trafficImpact || incident.impact || null;
+		const delayMinutes = normalizePositiveNumber(
+			properties.expectedDelay,
+		);
+		const queueLength = normalizePositiveNumber(primaryRoad?.queueLength);
+		const speedLimit = normalizePositiveNumber(properties.speedLimit);
+		const planned = properties.incidentKind === "Planned";
+		const impactingNetwork = Boolean(properties.impactingNetwork);
+		const isMajor = Boolean(properties.isMajor);
+		const isActive = !properties.ended;
 
 		/**
 		 * -------------------------------------------------
@@ -343,106 +473,43 @@ export function normalizeTfnswIncident(incident) {
 		 * -------------------------------------------------
 		 */
 
-		const data = {
-			source: Sources.TFNSW,
-			sourceType: SourceTypes.TRAFFIC,
-			/**
-			 * Core identifiers
-			 */
-			externalId: String(
-				incident.id || incident.guid || crypto.randomUUID(),
-			),
-
-			/**
-			 * Core alert info
-			 */
-			title: properties.title || properties.headline || "RFS Incident",
-
-			description: properties.description || properties.caption || null,
-
-			category: category,
-
-			subCategory: null, // Optional - Not implemented yet
-
-			severity: severity,
-
-			status: status,
-
-			/**
-			 * Dates
-			 */
-			createdAt: createdAt,
-			updatedAt: updatedAt,
-			publishedAt: publishedAt,
-
-			/**
-			 * Geography
-			 */
-			location: locationName,
-			councilArea: canonicalLGA,
-			region: region,
-
-			marker: primaryMarker,
-			polygons: polygons,
-
-			/**
-			 * Links
-			 */
-			links: links,
-
-			/**
-			 * Advice
-			 */
-			advice: advice,
-
-			isMajor: isMajor,
-
-			isActive: isActive,
-
-			/**
-			 * Fire-specific fields
-			 */
-			fireType: fireType,
-			fireSize: size,
-			containmentStatus: containment,
-
-			responsibleAgency: responsibleAgency,
-
-			/**
-			 * Store raw payload for debugging/auditing
-			 */
-			rawPayload: feature,
-		};
-
 		return new CanonicalTrafficAlert({
 			/**
 			 * Core identifiers
 			 */
 			externalId: String(
-				incident.id || incident.guid || crypto.randomUUID(),
+				incident.id || properties.guid || properties.id || crypto.randomUUID(),
 			),
 
 			source: Sources.TFNSW,
+			sourceType: SourceTypes.TRAFFIC,
 
 			/**
 			 * Core alert info
 			 */
 			title:
+				properties.displayName ||
+				properties.headline ||
+				properties.name ||
 				incident.title ||
-				incident.headline ||
-				incident.displayName ||
 				"Traffic Incident",
 
-			description: incident.description || incident.details || null,
+			description:
+				properties.otherAdvice ||
+				properties.publicTransport ||
+				incident.description ||
+				incident.details ||
+				null,
 
 			category,
+			subCategory: properties.subCategoryA || properties.subCategoryB || null,
 			severity,
 			status,
 
 			/**
 			 * Geography
 			 */
-			locationName,
+			location: locationName,
 			councilArea: canonicalLGA,
 			region,
 
@@ -466,12 +533,25 @@ export function normalizeTfnswIncident(incident) {
 			 */
 			links,
 
+			isMajor,
+			isActive,
+
 			/**
 			 * Traffic-specific fields
 			 */
-			affectedRoads,
-			lanesAffected,
-			trafficImpact,
+			planned,
+			startDate,
+			endDate,
+			delayMinutes,
+			queueLength,
+			speedLimit,
+			impactingNetwork,
+			roads,
+			diversions: properties.diversions || null,
+			attendingGroups: Array.isArray(properties.attendingGroups)
+				? properties.attendingGroups
+				: [],
+			publicTransport: properties.publicTransport || null,
 
 			/**
 			 * Store raw payload
