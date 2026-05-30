@@ -15,6 +15,7 @@ export default [
         console: "readonly",
         crypto: "readonly",
         fetch: "readonly",
+        global: "readonly",
         process: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
