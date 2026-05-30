@@ -4,13 +4,20 @@ import path from "path";
 import AlertPersistenceService from "./AlertPersistenceService.js";
 import SourceHealthService from "./SourceHealthService.js";
 import AlertQueryService from "./AlertQueryService.js";
+import { normalizeRfsFeed } from "../normalization/normalizers/rfsNormalizer.js";
+import { normalizeTfnswFeed } from "../normalization/normalizers/tfnswNormalizer.js";
 
 import { fileURLToPath, pathToFileURL } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-class IngestOrchestratorService {
+const collectorNormalizers = {
+	rfsCollector: normalizeRfsFeed,
+	tfnswCollector: normalizeTfnswFeed,
+};
+
+export class IngestOrchestratorService {
 	constructor() {
 		this.collectors = new Map();
 	}
@@ -29,6 +36,7 @@ class IngestOrchestratorService {
 			run: collectorFn,
 			sourceName: options.sourceName || name,
 			sourceWebsite: options.sourceWebsite || null,
+			normalize: options.normalize || null,
 		});
 	}
 
@@ -64,9 +72,12 @@ class IngestOrchestratorService {
 				}
 
 				if (fn) {
-					this.registerCollector(path.basename(file, ".js"), fn, {
+					const collectorName = path.basename(file, ".js");
+
+					this.registerCollector(collectorName, fn, {
 						sourceName,
 						sourceWebsite,
+						normalize: collectorNormalizers[collectorName],
 					});
 				}
 			} catch (err) {
@@ -84,7 +95,7 @@ class IngestOrchestratorService {
 		const entry = this.collectors.get(name);
 		if (!entry) throw new Error(`Collector not found: ${name}`);
 
-		const { run, sourceName, sourceWebsite } = entry;
+		const { run, sourceName, sourceWebsite, normalize } = entry;
 		console.log(`Running collector: ${name}`);
 
 		let alerts = [];
@@ -103,7 +114,11 @@ class IngestOrchestratorService {
 				);
 				return emptyResult;
 			}
-			alerts = Array.isArray(result) ? result : [result];
+			const collectedAlerts = Array.isArray(result) ? result : [result];
+			alerts =
+				typeof normalize === "function"
+					? normalize(collectedAlerts)
+					: collectedAlerts;
 		} catch (err) {
 			console.error(`Collector ${name} failed:`, err && err.message);
 			const failureResult = {
