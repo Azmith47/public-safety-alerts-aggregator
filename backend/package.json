@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "db:init": "node database/init.js",
+    "lint": "eslint .",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
@@ -24,6 +25,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "eslint": "^9.39.4",
     "i": "^0.3.7",
     "jest": "^29.7.0",
     "nodemon": "^3.1.14",

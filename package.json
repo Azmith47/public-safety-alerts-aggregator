@@ -8,7 +8,11 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npm --prefix backend run lint && npm --prefix client run lint",
+    "test": "npm --prefix backend test",
+    "typecheck": "npm --prefix client run typecheck",
+    "build": "npm --prefix client run build",
+    "validate": "npm run lint && npm test && npm run typecheck && npm run build"
   },
   "keywords": [],
   "author": "",

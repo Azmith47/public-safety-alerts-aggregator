@@ -55,3 +55,17 @@ To build and run the final version of the project:
 2. Open a cmd terminal in the "client" directory and type "npm run build"
 3. Open a cmd terminal in the "backend" directory and type "npm run start"
 4. Open a cmd terminal in the "client" directory and type "npm run start"
+
+## Quality Checks
+
+The root package provides the same validation entry points used by CI:
+
+```bash
+npm run lint
+npm test
+npm run typecheck
+npm run build
+npm run validate
+```
+
+GitHub Actions runs `npm run validate` for pushes and pull requests targeting `main`.
