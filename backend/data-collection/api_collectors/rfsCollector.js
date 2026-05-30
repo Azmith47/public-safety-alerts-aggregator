@@ -8,7 +8,9 @@ export const run = async () => {
 		const response = await fetch(FEED_URL);
 
 		if (!response.ok) {
-			throw new Error(`RFS request failed with status ${response.status}`);
+			throw new Error(
+				`RFS request failed with status ${response.status}`,
+			);
 		}
 
 		const data = await response.json();

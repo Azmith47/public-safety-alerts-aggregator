@@ -35,7 +35,9 @@ export const run = async () => {
 			}
 
 			const data = await response.json();
-			alerts.push(...(Array.isArray(data?.features) ? data.features : []));
+			alerts.push(
+				...(Array.isArray(data?.features) ? data.features : []),
+			);
 		}
 
 		return alerts;

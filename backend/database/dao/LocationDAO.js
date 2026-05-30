@@ -1,34 +1,29 @@
 import BaseDAO from "./BaseDAO.js";
 
 class LocationDAO extends BaseDAO {
+	constructor() {
+		super("locations");
+	}
 
-    constructor() {
-        super("locations");
-    }
+	async getOrCreate(name, postcode = null, councilAreaId = null) {
+		const row = await this.findOne(this.tableName, "name = ?", [name]);
 
-    async getOrCreate(name, postcode = null, councilAreaId = null) {
-        const row = await this.findOne(
-            this.tableName,
-            "name = ?",
-            [name]
-        );
+		if (row) {
+			return { id: row.id, created: false };
+		}
 
-        if (row) {
-            return { id: row.id, created: false };
-        }
+		const result = await super.insert(this.tableName, {
+			name,
+			postcode,
+			council_area_id: councilAreaId,
+		});
 
-        const result = await super.insert(this.tableName, {
-            name,
-            postcode,
-            council_area_id: councilAreaId
-        });
+		return { id: result.id, created: true };
+	}
 
-        return { id: result.id, created: true };
-    }
-
-    async getAll() {
-        return this.findAll(this.tableName, "1=1", [], "name");
-    }
+	async getAll() {
+		return this.findAll(this.tableName, "1=1", [], "name");
+	}
 }
 
 export default new LocationDAO();

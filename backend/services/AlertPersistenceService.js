@@ -155,10 +155,18 @@ class AlertPersistenceService {
 		}
 
 		if (Array.isArray(alert.polygons)) {
-			for (let polygonIndex = 0; polygonIndex < alert.polygons.length; polygonIndex++) {
+			for (
+				let polygonIndex = 0;
+				polygonIndex < alert.polygons.length;
+				polygonIndex++
+			) {
 				const polygon = alert.polygons[polygonIndex];
 
-				for (let pointOrder = 0; pointOrder < polygon.length; pointOrder++) {
+				for (
+					let pointOrder = 0;
+					pointOrder < polygon.length;
+					pointOrder++
+				) {
 					const [longitude, latitude] = polygon[pointOrder];
 					await AlertPolygonDAO.create(
 						alertId,
@@ -173,10 +181,18 @@ class AlertPersistenceService {
 		}
 
 		if (Array.isArray(alert.polylines)) {
-			for (let lineIndex = 0; lineIndex < alert.polylines.length; lineIndex++) {
+			for (
+				let lineIndex = 0;
+				lineIndex < alert.polylines.length;
+				lineIndex++
+			) {
 				const line = alert.polylines[lineIndex];
 
-				for (let pointOrder = 0; pointOrder < line.length; pointOrder++) {
+				for (
+					let pointOrder = 0;
+					pointOrder < line.length;
+					pointOrder++
+				) {
 					const [longitude, latitude] = line[pointOrder];
 					await AlertPolylineDAO.create(
 						alertId,

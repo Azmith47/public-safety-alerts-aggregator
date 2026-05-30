@@ -457,9 +457,7 @@ export function normalizeTfnswIncident(incident) {
 		 * -------------------------------------------------
 		 */
 
-		const delayMinutes = normalizePositiveNumber(
-			properties.expectedDelay,
-		);
+		const delayMinutes = normalizePositiveNumber(properties.expectedDelay);
 		const queueLength = normalizePositiveNumber(primaryRoad?.queueLength);
 		const speedLimit = normalizePositiveNumber(properties.speedLimit);
 		const planned = properties.incidentKind === "Planned";
@@ -478,7 +476,10 @@ export function normalizeTfnswIncident(incident) {
 			 * Core identifiers
 			 */
 			externalId: String(
-				incident.id || properties.guid || properties.id || crypto.randomUUID(),
+				incident.id ||
+					properties.guid ||
+					properties.id ||
+					crypto.randomUUID(),
 			),
 
 			source: Sources.TFNSW,
@@ -501,52 +502,53 @@ export function normalizeTfnswIncident(incident) {
 				incident.details ||
 				null,
 
-			category,
-			subCategory: properties.subCategoryA || properties.subCategoryB || null,
-			severity,
-			status,
+			category: category,
+			subCategory:
+				properties.subCategoryA || properties.subCategoryB || null,
+			severity: severity,
+			status: status,
 
 			/**
 			 * Geography
 			 */
 			location: locationName,
 			councilArea: canonicalLGA,
-			region,
+			region: region,
 
 			marker: primaryMarker,
-			polylines,
+			polylines: polylines,
 
 			/**
 			 * Dates
 			 */
-			createdAt,
-			updatedAt,
-			publishedAt,
+			createdAt: createdAt,
+			updatedAt: updatedAt,
+			publishedAt: publishedAt,
 
 			/**
 			 * Advice
 			 */
-			advice,
+			advice: advice,
 
 			/**
 			 * Links
 			 */
-			links,
+			links: links,
 
-			isMajor,
-			isActive,
+			isMajor: isMajor,
+			isActive: isActive,
 
 			/**
 			 * Traffic-specific fields
 			 */
-			planned,
-			startDate,
-			endDate,
-			delayMinutes,
-			queueLength,
-			speedLimit,
-			impactingNetwork,
-			roads,
+			planned: planned,
+			startDate: startDate,
+			endDate: endDate,
+			delayMinutes: delayMinutes,
+			queueLength: queueLength,
+			speedLimit: speedLimit,
+			impactingNetwork: impactingNetwork,
+			roads: roads,
 			diversions: properties.diversions || null,
 			attendingGroups: Array.isArray(properties.attendingGroups)
 				? properties.attendingGroups
