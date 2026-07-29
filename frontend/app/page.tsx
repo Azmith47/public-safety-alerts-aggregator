@@ -7,11 +7,17 @@ import MenuDrawer from "./components/Drawer";
 import FilterTabs from "./components/FilterTabs";
 import { useState } from "react";
 import GoogleMap from "./components/Map";
+import FilterModal from "./components/FilterModal";
+import MySearchesModal from "./components/MySearchesModal";
 
 export default function Home() {
-  //These state variables must be accessible by the Navbar, MenuDrawer, and AlertMenuModal
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [alertsOpen, setAlertsOpen] = useState(false);
+  //State variables
+  const [menuOpen, setMenuOpen] = useState(false); //belongs menu (opened via hamburger icon)
+  const [subscribeOpen, setSubscribeOpen] = useState(false); //belongs to subscribe modal (opened via bell icon)
+  // State variables for filter, MySearches, and MyAlerts
+  // Requires consolidation, state variables are becoming too messy
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [mySearchesModalOpen, setMySearchesModalOpen] = useState(false);
 
   // Event handlers are defined below / both are passed to Navbar as props
   // handleMenuClick() reverses the state of menuOpen when the hamburger icon is clicked
@@ -21,24 +27,33 @@ export default function Home() {
 
   //handleAlertMenuClick() reverses the state of alertsOpen when the bell icon is clicked
   function handleAlertMenuClick() {
-    setAlertsOpen(!alertsOpen);
+    setSubscribeOpen(!subscribeOpen);
   }
 
   return (
     <>
       <PageOverlay
         menuOpen={menuOpen}
-        alertsOpen={alertsOpen}
+        subscribeOpen={subscribeOpen}
+        filterModalOpen={filterModalOpen}
+        mySearchesModalOpen={mySearchesModalOpen}
         onClick={() => {
           setMenuOpen(false);
-          setAlertsOpen(false);
+          setSubscribeOpen(false);
+          setFilterModalOpen(false);
+          setMySearchesModalOpen(false);
         }}
       />
       <Navbar
         onMenuClick={handleMenuClick}
         onAlertsClick={handleAlertMenuClick}
       />
-      <MenuDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MenuDrawer
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onFilterClick={() => setFilterModalOpen(true)}
+        onMySearchesClick={() => setMySearchesModalOpen(true)}
+      />
       <main>
         <AlertList />
         <div className="map-area">
@@ -48,8 +63,16 @@ export default function Home() {
       </main>
       <Footer />
       <SubscribeModal
-        isOpen={alertsOpen}
-        onClose={() => setAlertsOpen(false)}
+        isOpen={subscribeOpen}
+        onClose={() => setSubscribeOpen(false)}
+      />
+      <FilterModal
+        isOpen={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+      />
+      <MySearchesModal
+        isOpen={mySearchesModalOpen}
+        onClose={() => setMySearchesModalOpen(false)}
       />
     </>
   );
@@ -62,14 +85,23 @@ export default function Home() {
 // Visibility of menuDrawer and AlertMenuModal are controlled with CSS classes and ternary operators (see component files)
 function PageOverlay({
   menuOpen,
-  alertsOpen,
+  subscribeOpen,
+  filterModalOpen,
+  mySearchesModalOpen,
   onClick,
 }: {
   menuOpen: boolean;
-  alertsOpen: boolean;
+  subscribeOpen: boolean;
+  filterModalOpen: boolean;
+  mySearchesModalOpen: boolean;
   onClick: () => void;
 }) {
-  if (menuOpen === true || alertsOpen === true) {
+  if (
+    menuOpen === true ||
+    subscribeOpen === true ||
+    filterModalOpen ||
+    mySearchesModalOpen
+  ) {
     return <div className="page-overlay" onClick={onClick}></div>;
   }
 }

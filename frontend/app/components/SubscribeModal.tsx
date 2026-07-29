@@ -1,3 +1,6 @@
+//Area where the user can subscribe to general alerts
+//Any new email matching the alert will trigger a notification via email
+
 export default function SubscribeModal({
   isOpen, //The isOpen prop receives the state variable from page.tsx
   onClose, //OnClose returns nothing and is defined in page.tsx
@@ -18,13 +21,13 @@ export default function SubscribeModal({
       <h4>Subscribe to alerts:</h4>
       {/* The following form options are placeholders */}
       <form action="" className="modal-form">
-        <label htmlFor="">Service</label>
+        <label htmlFor="">Agency</label>
         <select name="" id="">
-          <option value="">RFS</option>
-          <option value="">TFNSW</option>
-          <option value="">SES</option>
+          <option value="">NSW Rural Fire Service (RFS)</option>
+          <option value="">Transport for New South Wales</option>
+          <option value="">NSW State Emergency Service (SES)</option>
         </select>
-        <label htmlFor="">Location</label>
+        <label htmlFor="">Region</label>
         <select name="" id="">
           <option value="">Sydney</option>
           <option value="">Hornsby Shire</option>
