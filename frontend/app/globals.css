@@ -85,7 +85,7 @@ nav button {
   top: 4.5em;
   right: 0;
   height: calc(100vh - 8.05em);
-  width: 10%;
+  width: 15%;
   z-index: 100;
   background-color: var(--card-bg);
   color: var(--body-bg-color);

@@ -9,15 +9,17 @@ import { useState } from "react";
 import GoogleMap from "./components/Map";
 
 export default function Home() {
-  //useState for navbar-menu-button
+  //These state variables must be accessible by the Navbar, MenuDrawer, and AlertMenuModal
   const [menuOpen, setMenuOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
 
-  //   Event handlers
+  // Event handlers are defined below / both are passed to Navbar as props
+  // handleMenuClick() reverses the state of menuOpen when the hamburger icon is clicked
   function handleMenuClick() {
     setMenuOpen(!menuOpen);
   }
 
+  //handleAlertMenuClick() reverses the state of alertsOpen when the bell icon is clicked
   function handleAlertMenuClick() {
     setAlertsOpen(!alertsOpen);
   }
@@ -36,8 +38,7 @@ export default function Home() {
         onMenuClick={handleMenuClick}
         onAlertsClick={handleAlertMenuClick}
       />
-      {/*Arrow function => only runs on click NOT on render*/}
-      <MenuDrawer menuOpen={menuOpen} menuClose={() => setMenuOpen(false)} />
+      <MenuDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
       <main>
         <AlertList />
         <div className="map-area">
@@ -47,14 +48,18 @@ export default function Home() {
       </main>
       <Footer />
       <AlertMenuModal
-        alertsMenuOpen={alertsOpen}
-        menuClose={() => setAlertsOpen(false)}
+        isOpen={alertsOpen}
+        onClose={() => setAlertsOpen(false)}
       />
     </>
   );
 }
 
-// Page overlay component - closes menuDrawer and modal by clicking anywhere outside
+// Page Overlay component
+// Is only visible if menuOpen OR alertsOpen (state variables) is true
+// On click the overlay sets BOTH menuOpen AND alertsOpen to false,
+// Closes menuDrawer and AlertMenuModal by clicking anywhere outside
+// Visibility of menuDrawer and AlertMenuModal are controlled with CSS classes and ternary operators (see component files)
 function PageOverlay({
   menuOpen,
   alertsOpen,

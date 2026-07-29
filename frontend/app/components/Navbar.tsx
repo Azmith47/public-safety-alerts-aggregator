@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 
 //Passing onMenuClick as a prop
 export default function Navbar({
@@ -52,27 +51,5 @@ function IconButton({
     <button onClick={onClick}>
       <img className="nav-icon" src={icon} alt={alt} />
     </button>
-  );
-}
-
-//Drawer component
-export function MenuDrawer({
-  menuOpen,
-  onClick,
-}: {
-  menuOpen: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <div className={menuOpen ? "drawer-visible" : "drawer-hidden"}>
-      <div className="drawer-header">
-        <button>✕</button>
-      </div>
-      <ul>
-        <li>Filter</li>
-        <li>My Searches</li>
-        <li>My Alerts</li>
-      </ul>
-    </div>
   );
 }

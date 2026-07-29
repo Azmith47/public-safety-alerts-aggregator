@@ -1,3 +1,7 @@
+// The alert data was hardcoded for the prototype
+// Hardcoded data needs to be replaced with API fetch (useEffect?)
+// Each AlertCard will receive JSON alert data as props
+
 export default function AlertList() {
   return (
     <aside>
@@ -100,10 +104,13 @@ export default function AlertList() {
   );
 }
 
+// Renders the AlertCard
+// Category is passed as a prop but not displayed due to size constraints
+
 function AlertCard({
   title,
   type,
-  alertLocation: { region, suburb },
+  alertLocation: { region, suburb }, //placeholder for proper backend location data
   datePublished,
   active,
 }: {
@@ -132,6 +139,10 @@ function AlertCard({
     </article>
   );
 }
+
+// Renders a different .svg icon determined by the type prop passed to the AlertCard
+// A switch statement could be more appropriate
+// The icons are are placeholder - needs to be discussed by the team
 
 function getIcon(type: string) {
   if (type === "traffic")

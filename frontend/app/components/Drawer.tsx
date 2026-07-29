@@ -1,14 +1,17 @@
 export default function MenuDrawer({
-  menuOpen,
-  menuClose,
+  isOpen, //The isOpen prop receives the state variable from page.tsx
+  onClose, //OnClose returns nothing and is defined in page.tsx
 }: {
-  menuOpen: boolean;
-  menuClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }) {
   return (
-    <div className={menuOpen ? "drawer-visible" : "drawer-hidden"}>
+    //Visibility of the modal is determined by a ternary that swaps the CSS class
+    //The drawer is hidden unless isOpen is true
+    <div className={isOpen ? "drawer-visible" : "drawer-hidden"}>
       <div className="drawer-header">
-        <button onClick={menuClose}>✕</button>
+        {/* Sets isOpen to false, changing the CSS class to drawer-hidden */}
+        <button onClick={onClose}>✕</button>
       </div>
       <ul>
         <li>
