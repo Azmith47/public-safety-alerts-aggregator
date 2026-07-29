@@ -3,10 +3,10 @@
 //Passing onMenuClick as a prop
 export default function Navbar({
   onMenuClick,
-  onAlertsClick,
+  onSubscribeClick,
 }: {
   onMenuClick: () => void;
-  onAlertsClick: () => void;
+  onSubscribeClick: () => void;
 }) {
   return (
     <nav>
@@ -26,7 +26,7 @@ export default function Navbar({
           alt="Open menu"
         />
         <IconButton
-          onClick={onAlertsClick}
+          onClick={onSubscribeClick}
           icon="icons/bell.svg"
           alt="Open alert preferences"
         />

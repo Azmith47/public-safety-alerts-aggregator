@@ -1,11 +1,11 @@
 "use client";
+import { useState } from "react";
 import SubscribeModal from "./components/SubscribeModal";
 import Footer from "./components/Footer";
 import AlertList from "./components/AlertList";
 import Navbar from "./components/Navbar";
-import MenuDrawer from "./components/Drawer";
+import MenuDrawer from "./components/MenuDrawer";
 import FilterTabs from "./components/FilterTabs";
-import { useState } from "react";
 import GoogleMap from "./components/Map";
 import FilterModal from "./components/FilterModal";
 import MySearchesModal from "./components/MySearchesModal";
@@ -13,46 +13,27 @@ import MySearchesModal from "./components/MySearchesModal";
 export default function Home() {
   //State variables
   const [menuOpen, setMenuOpen] = useState(false); //belongs menu (opened via hamburger icon)
-  const [subscribeOpen, setSubscribeOpen] = useState(false); //belongs to subscribe modal (opened via bell icon)
-  // State variables for filter, MySearches, and MyAlerts
-  // Requires consolidation, state variables are becoming too messy
-  const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const [mySearchesModalOpen, setMySearchesModalOpen] = useState(false);
-
-  // Event handlers are defined below / both are passed to Navbar as props
-  // handleMenuClick() reverses the state of menuOpen when the hamburger icon is clicked
-  function handleMenuClick() {
-    setMenuOpen(!menuOpen);
-  }
-
-  //handleAlertMenuClick() reverses the state of alertsOpen when the bell icon is clicked
-  function handleAlertMenuClick() {
-    setSubscribeOpen(!subscribeOpen);
-  }
+  const [modalOpen, setModalOpen] = useState<string | null>(null); //modalOpen can be null or a string
 
   return (
     <>
       <PageOverlay
         menuOpen={menuOpen}
-        subscribeOpen={subscribeOpen}
-        filterModalOpen={filterModalOpen}
-        mySearchesModalOpen={mySearchesModalOpen}
+        modalOpen={modalOpen}
         onClick={() => {
           setMenuOpen(false);
-          setSubscribeOpen(false);
-          setFilterModalOpen(false);
-          setMySearchesModalOpen(false);
+          setModalOpen(null);
         }}
       />
       <Navbar
-        onMenuClick={handleMenuClick}
-        onAlertsClick={handleAlertMenuClick}
+        onMenuClick={() => setMenuOpen(!menuOpen)}
+        onSubscribeClick={() => setModalOpen("subscribe")}
       />
       <MenuDrawer
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
-        onFilterClick={() => setFilterModalOpen(true)}
-        onMySearchesClick={() => setMySearchesModalOpen(true)}
+        onFilterClick={() => setModalOpen("filter")}
+        onMySearchesClick={() => setModalOpen("searches")}
       />
       <main>
         <AlertList />
@@ -62,17 +43,18 @@ export default function Home() {
         </div>
       </main>
       <Footer />
+      {/* if modalOpen === "subscribe" then isOpen={true}, which changes the ternary inside the component to apply the modal-container-visible CSS class. The same idea applies to the other modals */}
       <SubscribeModal
-        isOpen={subscribeOpen}
-        onClose={() => setSubscribeOpen(false)}
+        isOpen={modalOpen === "subscribe"}
+        onClose={() => setModalOpen(null)}
       />
       <FilterModal
-        isOpen={filterModalOpen}
-        onClose={() => setFilterModalOpen(false)}
+        isOpen={modalOpen === "filter"}
+        onClose={() => setModalOpen(null)}
       />
       <MySearchesModal
-        isOpen={mySearchesModalOpen}
-        onClose={() => setMySearchesModalOpen(false)}
+        isOpen={modalOpen === "searches"}
+        onClose={() => setModalOpen(null)}
       />
     </>
   );
@@ -85,23 +67,14 @@ export default function Home() {
 // Visibility of menuDrawer and AlertMenuModal are controlled with CSS classes and ternary operators (see component files)
 function PageOverlay({
   menuOpen,
-  subscribeOpen,
-  filterModalOpen,
-  mySearchesModalOpen,
+  modalOpen,
   onClick,
 }: {
   menuOpen: boolean;
-  subscribeOpen: boolean;
-  filterModalOpen: boolean;
-  mySearchesModalOpen: boolean;
+  modalOpen: string | null;
   onClick: () => void;
 }) {
-  if (
-    menuOpen === true ||
-    subscribeOpen === true ||
-    filterModalOpen ||
-    mySearchesModalOpen
-  ) {
+  if (menuOpen || modalOpen !== null) {
     return <div className="page-overlay" onClick={onClick}></div>;
   }
 }

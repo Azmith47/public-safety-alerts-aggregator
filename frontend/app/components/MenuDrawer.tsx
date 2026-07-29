@@ -1,6 +1,6 @@
 export default function MenuDrawer({
   isOpen, //The isOpen prop receives the state variable from page.tsx
-  onClose, //OnClose returns nothing and is defined in page.tsx
+  onClose, //Returns nothing and is defined in page.tsx
   onFilterClick,
   onMySearchesClick,
 }: {

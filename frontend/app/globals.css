@@ -22,7 +22,8 @@ nextjs-portal {
 
 /* VARIABLES */
 :root {
-  --nav-footer-bg-color: #1b2f6e;
+  /* --nav-footer-bg-color: #1b2f6e; */
+  --nav-footer-bg-color: black;
   --body-bg-color: #2e2e2e;
   --surface-color: #3a3a3a;
   --border-color: #555555;
