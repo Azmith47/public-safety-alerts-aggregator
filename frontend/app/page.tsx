@@ -1,10 +1,10 @@
 "use client";
-import AlertMenuModal from "./components/AlertMenuModal";
+import SubscribeModal from "./components/SubscribeModal";
 import Footer from "./components/Footer";
 import AlertList from "./components/AlertList";
 import Navbar from "./components/Navbar";
 import MenuDrawer from "./components/Drawer";
-import FilterArea from "./components/FilterArea";
+import FilterTabs from "./components/FilterTabs";
 import { useState } from "react";
 import GoogleMap from "./components/Map";
 
@@ -42,12 +42,12 @@ export default function Home() {
       <main>
         <AlertList />
         <div className="map-area">
-          <FilterArea />
+          <FilterTabs />
           <GoogleMap />
         </div>
       </main>
       <Footer />
-      <AlertMenuModal
+      <SubscribeModal
         isOpen={alertsOpen}
         onClose={() => setAlertsOpen(false)}
       />

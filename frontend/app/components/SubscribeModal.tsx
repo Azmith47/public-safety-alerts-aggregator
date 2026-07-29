@@ -1,4 +1,4 @@
-export default function AlertMenuModal({
+export default function SubscribeModal({
   isOpen, //The isOpen prop receives the state variable from page.tsx
   onClose, //OnClose returns nothing and is defined in page.tsx
 }: {
