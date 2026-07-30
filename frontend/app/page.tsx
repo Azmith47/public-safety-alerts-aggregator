@@ -9,6 +9,7 @@ import FilterTabs from "./components/FilterTabs";
 import GoogleMap from "./components/Map";
 import FilterModal from "./components/FilterModal";
 import MySearchesModal from "./components/MySearchesModal";
+import MyAlertsModal from "./components/MyAlertsModal";
 
 export default function Home() {
   //State variables
@@ -34,6 +35,7 @@ export default function Home() {
         onClose={() => setMenuOpen(false)}
         onFilterClick={() => setModalOpen("filter")}
         onMySearchesClick={() => setModalOpen("searches")}
+        onMyAlertsClick={() => setModalOpen("myAlerts")}
       />
       <main>
         <AlertList />
@@ -54,6 +56,10 @@ export default function Home() {
       />
       <MySearchesModal
         isOpen={modalOpen === "searches"}
+        onClose={() => setModalOpen(null)}
+      />
+      <MyAlertsModal
+        isOpen={modalOpen === "myAlerts"}
         onClose={() => setModalOpen(null)}
       />
     </>

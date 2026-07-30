@@ -50,6 +50,7 @@ export default function FilterModal({
           <option value="">Active</option>
           <option value="">Inactive</option>
         </select>
+        <button className="apply-btn">Filter</button>
       </form>
     </div>
   );

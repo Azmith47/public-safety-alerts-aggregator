@@ -3,11 +3,13 @@ export default function MenuDrawer({
   onClose, //Returns nothing and is defined in page.tsx
   onFilterClick,
   onMySearchesClick,
+  onMyAlertsClick,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onFilterClick: () => void;
   onMySearchesClick: () => void;
+  onMyAlertsClick: () => void;
 }) {
   return (
     //Visibility of the modal is determined by a ternary that swaps the CSS class
@@ -29,7 +31,9 @@ export default function MenuDrawer({
           </button>
         </li>
         <li>
-          <button className="drawer-menu-button">My Alerts</button>
+          <button className="drawer-menu-button" onClick={onMyAlertsClick}>
+            My Alerts
+          </button>
         </li>
       </ul>
     </div>

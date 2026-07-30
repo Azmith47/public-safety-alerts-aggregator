@@ -137,7 +137,18 @@ aside {
   overflow-x: hidden;
 }
 
-.alert-card {
+.alert-card-active {
+  background-color: var(--card-bg);
+  color: var(--body-bg-color);
+  border-radius: 5px;
+  position: relative;
+  margin: 0.8em 1.2em 0.8em 1.2em;
+  overflow: hidden;
+  text-align: left;
+}
+
+.alert-card-inactive {
+  opacity: 70%;
   background-color: var(--card-bg);
   color: var(--body-bg-color);
   border-radius: 5px;
@@ -148,10 +159,11 @@ aside {
 }
 
 .dot-active {
-  height: 15px;
-  width: 15px;
   background-color: #00fa9a;
-  border-radius: 50%;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-size: 0.8rem;
   /* Give span width/height without taking up the full width of the div*/
   display: inline-block;
   position: absolute;
@@ -160,11 +172,12 @@ aside {
 }
 
 .dot-inactive {
-  height: 15px;
-  width: 15px;
   background-color: #555555;
-  opacity: 70%;
-  border-radius: 50%;
+  color: white;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-size: 0.8rem;
   /* Give span width/height without taking up the full width of the div*/
   display: inline-block;
   position: absolute;
@@ -303,6 +316,15 @@ footer p {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   font-size: 0.9rem;
+}
+
+/* FILTER ALERTS MODAL */
+.apply-btn {
+  font-size: 0.9em;
+  width: fit-content;
+  margin: auto;
+  margin-top: 1.2em;
+  cursor: pointer;
 }
 
 /* OVERLAYS */
