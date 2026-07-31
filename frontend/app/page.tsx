@@ -67,10 +67,9 @@ export default function Home() {
 }
 
 // Page Overlay component
-// Is only visible if menuOpen OR alertsOpen (state variables) is true
-// On click the overlay sets BOTH menuOpen AND alertsOpen to false,
-// Closes menuDrawer and AlertMenuModal by clicking anywhere outside
-// Visibility of menuDrawer and AlertMenuModal are controlled with CSS classes and ternary operators (see component files)
+// Visible if menuOpen is true OR modalOpen is not null
+// Clicking the overlay sets menuOpen to false and modalOpen to null
+// Closes the drawer and any open modal when clicking outside
 function PageOverlay({
   menuOpen,
   modalOpen,

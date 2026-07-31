@@ -2,8 +2,6 @@
 // Hardcoded data needs to be replaced with API fetch (useEffect?)
 // Each AlertCard will receive JSON alert data as props
 
-import { text } from "stream/consumers";
-
 export default function AlertList() {
   return (
     <aside>
@@ -125,8 +123,7 @@ function AlertCard({
 }) {
   return (
     <article className={active ? "alert-card-active" : "alert-card-inactive"}>
-      {/* Commenting out the below line for accessibility reasons */}
-      {/* <span className={active ? "dot-active" : "dot-inactive"}></span> */}
+      {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
       <span className={active ? "dot-active" : "dot-inactive"}>
         {active ? "Active" : "Inactive"}
       </span>

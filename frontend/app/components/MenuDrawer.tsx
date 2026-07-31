@@ -21,6 +21,7 @@ export default function MenuDrawer({
       </div>
       <ul>
         <li>
+          {/* The onClick functions are defined in page.tsx. Each onClick uses the setModalOpen function to change the value of modalOpen to the corresponding modal, for example clicking Filter changes the value of modalOpen to 'filter', which evaluates to isOpen={true}. This changes the CSS class of the modal to modal-container-visible via the ternary statement   */}
           <button className="drawer-menu-button" onClick={onFilterClick}>
             Filter
           </button>
