@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
-import SubscribeModal from "./components/SubscribeModal";
-import Footer from "./components/Footer";
-import AlertList from "./components/AlertList";
 import Navbar from "./components/Navbar";
 import MenuDrawer from "./components/MenuDrawer";
 import FilterTabs from "./components/FilterTabs";
+import AlertList from "./components/AlertList";
 import GoogleMap from "./components/Map";
-import FilterModal from "./components/FilterModal";
-import MySearchesModal from "./components/MySearchesModal";
-import MyAlertsModal from "./components/MyAlertsModal";
+import Footer from "./components/Footer";
+import FilterModal from "./components/modals/FilterModal";
+import MySearchesModal from "./components/modals/MySearchesModal";
+import MyAlertsModal from "./components/modals/MyAlertsModal";
+import SubscribeModal from "./components/modals/SubscribeModal";
 
 export default function Home() {
   //State variables

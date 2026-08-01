@@ -160,6 +160,8 @@ aside {
 
 .dot-active {
   background-color: #00fa9a;
+  color: black;
+  font-weight: 650;
   width: fit-content;
   border-radius: 999px;
   padding: 0.3em 0.8em;
@@ -174,6 +176,7 @@ aside {
 .dot-inactive {
   background-color: #555555;
   color: white;
+  font-weight: 650;
   width: fit-content;
   border-radius: 999px;
   padding: 0.3em 0.8em;

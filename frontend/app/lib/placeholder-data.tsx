@@ -1,0 +1,76 @@
+export type Alert = {
+  id: number;
+  title: string;
+  type: string;
+  category: string;
+  alertLocation: { region: string; suburb: string };
+  datePublished: string;
+  active: boolean;
+};
+
+//alerts is an array that must match the Alert type (defined above)
+export const alerts: Alert[] = [
+  {
+    id: 1,
+    title: "Changed traffic conditions Mamre Road upgrade",
+    type: "traffic",
+    category: "Changed traffic conditions",
+    alertLocation: { region: "Sydney", suburb: "St Clair to Erskine Park" },
+    datePublished: "18 hours ago",
+    active: false,
+  },
+  {
+    id: 2,
+    title: "Flood Watch - Hawkesbury River",
+    type: "flood",
+    category: "Flood Watch",
+    alertLocation: { region: "Hawkesbury", suburb: "Windsor" },
+    datePublished: "2 hours ago",
+    active: true,
+  },
+  {
+    id: 3,
+    title: "Bush Fire Warning - Blue Mountains",
+    type: "fire",
+    category: "Bush Fire Warning",
+    alertLocation: { region: "Blue Mountains", suburb: "Katoomba" },
+    datePublished: "45 minutes ago",
+    active: true,
+  },
+  {
+    id: 4,
+    title: "Severe Thunderstorm Warning",
+    type: "storm",
+    category: "Severe Thunderstorm Warning",
+    alertLocation: { region: "Newcastle", suburb: "Cessnock" },
+    datePublished: "5 hours ago",
+    active: true,
+  },
+  {
+    id: 5,
+    title: "Road Closure - Pacific Highway",
+    type: "traffic",
+    category: "Road Closure",
+    alertLocation: { region: "Central Coast", suburb: "Gosford" },
+    datePublished: "30 minutes ago",
+    active: true,
+  },
+  {
+    id: 6,
+    title: "Bush Fire Emergency - Ku-ring-gai",
+    type: "fire",
+    category: "Bush Fire Emergency Warning",
+    alertLocation: { region: "Northern Sydney", suburb: "Turramurra" },
+    datePublished: "20 minutes ago",
+    active: false,
+  },
+  {
+    id: 7,
+    title: "Lane Closure - M1 Motorway Northbound",
+    type: "traffic",
+    category: "Lane Closure",
+    alertLocation: { region: "Sydney", suburb: "Berowra" },
+    datePublished: "3 hours ago",
+    active: true,
+  },
+];
