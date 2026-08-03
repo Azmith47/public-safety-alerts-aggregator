@@ -1,15 +1,5 @@
-export type Alert = {
-  id: number;
-  title: string;
-  type: string;
-  category: string;
-  alertLocation: { region: string; suburb: string };
-  datePublished: string;
-  active: boolean;
-};
-
 //alerts is an array that must match the Alert type (defined above)
-export const alerts: Alert[] = [
+export const alerts = [
   {
     id: 1,
     title: "Changed traffic conditions Mamre Road upgrade",

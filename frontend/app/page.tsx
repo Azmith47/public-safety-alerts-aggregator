@@ -10,6 +10,7 @@ import FilterModal from "./components/modals/FilterModal";
 import MySearchesModal from "./components/modals/MySearchesModal";
 import MyAlertsModal from "./components/modals/MyAlertsModal";
 import SubscribeModal from "./components/modals/SubscribeModal";
+import { PageOverlayProps } from "./lib/definitions";
 
 export default function Home() {
   //State variables
@@ -70,15 +71,7 @@ export default function Home() {
 // Visible if menuOpen is true OR modalOpen is not null
 // Clicking the overlay sets menuOpen to false and modalOpen to null
 // Closes the drawer and any open modal when clicking outside
-function PageOverlay({
-  menuOpen,
-  modalOpen,
-  onClick,
-}: {
-  menuOpen: boolean;
-  modalOpen: string | null;
-  onClick: () => void;
-}) {
+function PageOverlay({ menuOpen, modalOpen, onClick }: PageOverlayProps) {
   if (menuOpen || modalOpen !== null) {
     return <div className="page-overlay" onClick={onClick}></div>;
   }

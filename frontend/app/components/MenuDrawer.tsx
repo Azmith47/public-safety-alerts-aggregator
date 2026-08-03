@@ -1,16 +1,12 @@
+import { MenuDrawerProps } from "../lib/definitions";
+
 export default function MenuDrawer({
   isOpen, //The isOpen prop receives the state variable from page.tsx
   onClose, //Returns nothing and is defined in page.tsx
   onFilterClick,
   onMySearchesClick,
   onMyAlertsClick,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onFilterClick: () => void;
-  onMySearchesClick: () => void;
-  onMyAlertsClick: () => void;
-}) {
+}: MenuDrawerProps) {
   return (
     //Visibility of the modal is determined by a ternary that swaps the CSS class
     //The drawer is hidden unless isOpen is true

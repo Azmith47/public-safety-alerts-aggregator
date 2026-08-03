@@ -1,14 +1,9 @@
+import { ModalProps } from "@/app/lib/definitions";
+
 // Collection of alerts
 // Saved when the user ticks the 'subscribe to this alert' checkbox?
 // I'm not sure how to do this yet
-
-export default function MyAlertsModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function MyAlertsModal({ isOpen, onClose }: ModalProps) {
   return (
     //Visibility of the modal is determined by a ternary that swaps the CSS class
     //The modal is hidden unless isOpen is true

@@ -1,13 +1,8 @@
+import { ModalProps } from "@/app/lib/definitions";
+
 // Collection of saved filter "phrases"
 // I'm not sure how to do this yet
-
-export default function MySearchesModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function MySearchesModal({ isOpen, onClose }: ModalProps) {
   return (
     //Visibility of the modal is determined by a ternary that swaps the CSS class
     //The modal is hidden unless isOpen is true

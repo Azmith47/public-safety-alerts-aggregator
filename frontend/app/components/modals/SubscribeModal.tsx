@@ -1,13 +1,10 @@
+import { ModalProps } from "@/app/lib/definitions";
+
 //Area where the user can subscribe to general alerts
 //Any new email matching the alert will trigger a notification via email
-
-export default function SubscribeModal({
-  isOpen, //The isOpen prop receives the state variable from page.tsx
-  onClose, //OnClose returns nothing and is defined in page.tsx
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+//The isOpen prop receives the state variable from page.tsx
+//OnClose returns nothing and is defined in page.tsx
+export default function SubscribeModal({ isOpen, onClose }: ModalProps) {
   return (
     <div
       //Visibility of the modal is determined by a ternary that swaps the CSS class

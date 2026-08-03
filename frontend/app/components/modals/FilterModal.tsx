@@ -1,13 +1,8 @@
+import { ModalProps } from "@/app/lib/definitions";
+
 // Filter component
 // Fields need to be confirmed, everything below is placeholder
-
-export default function FilterModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function FilterModal({ isOpen, onClose }: ModalProps) {
   return (
     //Visibility of the modal is determined by a ternary that swaps the CSS class
     //The modal is hidden unless isOpen is true

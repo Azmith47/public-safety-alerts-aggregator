@@ -1,9 +1,9 @@
+import { alerts } from "../lib/placeholder-data";
+import { AlertCardProps } from "../lib/definitions";
+
 // The alert data was hardcoded for the prototype
 // Hardcoded data needs to be replaced with API fetch (useEffect?)
 // Each AlertCard will receive JSON alert data as props
-
-import { alerts } from "../lib/placeholder-data";
-
 export default function AlertList() {
   return (
     <aside>
@@ -21,21 +21,13 @@ export default function AlertList() {
 
 // Renders the AlertCard
 // Category is passed as a prop but not displayed due to size constraints
-
 function AlertCard({
   title,
   type,
-  alertLocation: { region, suburb }, //placeholder for proper backend location data
+  alertLocation: { region, suburb },
   datePublished,
   active,
-}: {
-  title: string;
-  type: string;
-  category: string;
-  alertLocation: { region: string; suburb: string };
-  datePublished: string;
-  active: boolean;
-}) {
+}: AlertCardProps) {
   return (
     <article className={active ? "alert-card-active" : "alert-card-inactive"}>
       {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
@@ -61,7 +53,6 @@ function AlertCard({
 // Renders a different .svg icon determined by the type prop passed to the AlertCard
 // A switch statement could be more appropriate
 // The icons are are placeholder - needs to be discussed by the team
-
 function getIcon(type: string) {
   if (type === "traffic")
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
