@@ -1,4 +1,10 @@
 import { ModalProps } from "@/app/lib/definitions";
+import {
+  agencies,
+  incidentTypes,
+  regions,
+  statuses,
+} from "@/app/lib/placeholder-data";
 
 // Filter component
 // Fields need to be confirmed, everything below is placeholder
@@ -14,36 +20,30 @@ export default function FilterModal({ isOpen, onClose }: ModalProps) {
         <button onClick={onClose}>✕</button>
       </div>
       <h4>Filter alerts:</h4>
-      {/* The following form options are placeholders */}
       <form action="" className="modal-form">
-        {/* Agency */}
         <label htmlFor="">Agency</label>
         <select name="" id="">
-          <option value="">NSW Rural Fire Service (RFS)</option>
-          <option value="">Transport for New South Wales</option>
-          <option value="">NSW State Emergency Service (SES)</option>
+          {agencies.map((agency) => (
+            <option value={agency}>{agency}</option>
+          ))}
         </select>
-        {/* Incident Type */}
         <label htmlFor="">Incident Type</label>
         <select name="" id="">
-          <option value="">Fire</option>
-          <option value="">Flood</option>
-          <option value="">Road</option>
-          <option value="">Etc.</option>
+          {incidentTypes.map((incident) => (
+            <option value={incident}>{incident}</option>
+          ))}
         </select>
-        {/* Region */}
         <label htmlFor="">Region</label>
         <select name="" id="">
-          <option value="">Sydney</option>
-          <option value="">Hornsby Shire</option>
-          <option value="">The Hills Shire</option>
-          <option value="">Etc.</option>
+          {regions.map((region) => (
+            <option value={region}>{region}</option>
+          ))}
         </select>
-        {/* Status */}
         <label htmlFor="">Status</label>
         <select name="" id="">
-          <option value="">Active</option>
-          <option value="">Inactive</option>
+          {statuses.map((status) => (
+            <option value={status}>{status}</option>
+          ))}
         </select>
         <button className="apply-btn">Filter</button>
       </form>

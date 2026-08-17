@@ -2,6 +2,15 @@
 import { NavbarProps } from "../lib/definitions";
 import { IconButtonProps } from "../lib/definitions";
 
+//Button component(s)
+function IconButton({ onClick, icon, alt }: IconButtonProps) {
+  return (
+    <button onClick={onClick}>
+      <img className="nav-icon" src={icon} alt={alt} />
+    </button>
+  );
+}
+
 //Passing onMenuClick as a prop
 export default function Navbar({ onMenuClick, onSubscribeClick }: NavbarProps) {
   return (
@@ -28,16 +37,5 @@ export default function Navbar({ onMenuClick, onSubscribeClick }: NavbarProps) {
         />
       </div>
     </nav>
-  );
-}
-
-//Note: Button/drawer would normally be in separate files but they are only used once in this project
-
-//Button component(s)
-function IconButton({ onClick, icon, alt }: IconButtonProps) {
-  return (
-    <button onClick={onClick}>
-      <img className="nav-icon" src={icon} alt={alt} />
-    </button>
   );
 }

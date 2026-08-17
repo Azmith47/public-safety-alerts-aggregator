@@ -64,3 +64,15 @@ export const alerts = [
     active: true,
   },
 ];
+
+//Filter Modal Placeholder data
+
+export const agencies = [
+  "NSW Rural Fire Service (RFS)",
+  "Transport for New South Wales",
+  "NSW State Emergency Service (SES)",
+];
+
+export const incidentTypes = ["Fire", "Flood", "Roadwork"];
+export const regions = ["Greater Sydney", "Hornsby Shire", "The Hills Shire"];
+export const statuses = ["Active", "Inactive"];

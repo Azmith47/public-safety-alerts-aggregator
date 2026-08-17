@@ -8,12 +8,8 @@ export type Alert = {
   active: boolean;
 };
 
-export type AlertCardProps = {
-  title: string;
-  type: string;
-  alertLocation: { region: string; suburb: string };
-  datePublished: string;
-  active: boolean;
+export type AlertListProps = {
+  onAlertClick: (alert: Alert) => void;
 };
 
 export type MenuDrawerProps = {

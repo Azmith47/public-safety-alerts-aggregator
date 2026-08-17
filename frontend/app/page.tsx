@@ -10,12 +10,14 @@ import FilterModal from "./components/modals/FilterModal";
 import MySearchesModal from "./components/modals/MySearchesModal";
 import MyAlertsModal from "./components/modals/MyAlertsModal";
 import SubscribeModal from "./components/modals/SubscribeModal";
-import { PageOverlayProps } from "./lib/definitions";
+import { PageOverlayProps, Alert } from "./lib/definitions";
+import DetailedModal from "./components/modals/DetailedModal";
 
 export default function Home() {
   //State variables
-  const [menuOpen, setMenuOpen] = useState(false); //belongs menu (opened via hamburger icon)
+  const [menuOpen, setMenuOpen] = useState(false); //belongs to menu (opened via hamburger icon)
   const [modalOpen, setModalOpen] = useState<string | null>(null); //modalOpen can be null or a string
+  const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
 
   return (
     <>
@@ -39,10 +41,15 @@ export default function Home() {
         onMyAlertsClick={() => setModalOpen("myAlerts")}
       />
       <main>
-        <AlertList />
+        <AlertList
+          onAlertClick={(alert) => {
+            setSelectedAlert(alert);
+            setModalOpen("detailed");
+          }}
+        />
         <div className="map-area">
           <FilterTabs />
-          <GoogleMap />
+          {/* <GoogleMap /> */}
         </div>
       </main>
       <Footer />
@@ -62,6 +69,11 @@ export default function Home() {
       <MyAlertsModal
         isOpen={modalOpen === "myAlerts"}
         onClose={() => setModalOpen(null)}
+      />
+      <DetailedModal
+        isOpen={modalOpen === "detailed"}
+        onClose={() => setModalOpen(null)}
+        alert={selectedAlert}
       />
     </>
   );

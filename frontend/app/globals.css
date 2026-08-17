@@ -4,7 +4,6 @@ body {
   flex-direction: column;
   height: 100vh;
   background-color: var(--body-bg-color);
-  color: var(--text-primary);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -52,6 +51,7 @@ nav {
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: 0.05em;
+  color: var(--text-primary);
 }
 
 nav button {
@@ -145,6 +145,7 @@ aside {
   margin: 0.8em 1.2em 0.8em 1.2em;
   overflow: hidden;
   text-align: left;
+  cursor: pointer;
 }
 
 .alert-card-inactive {
@@ -319,6 +320,37 @@ footer p {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   font-size: 0.9rem;
+}
+
+/* DETAILED MODALS */
+.detail-modal-container-visible {
+  position: fixed;
+  left: 60%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 2em;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.data-grid {
+  display: flex;
+}
+
+.labels {
+  width: 30%;
+}
+
+.labels p {
+  font-weight: bold;
+}
+
+.data {
+  padding-left: 1em;
+  width: 70%;
 }
 
 /* FILTER ALERTS MODAL */
