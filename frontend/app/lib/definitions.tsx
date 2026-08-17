@@ -8,8 +8,21 @@ export type Alert = {
   active: boolean;
 };
 
+export type AlertFilters = {
+  type: string | null;
+  active: boolean | null;
+};
+
 export type AlertListProps = {
+  alerts: Alert[];
   onAlertClick: (alert: Alert) => void;
+};
+
+export type FilterModalProps = {
+  initialFilters: AlertFilters;
+  onApply: (filters: AlertFilters) => void;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
 export type MenuDrawerProps = {

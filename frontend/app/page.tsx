@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { alerts } from "./lib/placeholder-data";
 import Navbar from "./components/Navbar";
 import MenuDrawer from "./components/MenuDrawer";
 import FilterTabs from "./components/FilterTabs";
@@ -10,7 +11,7 @@ import FilterModal from "./components/modals/FilterModal";
 import MySearchesModal from "./components/modals/MySearchesModal";
 import MyAlertsModal from "./components/modals/MyAlertsModal";
 import SubscribeModal from "./components/modals/SubscribeModal";
-import { PageOverlayProps, Alert } from "./lib/definitions";
+import { PageOverlayProps, Alert, AlertFilters } from "./lib/definitions";
 import DetailedModal from "./components/modals/DetailedModal";
 
 export default function Home() {
@@ -18,6 +19,23 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false); //belongs to menu (opened via hamburger icon)
   const [modalOpen, setModalOpen] = useState<string | null>(null); //modalOpen can be null or a string
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
+  const [filters, setFilters] = useState<AlertFilters>({
+    active: null,
+    type: null,
+  });
+
+  //Store filtered alert
+  const filteredAlerts = useMemo(() => {
+    return alerts.filter((alert) => {
+      if (filters.active !== null && filters.active !== alert.active) {
+        return false;
+      }
+      if (filters.type !== null && filters.type !== alert.type) {
+        return false;
+      }
+      return true;
+    });
+  }, [filters]);
 
   return (
     <>
@@ -42,6 +60,7 @@ export default function Home() {
       />
       <main>
         <AlertList
+          alerts={filteredAlerts}
           onAlertClick={(alert) => {
             setSelectedAlert(alert);
             setModalOpen("detailed");
@@ -58,10 +77,6 @@ export default function Home() {
         isOpen={modalOpen === "subscribe"}
         onClose={() => setModalOpen(null)}
       />
-      <FilterModal
-        isOpen={modalOpen === "filter"}
-        onClose={() => setModalOpen(null)}
-      />
       <MySearchesModal
         isOpen={modalOpen === "searches"}
         onClose={() => setModalOpen(null)}
@@ -74,6 +89,16 @@ export default function Home() {
         isOpen={modalOpen === "detailed"}
         onClose={() => setModalOpen(null)}
         alert={selectedAlert}
+      />
+      <FilterModal
+        initialFilters={filters}
+        isOpen={modalOpen === "filter"}
+        onApply={(newFilters) => {
+          setFilters(newFilters);
+          setModalOpen(null);
+          setMenuOpen(false);
+        }}
+        onClose={() => setModalOpen(null)}
       />
     </>
   );

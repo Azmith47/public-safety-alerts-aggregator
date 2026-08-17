@@ -1,4 +1,5 @@
-import { ModalProps } from "@/app/lib/definitions";
+import { AlertFilters, FilterModalProps } from "@/app/lib/definitions";
+import { useState } from "react";
 import {
   agencies,
   incidentTypes,
@@ -6,46 +7,75 @@ import {
   statuses,
 } from "@/app/lib/placeholder-data";
 
-// Filter component
-// Fields need to be confirmed, everything below is placeholder
-export default function FilterModal({ isOpen, onClose }: ModalProps) {
+//takes string and converts it to either null/true/false
+function convertActiveToString(value: string): boolean | null {
+  if (value === "") {
+    return null;
+  } else if (value === "true") {
+    return true;
+  }
+  return false;
+}
+
+export default function FilterModal({
+  initialFilters,
+  onApply,
+  isOpen,
+  onClose,
+}: FilterModalProps) {
+  const [localFilters, setLocalFilters] =
+    useState<AlertFilters>(initialFilters);
+
   return (
-    //Visibility of the modal is determined by a ternary that swaps the CSS class
-    //The modal is hidden unless isOpen is true
     <div
       className={isOpen ? "modal-container-visible" : "modal-container-hidden"}
     >
       <div className="modal-header">
-        {/* Sets isOpen to false, changing the CSS class to modal-container-hidden */}
         <button onClick={onClose}>✕</button>
       </div>
       <h4>Filter alerts:</h4>
       <form action="" className="modal-form">
-        <label htmlFor="">Agency</label>
-        <select name="" id="">
-          {agencies.map((agency) => (
-            <option value={agency}>{agency}</option>
-          ))}
+        <label htmlFor="">Incident Status</label>
+        <select
+          value={
+            localFilters.active === null
+              ? ""
+              : localFilters.active
+                ? "true"
+                : "false"
+          }
+          onChange={(e) => {
+            const value = convertActiveToString(e.target.value);
+            setLocalFilters((prev) => ({ ...prev, active: value }));
+          }}
+        >
+          <option value="">-</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
         </select>
-        <label htmlFor="">Incident Type</label>
-        <select name="" id="">
-          {incidentTypes.map((incident) => (
-            <option value={incident}>{incident}</option>
-          ))}
+        <label htmlFor="">Incident type</label>
+        <select
+          value={localFilters.type ?? ""}
+          onChange={(e) => {
+            const value = e.target.value === "" ? null : e.target.value;
+            setLocalFilters((prev) => ({ ...prev, type: value }));
+          }}
+        >
+          <option value="">-</option>
+          <option value="traffic">Traffic</option>
+          <option value="fire">Fire</option>
+          <option value="storm">Storm</option>
+          <option value="flood">Flood</option>
         </select>
-        <label htmlFor="">Region</label>
-        <select name="" id="">
-          {regions.map((region) => (
-            <option value={region}>{region}</option>
-          ))}
-        </select>
-        <label htmlFor="">Status</label>
-        <select name="" id="">
-          {statuses.map((status) => (
-            <option value={status}>{status}</option>
-          ))}
-        </select>
-        <button className="apply-btn">Filter</button>
+        <button
+          type="button"
+          className="apply-btn"
+          onClick={() => {
+            onApply(localFilters);
+          }}
+        >
+          Filter
+        </button>
       </form>
     </div>
   );

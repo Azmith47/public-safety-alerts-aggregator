@@ -52,14 +52,13 @@ function AlertCard({
 // The alert data was hardcoded for the prototype
 // Hardcoded data needs to be replaced with API fetch (useEffect?)
 // Each AlertCard will receive JSON alert data as props
-export default function AlertList({ onAlertClick }: AlertListProps) {
+export default function AlertList({ alerts, onAlertClick }: AlertListProps) {
   return (
     <aside>
       <ul>
         {alerts.map((alert) => (
           <li key={alert.id}>
-            {/* used spread operator to copy all the alert properties to AlertCard as props - otherwise we'd be typing them all manually */}
-            <AlertCard {...alert} onAlertClick={onAlertClick} alert={alert} />
+            <AlertCard onAlertClick={onAlertClick} alert={alert} />
           </li>
         ))}
       </ul>
