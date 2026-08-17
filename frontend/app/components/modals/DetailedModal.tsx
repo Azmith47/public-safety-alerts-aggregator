@@ -20,7 +20,7 @@ export default function DetailedModal({
       <div className="modal-header">
         <button onClick={onClose}>✕</button>
       </div>
-      <h4>{alert.title}</h4>
+      <h4 style={{ textAlign: "center" }}>{alert.title}</h4>
       <div className="data-grid">
         <article className="labels">
           <p>Type:</p>
