@@ -4,12 +4,6 @@ import {
   FilterModalProps,
 } from "@/app/lib/definitions";
 import { useState } from "react";
-import {
-  agencies,
-  incidentTypes,
-  regions,
-  statuses,
-} from "@/app/lib/placeholder-data";
 
 //Conver string to null | true |false
 function convertActiveToString(value: string): boolean | null {

@@ -67,6 +67,7 @@ export default function Home() {
           }}
         />
         <div className="map-area">
+          {/* <FilterTabs filters={filters} /> */}
           <FilterTabs filters={filters} />
           {/* <GoogleMap /> */}
         </div>

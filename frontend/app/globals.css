@@ -338,6 +338,15 @@ footer p {
 
 .data-grid {
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-me {
+  display: block;
+  border: 1px solid black;
+  background-color: #00fa9a;
+  flex: 0;
 }
 
 .labels {
