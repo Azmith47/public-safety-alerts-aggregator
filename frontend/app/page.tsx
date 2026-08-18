@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { alerts } from "./lib/placeholder-data";
 import Navbar from "./components/Navbar";
 import MenuDrawer from "./components/MenuDrawer";
-import FilterTabs from "./components/FilterTabs";
+import { FilterTabs } from "./components/modals/FilterModal";
 import AlertList from "./components/AlertList";
 import GoogleMap from "./components/Map";
 import Footer from "./components/Footer";
@@ -67,7 +67,7 @@ export default function Home() {
           }}
         />
         <div className="map-area">
-          <FilterTabs />
+          <FilterTabs filters={filters} />
           {/* <GoogleMap /> */}
         </div>
       </main>

@@ -1,3 +1,5 @@
+//Alert & Filter prop types
+
 export type Alert = {
   id: number;
   title: string;
@@ -8,15 +10,19 @@ export type Alert = {
   active: boolean;
 };
 
+export type AlertListProps = {
+  alerts: Alert[];
+  onAlertClick: (alert: Alert) => void;
+};
+
 export type AlertFilters = {
   type: string | null;
   active: boolean | null;
 };
 
-export type AlertListProps = {
-  alerts: Alert[];
-  onAlertClick: (alert: Alert) => void;
-};
+export type FilterKey = keyof AlertFilters;
+
+//Modal prop types
 
 export type FilterModalProps = {
   initialFilters: AlertFilters;
@@ -24,6 +30,13 @@ export type FilterModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+export type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+//General component prop types
 
 export type MenuDrawerProps = {
   isOpen: boolean;
@@ -48,9 +61,4 @@ export type PageOverlayProps = {
   menuOpen: boolean;
   modalOpen: string | null;
   onClick: () => void;
-};
-
-export type ModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
 };

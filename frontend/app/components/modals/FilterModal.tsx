@@ -1,4 +1,8 @@
-import { AlertFilters, FilterModalProps } from "@/app/lib/definitions";
+import {
+  AlertFilters,
+  FilterKey,
+  FilterModalProps,
+} from "@/app/lib/definitions";
 import { useState } from "react";
 import {
   agencies,
@@ -7,7 +11,7 @@ import {
   statuses,
 } from "@/app/lib/placeholder-data";
 
-//takes string and converts it to either null/true/false
+//Conver string to null | true |false
 function convertActiveToString(value: string): boolean | null {
   if (value === "") {
     return null;
@@ -17,6 +21,39 @@ function convertActiveToString(value: string): boolean | null {
   return false;
 }
 
+//TODO: This is too repetitive as number of filters increases
+//Replace "if" block with Object.entries(filters)
+//For labels use a simple object as a lookup table
+export function FilterTabs({ filters }: { filters: AlertFilters }) {
+  const selectedFilters: { key: FilterKey; label: string }[] = [];
+
+  if (filters.active !== null) {
+    selectedFilters.push({
+      key: "active",
+      label: filters.active ? "Active" : "Inactive",
+    });
+  }
+
+  if (filters.type !== null) {
+    selectedFilters.push({
+      key: "type",
+      label: filters.type,
+    });
+  }
+  return (
+    <div className="filter-bar">
+      {selectedFilters.map((filter) => (
+        <div className="filter-items" key={filter.key}>
+          <span>{filter.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+//TODO: Options are hardcoded (won't scale)
+//Loop over an array of options
+//Use .map() to generate <option> tags
 export default function FilterModal({
   initialFilters,
   onApply,
