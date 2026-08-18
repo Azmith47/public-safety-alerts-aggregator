@@ -1,4 +1,3 @@
-//alerts is an array that must match the Alert type (defined above)
 export const alerts = [
   {
     id: 1,
@@ -65,8 +64,7 @@ export const alerts = [
   },
 ];
 
-//Filter Modal Placeholder data
-
+//Filter Modal Placeholder data - DELETE
 export const agencies = [
   "NSW Rural Fire Service (RFS)",
   "Transport for New South Wales",

@@ -1,10 +1,8 @@
-import { alerts } from "../lib/placeholder-data";
-import { AlertListProps } from "../lib/definitions";
-import { Alert } from "../lib/definitions";
+import { AlertListProps, Alert } from "../lib/definitions";
 
-// Renders a different .svg icon determined by the type prop passed to the AlertCard
+// Renders a different .svg icon determined by alert type
 // A switch statement could be more appropriate
-// The icons are are placeholder - needs to be discussed by the team
+// The icons are are placeholder
 function getIcon(type: string) {
   if (type === "traffic")
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
@@ -49,7 +47,6 @@ function AlertCard({
   );
 }
 
-// The alert data was hardcoded for the prototype
 // Hardcoded data needs to be replaced with API fetch (useEffect?)
 // Each AlertCard will receive JSON alert data as props
 export default function AlertList({ alerts, onAlertClick }: AlertListProps) {

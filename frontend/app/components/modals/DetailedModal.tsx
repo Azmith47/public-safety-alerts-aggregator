@@ -1,7 +1,7 @@
 import { Alert } from "@/app/lib/definitions";
 
 //TODO: Display different modals for fire & traffic
-//This method DOES NOT scale well
+//Current method DOES NOT scale well
 export default function DetailedModal({
   isOpen,
   onClose,

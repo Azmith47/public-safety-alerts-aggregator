@@ -1,7 +1,7 @@
 "use client";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
-//IMPORTANT: API key is currently stored in gitignore
+//API key is currently stored in gitignore
 export default function GoogleMap() {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!;
   // Uncomment the line below to debug API Key
