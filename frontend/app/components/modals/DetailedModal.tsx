@@ -77,7 +77,10 @@ export default function DetailedModal({
           </p>
           <div className="subscribe-section">
             <p>Click to subscribe</p>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              onChange={() => console.log("alert clicked")}
+            />
           </div>
         </>
       )}

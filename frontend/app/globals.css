@@ -256,6 +256,9 @@ aside {
 
 /* FOOTER */
 footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: var(--nav-footer-bg-color);
   color: var(--text-primary);
   height: 3.5em;
@@ -263,6 +266,7 @@ footer {
 
 footer p {
   margin-left: 3em;
+  margin-right: 3em;
 }
 
 /* MODALS */
@@ -310,6 +314,10 @@ footer p {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+.modal-form button {
+  width: 100px;
 }
 
 .modal-form label {

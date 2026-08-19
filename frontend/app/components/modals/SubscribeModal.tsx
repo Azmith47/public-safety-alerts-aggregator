@@ -27,6 +27,12 @@ export default function SubscribeModal({ isOpen, onClose }: ModalProps) {
         </select>
         <label htmlFor="email">Email</label>
         <textarea></textarea>
+        <button
+          style={{ margin: "auto", marginTop: "1rem", fontSize: "0.9rem" }}
+          type="button"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
