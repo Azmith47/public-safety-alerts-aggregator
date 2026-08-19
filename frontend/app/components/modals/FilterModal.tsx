@@ -24,7 +24,7 @@ export function FilterTabs({ filters }: { filters: AlertFilters }) {
   if (filters.active !== null) {
     selectedFilters.push({
       key: "active",
-      label: filters.active ? "Active" : "Inactive",
+      label: filters.active ? "active" : "inactive",
     });
   }
 
