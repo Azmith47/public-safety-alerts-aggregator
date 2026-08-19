@@ -23,49 +23,55 @@ export default function DetailedModal({
       </div>
       <h4>{alert.title}</h4>
       {alert.type === "fire" ? (
-        <div className="data-grid">
-          <article className="labels">
-            <p>Type:</p>
-            <p>Category:</p>
-            <p>Region:</p>
-            <p>Suburb:</p>
-            <p>Date Published:</p>
+        <>
+          <article className="modal-grid">
+            <span className="modal-label">Type:</span>
+            <span>{alert.type}</span>
+            <span className="modal-label">Category:</span>
+            <span>{alert.category}</span>
+            <span className="modal-label">Region:</span>
+            <span>{alert.alertLocation.region}</span>
+            <span className="modal-label">Suburb:</span>
+            <span>{alert.alertLocation.suburb}</span>
+            <span className="modal-label">Date Published:</span>
+            <span>{alert.datePublished}</span>
           </article>
-          <article className="data">
-            <p>{alert.type}</p>
-            <p>{alert.category}</p>
-            <p>{alert.alertLocation.region}</p>
-            <p>{alert.alertLocation.suburb}</p>
-            <p>{alert.datePublished}</p>
-          </article>
-          <p style={{ color: "red", fontWeight: "bold" }}>
-            This is the view for a fire alert
+          <p
+            style={{
+              color: "red",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginTop: "3rem",
+            }}
+          >
+            This is the view for fire alert
           </p>
-        </div>
+        </>
       ) : (
-        <div className="data-grid">
-          <article className="labels">
-            <p>Type:</p>
-            <p>Category:</p>
-            <p>Region:</p>
-            <p>Suburb:</p>
-            <p>Date Published:</p>
-            <p>Road:</p>
-            <p>Cross Road: </p>
+        <>
+          <article className="modal-grid">
+            <span className="modal-label">Type:</span>
+            <span>{alert.type}</span>
+            <span className="modal-label">Category:</span>
+            <span>{alert.category}</span>
+            <span className="modal-label">Region:</span>
+            <span>{alert.alertLocation.region}</span>
+            <span className="modal-label">Suburb:</span>
+            <span>{alert.alertLocation.suburb}</span>
+            <span className="modal-label">Date Published:</span>
+            <span>{alert.datePublished}</span>
           </article>
-          <article className="data">
-            <p>{alert.type}</p>
-            <p>{alert.category}</p>
-            <p>{alert.alertLocation.region}</p>
-            <p>{alert.alertLocation.suburb}</p>
-            <p>{alert.datePublished}</p>
-            <p>bla bla</p>
-            <p>bla bla</p>
-          </article>
-          <p style={{ color: "green", fontWeight: "bold" }}>
+          <p
+            style={{
+              color: "green",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginTop: "3rem",
+            }}
+          >
             This is the view for any other type of element
           </p>
-        </div>
+        </>
       )}
     </div>
   );

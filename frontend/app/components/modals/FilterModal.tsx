@@ -35,7 +35,7 @@ export function FilterTabs({ filters }: { filters: AlertFilters }) {
     });
   }
   return (
-    <div className="filter-bar">
+    <div className={selectedFilters.length > 0 ? "filter-bar" : ""}>
       {selectedFilters.map((filter) => (
         <div className="filter-items" key={filter.key}>
           <span>{filter.label}</span>
