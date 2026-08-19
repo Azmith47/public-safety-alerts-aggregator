@@ -59,7 +59,11 @@ CREATE TABLE IF NOT EXISTS users (
 -- Alerts
 CREATE TABLE IF NOT EXISTS alerts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+<<<<<<< Updated upstream
     external_id TEXT UNIQUE,
+=======
+    external_id TEXT NOT NULL,
+>>>>>>> Stashed changes
     title TEXT NOT NULL,
     description TEXT,
     category_id INTEGER,
@@ -76,8 +80,15 @@ CREATE TABLE IF NOT EXISTS alerts (
     delay INTEGER DEFAULT 0,
     start_date DATETIME,
     end_date DATETIME,
+<<<<<<< Updated upstream
     raw_payload TEXT,
 
+=======
+    is_active BOOLEAN DEFAULT TRUE,
+    raw_payload TEXT,
+
+    UNIQUE(external_id, source_id),
+>>>>>>> Stashed changes
     FOREIGN KEY (category_id) REFERENCES categories(id),
     FOREIGN KEY (source_id) REFERENCES sources(id),
     FOREIGN KEY (location_id) REFERENCES locations(id),
@@ -135,6 +146,15 @@ CREATE TABLE IF NOT EXISTS alert_roads (
     second_location TEXT,
     suburb TEXT,
     region TEXT,
+<<<<<<< Updated upstream
+=======
+    location_qualifier TEXT,
+    condition_tendency TEXT,
+    delay TEXT,
+    queue_length REAL,
+    traffic_volume TEXT,
+    impacted_lanes TEXT,
+>>>>>>> Stashed changes
 
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
 );
@@ -158,6 +178,21 @@ CREATE TABLE IF NOT EXISTS alert_advice (
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
 );
 
+<<<<<<< Updated upstream
+=======
+-- Alert Fire Details
+CREATE TABLE IF NOT EXISTS alert_fire_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alert_id INTEGER NOT NULL UNIQUE,
+    fire_type TEXT,
+    fire_size REAL,
+    containment_status TEXT,
+    responsible_agency TEXT,
+
+    FOREIGN KEY (alert_id) REFERENCES alerts(id)
+);
+
+>>>>>>> Stashed changes
 -- Alert Markers
 CREATE TABLE IF NOT EXISTS alert_markers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -172,6 +207,23 @@ CREATE TABLE IF NOT EXISTS alert_markers (
 CREATE TABLE IF NOT EXISTS alert_polygons (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     alert_id INTEGER NOT NULL,
+<<<<<<< Updated upstream
+=======
+    polygon_index INTEGER DEFAULT 0,
+    ring_index INTEGER DEFAULT 0,
+    point_order INTEGER,
+    latitude REAL,
+    longitude REAL,
+
+    FOREIGN KEY (alert_id) REFERENCES alerts(id)
+);
+
+-- Alert Polylines
+CREATE TABLE IF NOT EXISTS alert_polylines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alert_id INTEGER NOT NULL,
+    line_index INTEGER DEFAULT 0,
+>>>>>>> Stashed changes
     point_order INTEGER,
     latitude REAL,
     longitude REAL,
@@ -199,4 +251,8 @@ CREATE TABLE IF NOT EXISTS source_health (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (source_id) REFERENCES sources(id)
+<<<<<<< Updated upstream
 );
+=======
+);
+>>>>>>> Stashed changes

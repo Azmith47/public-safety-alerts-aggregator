@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 const express = require('express');
 const router = express.Router();
 const { getAlerts, getTrafficAlerts } = require('../controllers/alertsController');
@@ -10,3 +11,17 @@ router.get('/db/:id', getAlertById);
 router.get('/unsubscribe/:token', unsubscribe);
 
 module.exports = router;
+=======
+import express from "express";
+import {
+	getAlertsFromDb,
+	getAlertById,
+} from "../controllers/alertsController.js";
+
+const router = express.Router();
+
+router.get("/", getAlertsFromDb);
+router.get("/:id", getAlertById);
+
+export default router;
+>>>>>>> Stashed changes

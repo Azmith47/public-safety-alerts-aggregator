@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 const BaseDAO = require("./BaseDAO");
 
 class AlertAdviceDAO extends BaseDAO {
@@ -18,3 +19,25 @@ class AlertAdviceDAO extends BaseDAO {
 }
 
 module.exports = new AlertAdviceDAO();
+=======
+import BaseDAO from "./BaseDAO.js";
+
+class AlertAdviceDAO extends BaseDAO {
+	constructor() {
+		super("alert_advice");
+	}
+
+	async create(alertId, message) {
+		return super.insert(this.tableName, {
+			alert_id: alertId,
+			message,
+		});
+	}
+
+	async deleteByAlert(alertId) {
+		return super.delete(this.tableName, "alert_id = ?", [alertId]);
+	}
+}
+
+export default new AlertAdviceDAO();
+>>>>>>> Stashed changes
