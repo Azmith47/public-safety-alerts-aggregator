@@ -1,34 +1,3 @@
-<<<<<<< Updated upstream
-const BaseDAO = require("./BaseDAO");
-
-class CategoryDAO extends BaseDAO {
-
-    constructor() {
-        super("categories");
-    }
-
-    async getOrCreate(name) {
-        const row = await this.findOne(
-            this.tableName,
-            "name = ?",
-            [name]
-        );
-
-        if (row) {
-            return { id: row.id, created: false };
-        }
-
-        const result = await super.insert(this.tableName, { name });
-        return { id: result.id, created: true };
-    }
-
-    async getAll() {
-        return this.findAll(this.tableName, "1=1", [], "name");
-    }
-}
-
-module.exports = new CategoryDAO();
-=======
 import BaseDAO from "./BaseDAO.js";
 
 class CategoryDAO extends BaseDAO {
@@ -53,4 +22,3 @@ class CategoryDAO extends BaseDAO {
 }
 
 export default new CategoryDAO();
->>>>>>> Stashed changes

@@ -1,13 +1,3 @@
-<<<<<<< Updated upstream
-const crypto = require("crypto");
-
-function generateToken() {
-
-    return crypto
-        .randomBytes(32)
-        .toString("hex");
-}
-=======
 import crypto from "crypto";
 
 function generateToken() {
@@ -15,4 +5,3 @@ function generateToken() {
 }
 
 export default generateToken;
->>>>>>> Stashed changes
