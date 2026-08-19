@@ -46,6 +46,10 @@ export default function DetailedModal({
           >
             This is the view for fire alert
           </p>
+          <div className="subscribe-section">
+            <p>Click to subscribe</p>
+            <input type="checkbox" />
+          </div>
         </>
       ) : (
         <>
@@ -69,8 +73,12 @@ export default function DetailedModal({
               marginTop: "3rem",
             }}
           >
-            This is the view for any other type of element
+            This is the view for any other type of alert
           </p>
+          <div className="subscribe-section">
+            <p>Click to subscribe</p>
+            <input type="checkbox" />
+          </div>
         </>
       )}
     </div>

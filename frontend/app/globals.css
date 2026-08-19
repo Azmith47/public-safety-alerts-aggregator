@@ -336,6 +336,7 @@ footer p {
   background-color: var(--card-bg);
   border-radius: 8px;
   padding: 2em;
+  padding-bottom: 1.5em;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   z-index: 200;
 }
@@ -350,6 +351,19 @@ footer p {
 
 .modal-label {
   font-weight: bold;
+}
+
+.subscribe-section {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.subscribe-section > input {
+  width: 20px;
+  height: 20px;
 }
 
 /* FILTER ALERTS MODAL */
