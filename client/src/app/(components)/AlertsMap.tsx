@@ -72,7 +72,7 @@ function GoogleMap() {
     const loadGeometry = async () => {
       try {
         const url =
-          `http://localhost:3001/map/loadgeometry` +
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/map/loadgeometry` +
           `?minLat=${bounds.south}` +
           `&maxLat=${bounds.north}` +
           `&minLng=${bounds.west}` +
@@ -214,8 +214,7 @@ function GoogleMap() {
 
   return (
     <Map
-      height="75vh"
-      width="75vw"
+      style={{ height: "75vh", width: "75vw" }}
       defaultZoom={6}
       defaultCenter={NSW_CENTER}
       mapId="2e7b007641215b0ed5b276ef"
@@ -239,25 +238,21 @@ function GoogleMap() {
         <Polygon
           key={`polygon-${polygon.alertId}`}
           paths={polygon.paths}
-          options={{
-            fillColor: polygon.alertType === 2 ? "red" : "yellow",
-            fillOpacity: 0.5,
-            strokeColor: polygon.alertType === 2 ? "red" : "yellow",
-            strokeOpacity: 1,
-            strokeWeight: 2,
-          }}
+          fillColor={polygon.alertType === 2 ? "red" : "yellow"}
+          fillOpacity={0.5}
+          strokeColor={polygon.alertType === 2 ? "red" : "yellow"}
+          strokeOpacity={1}
+          strokeWeight={2}
         />
       ))}
 
       {polylines.map((polyline) => (
         <Polyline
           key={`polyline-${polyline.alertId}`}
-          path={polyline.encodedPath}
-          options={{
-            strokeColor: "blue",
-            strokeOpacity: 1,
-            strokeWeight: 2,
-          }}
+          encodedPath={polyline.encodedPath}
+          strokeColor="blue"
+          strokeOpacity={1}
+          strokeWeight={2}
         />
       ))}
     </Map>
@@ -265,6 +260,10 @@ function GoogleMap() {
 }
 
 function AlertMap({ apiKey }: { apiKey: string }) {
+  if (!apiKey) {
+    return <div className="map-unavailable">Map unavailable: configure a Google Maps API key with billing enabled.</div>;
+  }
+
   return (
     <APIProvider apiKey={apiKey}>
       <GoogleMap />

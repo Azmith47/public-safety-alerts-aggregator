@@ -125,13 +125,15 @@ export default function AlertList() {
   const { modalOpen } = useContext(MenuContext);
 
   useEffect(() => {
-    // Fetch alerts from API and update context
-    fetch("http://localhost:3001/alerts/")
-      .then((response) => response.json())
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/alerts/`)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Alerts request failed: ${response.status}`);
+        return response.json();
+      })
       .then((data) => {
-        // Update the alerts in the context
         updateAlerts(data.rows);
-      });
+      })
+      .catch((error) => console.error("Failed to load alerts:", error));
   }, []);
 
   useEffect(() => {

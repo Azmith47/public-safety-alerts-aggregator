@@ -16,7 +16,7 @@ import { AlertsProvider } from "@/context/AlertsContext";
 import { FilterProvider } from "@/context/FilterContext";
 
 export default function Home() {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY || '';
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
   return (
     <MenuProvider>
