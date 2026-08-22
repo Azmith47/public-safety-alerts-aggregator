@@ -1,5 +1,6 @@
 import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
 import UserDAO from "../database/dao/UserDAO.js";
+import EmailService from "./EmailService.js";
 
 class SubscriptionService {
 	// subscription: { email, category_id, region_id, council_area_id, severity_level_id }
@@ -7,6 +8,8 @@ class SubscriptionService {
 		if (!subscription || !subscription.email) {
 			throw new Error("Subscription must include an email");
 		}
+
+		await EmailService.createPendingSubscription(subscription.email);
 
 		let user = await UserDAO.getByEmail(subscription.email);
 		let userId;
@@ -18,15 +21,17 @@ class SubscriptionService {
 			userId = user.id;
 		}
 
-		return SubscriptionDAO.create({
+		const savedSubscription = {
 			user_id: userId,
 			category_id: subscription.category_id || null,
 			region_id: subscription.region_id || null,
 			council_area_id: subscription.council_area_id || null,
 			severity_level_id: subscription.severity_level_id || null,
-			is_enabled: subscription.is_enabled || false, // default to disabled if not set
+			is_enabled: false,
 			created_at: new Date(),
-		});
+		};
+
+		return SubscriptionDAO.create(savedSubscription);
 	}
 
 	async getSubscriptionsByUserEmail(email) {

@@ -6,13 +6,14 @@ import SourceHealthService from "./SourceHealthService.js";
 import AlertQueryService from "./AlertQueryService.js";
 import { normalizeRfsFeed } from "../normalization/normalizers/rfsNormalizer.js";
 import { normalizeTfnswFeed } from "../normalization/normalizers/tfnswNormalizer.js";
+import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
+import NotificationService from "./NotificationService.js";
 
 import { fileURLToPath, pathToFileURL } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __root = process.cwd();
-
 
 const collectorNormalizers = {
 	rfsCollector: normalizeRfsFeed,
@@ -150,6 +151,16 @@ export class IngestOrchestratorService {
 				);
 				if (res.action === "created") created++;
 				if (res.action === "updated") updated++;
+				if (res.action === "created") {
+					const subscribers =
+						await SubscriptionDAO.getMatchingForAlert(res.alertId);
+					for (const subscriber of subscribers) {
+						await NotificationService.enqueue(
+							subscriber.user_id,
+							res.alertId,
+						);
+					}
+				}
 			} catch (err) {
 				console.error(
 					`Failed to persist alert from ${name}:`,

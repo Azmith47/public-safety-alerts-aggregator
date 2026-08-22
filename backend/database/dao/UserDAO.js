@@ -31,6 +31,12 @@ class UserDAO extends BaseDAO {
 	async getById(id) {
 		return this.findOne(this.tableName, "id = ?", [id]);
 	}
+
+	async verifyByEmail(email) {
+		return this.update(this.tableName, { verified: true }, "email = ?", [
+			email,
+		]);
+	}
 }
 
 export default new UserDAO();
