@@ -16,17 +16,14 @@ export const createSubscription = async (req, res, next) => {
 	}
 };
 
-export const handleMailchimpWebhook = async (req, res, next) => {
+export const confirmSubscription = async (req, res, next) => {
 	try {
-		if (req.body.type === "subscribe" && req.body.data?.email) {
-			const email = req.body.data.email.trim().toLowerCase();
-			const user = await UserDAO.getByEmail(email);
-			if (user) {
-				await UserDAO.verifyByEmail(email);
-				await SubscriptionDAO.enableForUser(user.id);
-			}
-		}
-		res.sendStatus(204);
+		const user = await UserDAO.verifyByToken(req.params.token);
+		if (!user) return res.status(404).send("Invalid confirmation link.");
+		await SubscriptionDAO.enableForUser(user.id);
+		res.send(
+			"Subscription confirmed. You will now receive relevant alerts.",
+		);
 	} catch (error) {
 		next(error);
 	}

@@ -1,6 +1,7 @@
 import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
 import UserDAO from "../database/dao/UserDAO.js";
 import EmailService from "./EmailService.js";
+import crypto from "crypto";
 
 class SubscriptionService {
 	// subscription: { email, category_id, region_id, council_area_id, severity_level_id }
@@ -9,16 +10,18 @@ class SubscriptionService {
 			throw new Error("Subscription must include an email");
 		}
 
-		await EmailService.createPendingSubscription(subscription.email);
+		const email = subscription.email.trim().toLowerCase();
+		const verificationToken = crypto.randomBytes(32).toString("hex");
 
-		let user = await UserDAO.getByEmail(subscription.email);
+		let user = await UserDAO.getByEmail(email);
 		let userId;
 
 		if (!user) {
-			const res = await UserDAO.create(subscription.email);
+			const res = await UserDAO.create(email, verificationToken);
 			userId = res.id;
 		} else {
 			userId = user.id;
+			await UserDAO.setVerificationToken(email, verificationToken);
 		}
 
 		const savedSubscription = {
@@ -31,7 +34,9 @@ class SubscriptionService {
 			created_at: new Date(),
 		};
 
-		return SubscriptionDAO.create(savedSubscription);
+		const result = await SubscriptionDAO.create(savedSubscription);
+		await EmailService.sendConfirmationEmail(email, verificationToken);
+		return result;
 	}
 
 	async getSubscriptionsByUserEmail(email) {

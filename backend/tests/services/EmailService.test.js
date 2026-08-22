@@ -1,85 +1,60 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { EmailService } from "../../services/EmailService.js";
 
-function response(body = {}) {
-	return {
-		ok: true,
-		status: 200,
-		json: jest.fn().mockResolvedValue(body),
-		text: jest.fn().mockResolvedValue(""),
-	};
-}
-
 describe("EmailService", () => {
-	test("adds a normalized email with Mailchimp double opt-in pending status", async () => {
-		const fetch = jest.fn().mockResolvedValue(response({ id: "member" }));
-		const service = new EmailService({
-			apiKey: "marketing-key",
-			serverPrefix: "us1",
-			audienceId: "audience-id",
-			fetch,
-		});
+	function createService() {
+		const sendMail = jest
+			.fn()
+			.mockResolvedValue({ messageId: "test-message" });
+		return {
+			service: new EmailService({
+				transporter: { sendMail },
+				fromEmail: "alerts@example.com",
+				appUrl: "https://alerts.example.com",
+			}),
+			sendMail,
+		};
+	}
 
-		await service.createPendingSubscription(" User@Example.COM ");
+	test("sends a confirmation email with the double-opt-in link", async () => {
+		const { service, sendMail } = createService();
 
-		expect(fetch).toHaveBeenCalledWith(
-			expect.stringContaining(
-				"https://us1.api.mailchimp.com/3.0/lists/audience-id/members/",
-			),
+		await service.sendConfirmationEmail("user@example.com", "token-123");
+
+		expect(sendMail).toHaveBeenCalledWith(
 			expect.objectContaining({
-				method: "PUT",
-				headers: expect.objectContaining({
-					Authorization: "apikey marketing-key",
-				}),
+				to: "user@example.com",
+				subject: "Confirm your public safety alert subscription",
+				text: "Confirm your subscription by visiting: https://alerts.example.com/subscriptions/confirm/token-123",
 			}),
 		);
-		const request = JSON.parse(fetch.mock.calls[0][1].body);
-		expect(request).toMatchObject({
-			email_address: "user@example.com",
-			status_if_new: "pending",
-		});
+		expect(sendMail.mock.calls[0][0].html).toContain(
+			"Confirm subscription",
+		);
 	});
 
-	test("sends one transactional digest containing every alert", async () => {
-		const fetch = jest.fn().mockResolvedValue(response([]));
-		const service = new EmailService({
-			transactionalApiKey: "transactional-key",
-			fetch,
-		});
+	test("sends one digest containing every alert", async () => {
+		const { service, sendMail } = createService();
 
 		await service.sendAlertDigest("user@example.com", [
 			{ title: "Flooding", description: "Road closed" },
 			{ title: "Fire", description: "Evacuate" },
 		]);
 
-		expect(fetch).toHaveBeenCalledTimes(1);
-		const request = JSON.parse(fetch.mock.calls[0][1].body);
-		expect(request.message.to).toEqual([
-			{ email: "user@example.com", type: "to" },
-		]);
-		expect(request.message.subject).toBe("2 new public safety alerts");
-		expect(request.message.html).toContain("Flooding");
-		expect(request.message.html).toContain("Fire");
-	});
-
-	test("rejects subscription requests when Marketing API configuration is missing", async () => {
-		const service = new EmailService({ fetch: jest.fn() });
-
-		await expect(
-			service.createPendingSubscription("user@example.com"),
-		).rejects.toThrow("MAILCHIMP_API_KEY");
-	});
-
-	test("propagates Mailchimp API errors", async () => {
-		const fetch = jest.fn().mockResolvedValue({
-			ok: false,
-			status: 400,
-			text: jest.fn().mockResolvedValue("invalid audience"),
+		expect(sendMail).toHaveBeenCalledTimes(1);
+		expect(sendMail.mock.calls[0][0]).toMatchObject({
+			to: "user@example.com",
+			subject: "2 new public safety alerts",
 		});
-		const service = new EmailService({ transactionalApiKey: "key", fetch });
+		expect(sendMail.mock.calls[0][0].html).toContain("Flooding");
+		expect(sendMail.mock.calls[0][0].html).toContain("Fire");
+	});
+
+	test("rejects when SMTP configuration is missing", async () => {
+		const service = new EmailService({});
 
 		await expect(
 			service.sendAlertDigest("user@example.com", [{ title: "Alert" }]),
-		).rejects.toThrow("Mailchimp request failed (400): invalid audience");
+		).rejects.toThrow("SMTP_HOST");
 	});
 });

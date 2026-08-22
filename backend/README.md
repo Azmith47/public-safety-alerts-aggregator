@@ -1,20 +1,21 @@
-## Mailchimp email notifications
+## SMTP email notifications
 
-Set these environment variables before starting the backend:
+Set these environment variables before starting the backend. Gmail and other
+providers may require an app password rather than your normal password.
 
 ```text
-MAILCHIMP_API_KEY=your_marketing_api_key
-MAILCHIMP_SERVER_PREFIX=your_datacenter_prefix
-MAILCHIMP_AUDIENCE_ID=your_audience_id
-MAILCHIMP_TRANSACTIONAL_API_KEY=your_mandrill_api_key
-MAILCHIMP_FROM_EMAIL=alerts@example.com
-MAILCHIMP_FROM_NAME=Public Safety Alerts
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@example.com
+SMTP_PASS=your-email-app-password
+EMAIL_FROM=your-email@example.com
+EMAIL_FROM_NAME=Public Safety Alerts
+APP_URL=http://localhost:3000
 ```
 
-`POST /subscriptions` adds the address to the Mailchimp audience with
-`status_if_new: pending`, so Mailchimp sends its double-opt-in email. Configure
-a Mailchimp webhook for `POST /subscriptions/mailchimp/webhook`; the subscribe
-event verifies the local user and enables their stored subscriptions.
+`POST /subscriptions` sends a confirmation email. The subscription remains
+disabled until the user visits `GET /subscriptions/confirm/:token`.
 
 New matching alerts are queued and sent as one digest per user, rather than as
 one email per alert.

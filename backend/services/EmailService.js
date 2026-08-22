@@ -1,104 +1,69 @@
-import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 class EmailService {
 	constructor(options = {}) {
-		this.fetch = options.fetch || globalThis.fetch;
-		this.apiKey = options.apiKey || process.env.MAILCHIMP_API_KEY;
-		this.serverPrefix =
-			options.serverPrefix || process.env.MAILCHIMP_SERVER_PREFIX;
-		this.audienceId =
-			options.audienceId || process.env.MAILCHIMP_AUDIENCE_ID;
-		this.transactionalApiKey =
-			options.transactionalApiKey ||
-			process.env.MAILCHIMP_TRANSACTIONAL_API_KEY;
-	}
-
-	get marketingBaseUrl() {
-		return `https://${this.serverPrefix}.api.mailchimp.com/3.0`;
-	}
-
-	assertMarketingConfigured() {
-		if (
-			!this.fetch ||
-			!this.apiKey ||
-			!this.serverPrefix ||
-			!this.audienceId
-		) {
-			throw new Error(
-				"Mailchimp Marketing API is not configured: MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX and MAILCHIMP_AUDIENCE_ID are required",
-			);
-		}
-	}
-
-	assertTransactionalConfigured() {
-		if (!this.fetch || !this.transactionalApiKey) {
-			throw new Error(
-				"Mailchimp Transactional API is not configured: MAILCHIMP_TRANSACTIONAL_API_KEY is required",
-			);
-		}
-	}
-
-	async request(url, options) {
-		const response = await this.fetch(url, options);
-		if (!response.ok) {
-			throw new Error(
-				`Mailchimp request failed (${response.status}): ${await response.text()}`,
-			);
-		}
-		return response.status === 204 ? null : response.json();
-	}
-
-	async createPendingSubscription(email) {
-		this.assertMarketingConfigured();
-		const normalizedEmail = email.trim().toLowerCase();
-		const subscriberHash = crypto
-			.createHash("md5")
-			.update(normalizedEmail)
-			.digest("hex");
-
-		return this.request(
-			`${this.marketingBaseUrl}/lists/${this.audienceId}/members/${subscriberHash}`,
-			{
-				method: "PUT",
-				headers: {
-					Authorization: `apikey ${this.apiKey}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email_address: normalizedEmail,
-					status_if_new: "pending",
-				}),
-			},
+		this.transporter = options.transporter || null;
+		this.smtpHost = options.smtpHost || process.env.SMTP_HOST;
+		this.smtpPort = Number(
+			options.smtpPort || process.env.SMTP_PORT || 587,
 		);
+		this.smtpSecure =
+			options.smtpSecure ?? process.env.SMTP_SECURE === "true";
+		this.smtpUser = options.smtpUser || process.env.SMTP_USER;
+		this.smtpPass = options.smtpPass || process.env.SMTP_PASS;
+		this.fromEmail =
+			options.fromEmail || process.env.EMAIL_FROM || this.smtpUser;
+		this.fromName =
+			options.fromName ||
+			process.env.EMAIL_FROM_NAME ||
+			"Public Safety Alerts";
+		this.appUrl =
+			options.appUrl || process.env.APP_URL || "http://localhost:3000";
+	}
+
+	getTransporter() {
+		if (this.transporter) return this.transporter;
+		if (!this.smtpHost || !this.smtpUser || !this.smtpPass) {
+			throw new Error(
+				"SMTP is not configured: SMTP_HOST, SMTP_USER and SMTP_PASS are required",
+			);
+		}
+		this.transporter = nodemailer.createTransport({
+			host: this.smtpHost,
+			port: this.smtpPort,
+			secure: this.smtpSecure,
+			auth: { user: this.smtpUser, pass: this.smtpPass },
+		});
+		return this.transporter;
+	}
+
+	async sendConfirmationEmail(email, token) {
+		const confirmationUrl = `${this.appUrl}/subscriptions/confirm/${encodeURIComponent(token)}`;
+		return this.getTransporter().sendMail({
+			from: `"${this.fromName}" <${this.fromEmail}>`,
+			to: email,
+			subject: "Confirm your public safety alert subscription",
+			text: `Confirm your subscription by visiting: ${confirmationUrl}`,
+			html: `<p>Confirm your public safety alert subscription:</p><p><a href="${confirmationUrl}">Confirm subscription</a></p>`,
+		});
 	}
 
 	async sendAlertDigest(email, alerts) {
-		this.assertTransactionalConfigured();
 		const alertList = alerts
 			.map(
 				(alert) =>
 					`<li><h2>${alert.title}</h2><p>${alert.description || ""}</p>${alert.source_url ? `<p><a href="${alert.source_url}">View alert details</a></p>` : ""}</li>`,
 			)
 			.join("");
-		return this.request(
-			"https://mandrillapp.com/api/1.0/messages/send.json",
-			{
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					key: this.transactionalApiKey,
-					message: {
-						from_email: process.env.MAILCHIMP_FROM_EMAIL,
-						from_name:
-							process.env.MAILCHIMP_FROM_NAME ||
-							"Public Safety Alerts",
-						to: [{ email, type: "to" }],
-						subject: `${alerts.length} new public safety alert${alerts.length === 1 ? "" : "s"}`,
-						html: `<h1>New public safety alerts</h1><ul>${alertList}</ul>`,
-					},
-				}),
-			},
-		);
+		return this.getTransporter().sendMail({
+			from: `"${this.fromName}" <${this.fromEmail}>`,
+			to: email,
+			subject: `${alerts.length} new public safety alert${alerts.length === 1 ? "" : "s"}`,
+			text: alerts
+				.map((alert) => `${alert.title}\n${alert.description || ""}`)
+				.join("\n\n"),
+			html: `<h1>New public safety alerts</h1><ul>${alertList}</ul>`,
+		});
 	}
 
 	async sendAlertNotification(email, alert) {
