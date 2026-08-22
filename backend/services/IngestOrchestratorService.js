@@ -23,6 +23,7 @@ const collectorNormalizers = {
 export class IngestOrchestratorService {
 	constructor() {
 		this.collectors = new Map();
+		this.running = false;
 	}
 
 	/**
@@ -184,26 +185,34 @@ export class IngestOrchestratorService {
 
 	/** Run all registered collectors sequentially. */
 	async runAll() {
+		if (this.running) {
+			console.warn("Ingest already running; skipping overlapping run");
+			return [];
+		}
+		this.running = true;
 		const summary = [];
 
-		for (const [name] of this.collectors) {
-			try {
-				const res = await this.runCollector(name);
-				summary.push({ name, ...res });
-			} catch (err) {
-				summary.push({ name, error: err && err.message });
-				await SourceHealthService.recordRun(name, null, {
-					processed: 0,
-					created: 0,
-					updated: 0,
-					failed: 0,
-					success: false,
-					error: err && err.message,
-				});
+		try {
+			for (const [name] of this.collectors) {
+				try {
+					const res = await this.runCollector(name);
+					summary.push({ name, ...res });
+				} catch (err) {
+					summary.push({ name, error: err && err.message });
+					await SourceHealthService.recordRun(name, null, {
+						processed: 0,
+						created: 0,
+						updated: 0,
+						failed: 0,
+						success: false,
+						error: err && err.message,
+					});
+				}
 			}
+			return summary;
+		} finally {
+			this.running = false;
 		}
-
-		return summary;
 	}
 
 	/** Convenience: run collectors found in the project's data-collection folders. */

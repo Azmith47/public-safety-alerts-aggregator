@@ -13,15 +13,15 @@ class BaseDAO {
 	}
 
 	async run(sql, params = []) {
-    // 1. Call the synchronous function directly
-    const result = run(sql, params); 
-    
-    // 2. Return a plain object using 'lastInsertRowid'
-    return {
-        id: result.lastInsertRowid, 
-        changes: result.changes,
-    };
-}
+		// 1. Call the synchronous function directly
+		const result = run(sql, params);
+
+		// 2. Return a plain object using 'lastInsertRowid'
+		return {
+			id: result.lastInsertRowid,
+			changes: result.changes,
+		};
+	}
 
 	get(sql, params = []) {
 		return getRow(sql, params);
@@ -82,7 +82,26 @@ class BaseDAO {
 	}
 
 	async transaction(callback) {
-		await beginTransaction();
+		let lastError;
+		for (let attempt = 0; attempt < 3; attempt++) {
+			try {
+				await beginTransaction();
+				lastError = null;
+				break;
+			} catch (error) {
+				lastError = error;
+				if (
+					!String(error.message).includes("database is locked") ||
+					attempt === 2
+				) {
+					throw error;
+				}
+				await new Promise((resolve) =>
+					setTimeout(resolve, 250 * (attempt + 1)),
+				);
+			}
+		}
+		if (lastError) throw lastError;
 
 		try {
 			const result = await callback();

@@ -1,3 +1,24 @@
+# Backend
+
+This folder contains the backend application responsible for:
+
+- Providing API endpoints for retrieving alerts
+- Handling requests from the frontend dashboard
+- Processing alert data stored in the database
+- Implementing business logic for filtering and searching alerts
+
+Possible technologies:
+- Python (Flask or FastAPI)
+- Node.js (Express)
+
+Example responsibilities:
+- GET /alerts
+- GET /alerts?region=
+- GET /alerts?category=
+- GET /alerts/{id}
+
+---
+
 ## SMTP email notifications
 
 Set these environment variables before starting the backend. Gmail and other
@@ -19,21 +40,11 @@ disabled until the user visits `GET /subscriptions/confirm/:token`.
 
 New matching alerts are queued and sent as one digest per user, rather than as
 one email per alert.
-# Backend
 
-This folder contains the backend application responsible for:
+### How to set it up
 
-- Providing API endpoints for retrieving alerts
-- Handling requests from the frontend dashboard
-- Processing alert data stored in the database
-- Implementing business logic for filtering and searching alerts
-
-Possible technologies:
-- Python (Flask or FastAPI)
-- Node.js (Express)
-
-Example responsibilities:
-- GET /alerts
-- GET /alerts?region=
-- GET /alerts?category=
-- GET /alerts/{id}
+1. Go to your Google Account Settings.
+2. Enable 2-Step Verification (required for app passwords).
+3. Search for App Passwords in the Google search bar.
+4. Create a new app password called "Critical Signal" and copy the 16-character code.
+5. Update the `.env` file.
