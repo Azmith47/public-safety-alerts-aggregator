@@ -6,8 +6,6 @@ import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 
-// Renders a different .svg icon determined by alert type
-// A switch statement could be more appropriate
 function getIcon(type: number) {
   if ((type = 2))
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
@@ -39,7 +37,7 @@ function AlertCard({ alert }: { alert: Alert }) {
         <p>x hours ago</p>
       </div>
       <div className="alert-card-middle">
-        <p>{getIcon(alert.type)}</p>
+        <p>{getIcon(alert.category_id)}</p>
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">

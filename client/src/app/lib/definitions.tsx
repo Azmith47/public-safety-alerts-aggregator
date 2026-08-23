@@ -4,6 +4,7 @@ export type Alert = {
   id: number;
   title: string;
   type: number;
+  category_id: number;
   category: string;
   alertLocation: { region: string; suburb: string };
   issued_at: string;
