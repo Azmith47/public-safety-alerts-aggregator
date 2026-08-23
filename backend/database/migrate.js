@@ -14,6 +14,8 @@ async function addColumnIfMissing(tableName, columnName, definition) {
 }
 
 export async function migrateDatabase() {
+	await addColumnIfMissing("alerts", "is_active", "INTEGER DEFAULT 1");
+
 	await addColumnIfMissing("alert_polygons", "polygon_index", "INTEGER DEFAULT 0");
 	await addColumnIfMissing("alert_polygons", "ring_index", "INTEGER DEFAULT 0");
 
