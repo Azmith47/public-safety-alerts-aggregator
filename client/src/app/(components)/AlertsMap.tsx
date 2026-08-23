@@ -228,7 +228,7 @@ function GoogleMap() {
           onClick={() => handleMarkerClick(marker.alertId)}
         >
           <Pin
-            background= {marker.alertType === 2 ? "red" : "yellow"}
+            background= {marker.alertType === 1 ? "red" : "yellow"}
             borderColor="black"
             glyphColor="white"
           />
@@ -240,9 +240,9 @@ function GoogleMap() {
           key={`polygon-${polygon.alertId}`}
           paths={polygon.paths}
           options={{
-            fillColor: polygon.alertType === 2 ? "red" : "yellow",
+            fillColor: polygon.alertType === 1 ? "red" : "yellow",
             fillOpacity: 0.5,
-            strokeColor: polygon.alertType === 2 ? "red" : "yellow",
+            strokeColor: polygon.alertType === 1 ? "red" : "yellow",
             strokeOpacity: 1,
             strokeWeight: 2,
           }}
