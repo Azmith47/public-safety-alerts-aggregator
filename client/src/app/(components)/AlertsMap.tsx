@@ -1,110 +1,275 @@
-"use client"
+"use client";
 
-import { use } from 'react';
-import { APIProvider, Map, Polygon, AdvancedMarker, Polyline, Pin } from "@vis.gl/react-google-maps"
+import { useEffect, useRef, useState } from "react";
+import {
+  APIProvider,
+  Map,
+  Polygon,
+  AdvancedMarker,
+  useMap,
+  Polyline,
+  Pin,
+} from "@vis.gl/react-google-maps";
 
-type AlertProps = {
-    apiKey: string;
-    alertsProp: Promise<Alert[]>;
-    trafficAlertsProp: Promise<TrafficAlert[]>;
-}
+type Marker = {
+  alertId: number;
+  alertType: number;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+};
 
-type Alert = {
-    title: string;
-    markerPoint: { lat: number; lng: number };
-    polygon?:  [{lat: number; lng: number}] []; // Optional polygon data
-    link: string;
-    pubDate: string;
-    alertLevel: string;
-    status: string;
-    type: string;
-    location: string;
-    councilArea: string;
-    size: number;
-    fire: boolean;
-    agency: string;
-    lastUpdated: string;
-    id: number;
-}
+type Polygon = {
+  alertId: number;
+  alertType: number;
+  paths: {
+    lat: number;
+    lng: number;
+  }[];
+};
 
-type TrafficAlert = {
-    title: string;
-    markerPoint: { lat: number; lng: number };
-    polyline?:  [{ levels: string; direction: string; coords: string }]; // Optional polyline data
-    link: string;
-    pubDate: Date;
-    category: string;
-    type: string;
-    lastUpdated: Date;
-    id: number;
-    planned: boolean;
-    startDate: Date;
-    endDate: Date;
-    ended: boolean;
-    delay: number;
-    headline: string;
-    impactingNetwork: boolean;
-    isMajor: boolean;
-    queueLength: number;
-    roads: object[];
-    speedLimit: number;
-    subCategory: string;
-    otherLinks: object[];
-    diversions: object;
-    attendingGroups: string[];
-    advice: string[];
+type Polyline = {
+  alertId: number;
+  alertType: number;
+  encodedPath: string;
+};
 
-}
+type Bounds = {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+};
 
-function AlertMap({apiKey, alertsProp, trafficAlertsProp}:AlertProps) {
-    const alerts = use(alertsProp);
-    const trafficAlerts = use(trafficAlertsProp);
+function GoogleMap() {
+  const [markers, setMarkers] = useState<Marker[]>([]);
+  const [polygons, setPolygons] = useState<Polygon[]>([]);
+  const [polylines, setPolylines] = useState<Polyline[]>([]);
+  const [bounds, setBounds] = useState<Bounds | null>(null);
 
-    return (
-        <div className="map">
-      <APIProvider apiKey={apiKey}>
-        <Map width={'75vw'}
-          defaultZoom={10}
-          defaultCenter={{ lat: -33.860664, lng: 151.208138 }}
-          mapId={'2e7b007641215b0ed5b276ef '}
+  const map = useMap();
+  const boundsTimeout = useRef<NodeJS.Timeout | null>(null);
+  const requestController = useRef<AbortController | null>(null);
+
+  const NSW_CENTER = {
+    lat: -32.0,
+    lng: 147.0,
+  };
+
+  /*
+   * Fetch geometry whenever the bounds settle.
+   */
+  useEffect(() => {
+    if (!bounds) return;
+
+    // Cancel the previous request
+    requestController.current?.abort();
+
+    const controller = new AbortController();
+    requestController.current = controller;
+
+    const loadGeometry = async () => {
+      try {
+        const url =
+          `http://localhost:3001/map/loadgeometry` +
+          `?minLat=${bounds.south}` +
+          `&maxLat=${bounds.north}` +
+          `&minLng=${bounds.west}` +
+          `&maxLng=${bounds.east}`;
+
+
+        const response = await fetch(url, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Geometry request failed: ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        const newMarkers: Marker[] = [];
+        const newPolygons: Polygon[] = [];
+        const newPolylines: Polyline[] = [];
+
+        for (const alert of data) {
+          const {
+            alertId,
+            alertType,
+            marker,
+            polygon,
+            polyline,
+          } = alert;
+
+          /*
+           * Marker
+           */
+          if (marker?.length > 0) {
+            newMarkers.push({
+              alertId,
+              alertType,
+              coordinates: {
+                lat: marker[0].latitude,
+                lng: marker[0].longitude,
+              },
+            });
+          }
+
+          /*
+           * Polygon
+           */
+          if (polygon?.length > 0) {
+            newPolygons.push({
+              alertId,
+              alertType,
+              paths: polygon.map((point: { latitude: number; longitude: number }) => ({
+                lat: point.latitude,
+                lng: point.longitude,
+              })),
+            });
+          }
+
+          /*
+           * Polyline
+           */
+          if (polyline?.length > 0) {
+            newPolylines.push({
+              alertId,
+              alertType,
+              encodedPath: polyline,
+            });
+          }
+        }
+
+        /*
+         * REPLACE the existing geometry.
+         *
+         * Do NOT append using:
+         *
+         * setMarkers(prev => [...prev, ...newMarkers])
+         *
+         * because that causes duplicates every time
+         * the map moves.
+         */
+        setMarkers(newMarkers);
+        setPolygons(newPolygons);
+        setPolylines(newPolylines);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        /*
+         * AbortError is expected when the user moves
+         * the map before the previous request finishes.
+         */
+        if (error.name === "AbortError") {
+          return;
+        }
+
+        console.error("Failed to load map geometry:", error);
+      }
+    };
+
+    loadGeometry();
+
+    return () => {
+      controller.abort();
+    };
+  }, [bounds]);
+
+  /*
+   * Handle map movement.
+   *
+   * Debounce this because Google Maps can fire
+   * onBoundsChanged many times during a pan/zoom.
+   */
+  const handleBoundsChanged = () => {
+    if (!map) return;
+
+    if (boundsTimeout.current) {
+      clearTimeout(boundsTimeout.current);
+    }
+
+    boundsTimeout.current = setTimeout(() => {
+      const newBounds = map.getBounds();
+
+      if (!newBounds) return;
+
+      const northEast = newBounds.getNorthEast();
+      const southWest = newBounds.getSouthWest();
+
+      setBounds({
+        north: northEast.lat(),
+        south: southWest.lat(),
+        east: northEast.lng(),
+        west: southWest.lng(),
+      });
+    }, 300);
+  };
+
+  const handleMarkerClick = (alertId: number) => {
+    console.log(alertId)
+  };
+
+  return (
+    <Map
+      height="75vh"
+      width="75vw"
+      defaultZoom={6}
+      defaultCenter={NSW_CENTER}
+      mapId="2e7b007641215b0ed5b276ef"
+      onBoundsChanged={handleBoundsChanged}
+    >
+      {markers.map((marker) => (
+        <AdvancedMarker
+          key={`marker-${marker.alertId}`}
+          position={marker.coordinates}
+          onClick={() => handleMarkerClick(marker.alertId)}
         >
-          {
-            alerts.map((alert) => (
-              <div key={alert.id}>
-                <AdvancedMarker position={alert.markerPoint} />
-                {alert.polygon && <Polygon 
-                  paths={alert.polygon} 
-                  options={{ 
-                    fillColor: 'red', 
-                    fillOpacity: 0.5, 
-                    strokeColor: 'red', 
-                    strokeOpacity: 1, 
-                    strokeWeight: 2 
-                  }} 
-                />}
-              </div>
-            ))
-          }
+          <Pin
+            background= {marker.alertType === 1 ? "red" : "yellow"}
+            borderColor="black"
+            glyphColor="white"
+          />
+        </AdvancedMarker>
+      ))}
 
-          {
-            trafficAlerts.map((alert) => (
-              <div key={alert.id}>
-                <AdvancedMarker position={alert.markerPoint}>
-                  <Pin background={'#FFFF00'} glyphColor={'#000'} borderColor={'#000'} />
-                </AdvancedMarker>
-                {alert.polyline && <Polyline 
-                  encodedPath={alert.polyline[0]?.coords} 
-                  options={{
-                    strokeColor: "#FF0000",
-                    strokeWeight: 2 }} 
-                />}
-              </div>
-            ))
-          }
-        </Map>
-      </APIProvider>
-    </div>
-    )
+      {polygons.map((polygon) => (
+        <Polygon
+          key={`polygon-${polygon.alertId}`}
+          paths={polygon.paths}
+          options={{
+            fillColor: polygon.alertType === 1 ? "red" : "yellow",
+            fillOpacity: 0.5,
+            strokeColor: polygon.alertType === 1 ? "red" : "yellow",
+            strokeOpacity: 1,
+            strokeWeight: 2,
+          }}
+        />
+      ))}
+
+      {polylines.map((polyline) => (
+        <Polyline
+          key={`polyline-${polyline.alertId}`}
+          path={polyline.encodedPath}
+          options={{
+            strokeColor: "blue",
+            strokeOpacity: 1,
+            strokeWeight: 2,
+          }}
+        />
+      ))}
+    </Map>
+  );
 }
 
-export default AlertMap
+function AlertMap({ apiKey }: { apiKey: string }) {
+  return (
+    <APIProvider apiKey={apiKey}>
+      <GoogleMap />
+    </APIProvider>
+  );
+}
+
+export default AlertMap;

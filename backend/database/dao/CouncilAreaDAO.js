@@ -1,33 +1,28 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class CouncilAreaDAO extends BaseDAO {
+	constructor() {
+		super("council_areas");
+	}
 
-    constructor() {
-        super("council_areas");
-    }
-    
-    async getOrCreate(name, regionId = null) {
-        const row = await this.findOne(
-            this.tableName,
-            "name = ?",
-            [name]
-        );
+	async getOrCreate(name, regionId = null) {
+		const row = await this.findOne(this.tableName, "name = ?", [name]);
 
-        if (row) {
-            return { id: row.id, created: false };
-        }
+		if (row) {
+			return { id: row.id, created: false };
+		}
 
-        const result = await super.insert(this.tableName, {
-            name,
-            region_id: regionId
-        });
+		const result = await super.insert(this.tableName, {
+			name,
+			region_id: regionId,
+		});
 
-        return { id: result.id, created: true };
-    }
+		return { id: result.id, created: true };
+	}
 
-    async getAll() {
-        return this.findAll(this.tableName, "1=1", [], "name");
-    }
+	async getAll() {
+		return this.findAll(this.tableName, "1=1", [], "name");
+	}
 }
 
-module.exports = new CouncilAreaDAO();
+export default new CouncilAreaDAO();
