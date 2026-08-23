@@ -4,10 +4,11 @@ export type Alert = {
   id: number;
   title: string;
   type: number;
+  category_id: number;
   category: string;
   alertLocation: { region: string; suburb: string };
   datePublished: string;
-  active: boolean;
+  is_active: boolean;
 };
 
 export type AlertListProps = {
