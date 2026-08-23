@@ -27,6 +27,7 @@ nextjs-portal {
   --surface-color: #3a3a3a;
   --border-color: #555555;
   --text-primary: #f0f0f0;
+  --text-secondary: black;
   --accent-color: #ffc72c;
   --card-bg: #f5f5f5;
 }
@@ -71,7 +72,7 @@ nav button {
 }
 
 .nav-icon {
-  max-height: 3em;
+  max-height: 2.8em;
   cursor: pointer;
 }
 
@@ -225,7 +226,7 @@ aside {
   top: 6em;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent-color);
+  background: black;
   border-radius: 8px;
   padding: 0.5em 1em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -234,14 +235,22 @@ aside {
   z-index: 10;
 }
 
+.filter-bar-hide {
+  display: none;
+}
+
 .filter-items {
   display: flex;
   align-items: center;
   gap: 0.4em;
-  background: var(--body-bg-color);
+  color: black;
+  font-weight: 500;
+  background: var(--card-bg);
   border-radius: 999px;
   padding: 0.3em 0.8em;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  border: 1px solid black;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* MAP */
@@ -252,6 +261,9 @@ aside {
 
 /* FOOTER */
 footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-color: var(--nav-footer-bg-color);
   color: var(--text-primary);
   height: 3.5em;
@@ -259,6 +271,7 @@ footer {
 
 footer p {
   margin-left: 3em;
+  margin-right: 3em;
 }
 
 /* MODALS */
@@ -308,6 +321,10 @@ footer p {
   gap: 1em;
 }
 
+.modal-form button {
+  width: 100px;
+}
+
 .modal-form label {
   font-size: 0.85rem;
   color: var(--body-bg-color);
@@ -328,31 +345,38 @@ footer p {
   left: 60%;
   top: 45%;
   transform: translate(-50%, -50%);
-  width: 800px;
+  width: 600px;
   background-color: var(--card-bg);
   border-radius: 8px;
   padding: 2em;
+  padding-bottom: 1.5em;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   z-index: 200;
 }
 
-.data-grid {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.modal-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 2rem;
+  row-gap: 0.5rem;
+  align-items: start;
 }
 
-.labels {
-  width: 30%;
-}
-
-.labels p {
+.modal-label {
   font-weight: bold;
 }
 
-.data {
-  padding-left: 1em;
-  width: 70%;
+.subscribe-section {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.subscribe-section > input {
+  width: 20px;
+  height: 20px;
 }
 
 /* FILTER ALERTS MODAL */

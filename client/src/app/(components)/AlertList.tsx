@@ -4,87 +4,20 @@ import { Alert } from "../lib/definitions";
 import { useContext, useEffect } from "react";
 import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
-
-
-// The alert data was hardcoded for the prototype
-// Hardcoded data needs to be replaced with API fetch (useEffect?)
-// Each AlertCard will receive JSON alert data as props
-// export default function AlertList() {
-//   return (
-//     <aside>
-//       <ul>
-//         {alerts.map((alert) => (
-//           <li key={alert.id}>
-//             {/* used spread operator to copy all the alert properties to AlertCard as props - otherwise we'd be typing them all manually */}
-//             <AlertCard {...alert} />
-//           </li>
-//         ))}
-//       </ul>
-//     </aside>
-//   );
-// }
-
-// Renders the AlertCard
-// Category is passed as a prop but not displayed due to size constraints
-// function AlertCard({
-//   title,
-//   type,
-//   alertLocation: { region, suburb },
-//   datePublished,
-//   active,
-// }: AlertCardProps) {
-//   return (
-//     <article className={active ? "alert-card-active" : "alert-card-inactive"}>
-//       {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
-//       <span className={active ? "dot-active" : "dot-inactive"}>
-//         {active ? "Active" : "Inactive"}
-//       </span>
-//       <div className="alert-card-top">
-//         <p>{datePublished}</p>
-//       </div>
-//       <div className="alert-card-middle">
-//         <p>{getIcon(type)}</p>
-//         <p>{title}</p>
-//       </div>
-//       <div className="alert-card-bottom">
-//         <p>
-//           {region}, {suburb}
-//         </p>
-//       </div>
-//     </article>
-//   );
-// }
-
-// Renders a different .svg icon determined by the type prop passed to the AlertCard
-// A switch statement could be more appropriate
-// The icons are are placeholder - needs to be discussed by the team
-// function getIcon(type: string) {
-//   if (type === "traffic")
-//     return <img className="icon" src="\icons\traffic.svg" alt="" />;
-//   if (type === "fire")
-//     return <img className="icon" src="\icons\fire.svg" alt="" />;
-//   if (type === "flood")
-//     return <img className="icon" src="\icons\flood.svg" alt="" />;
-//   if (type === "storm")
-//     return <img className="icon" src="\icons\storm.svg" alt="" />;
-// }
+import { FilterContext } from "@/context/FilterContext";
 
 // Renders a different .svg icon determined by alert type
 // A switch statement could be more appropriate
-// The icons are are placeholder
 function getIcon(type: number) {
-  if (type = 2)
+  if ((type = 2))
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
-  if (type = 1)
-    return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if (type = 4)
-    return <img className="icon" src="\icons\flood.svg" alt="" />;
-  if (type = 5)
-    return <img className="icon" src="\icons\storm.svg" alt="" />;
+  if ((type = 1)) return <img className="icon" src="\icons\fire.svg" alt="" />;
+  if ((type = 4)) return <img className="icon" src="\icons\flood.svg" alt="" />;
+  if ((type = 5)) return <img className="icon" src="\icons\storm.svg" alt="" />;
 }
 
 // Renders the AlertCard
-function AlertCard({alert}: {alert: Alert;}) {
+function AlertCard({ alert }: { alert: Alert }) {
   const { toggleMenu } = useContext(MenuContext);
   const { selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
 
@@ -95,24 +28,22 @@ function AlertCard({alert}: {alert: Alert;}) {
 
   return (
     <article
-      className={alert.active ? "alert-card-active" : "alert-card-inactive"}
+      className={alert.is_active ? "alert-card-active" : "alert-card-inactive"}
       onClick={() => onAlertClick(alert)}
     >
       {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
-      <span className={alert.active ? "dot-active" : "dot-inactive"}>
-        {alert.active ? "Active" : "Inactive"}
+      <span className={alert.is_active ? "dot-active" : "dot-inactive"}>
+        {alert.is_active ? "Active" : "Inactive"}
       </span>
       <div className="alert-card-top">
-        <p>{alert.datePublished}</p>
+        <p>x hours ago</p>
       </div>
       <div className="alert-card-middle">
         <p>{getIcon(alert.type)}</p>
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">
-        <p>
-          {/* {alert.alertLocation.region}, {alert.alertLocation.suburb} */}
-        </p>
+        <p>alert region and suburb</p>
       </div>
     </article>
   );
@@ -121,8 +52,10 @@ function AlertCard({alert}: {alert: Alert;}) {
 // Hardcoded data needs to be replaced with API fetch (useEffect?)
 // Each AlertCard will receive JSON alert data as props
 export default function AlertList() {
-  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
+  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } =
+    useContext(AlertsContext);
   const { modalOpen } = useContext(MenuContext);
+  const { filters } = useContext(FilterContext);
 
   useEffect(() => {
     // Fetch alerts from API and update context
@@ -131,16 +64,26 @@ export default function AlertList() {
       .then((data) => {
         // Update the alerts in the context
         updateAlerts(data.rows);
+        console.log(data.rows[0]);
       });
   }, []);
 
-  useEffect(() => {
-  }, [modalOpen]);
+  useEffect(() => {}, [modalOpen]);
+
+  const filteredAlerts = alerts.filter((alert) => {
+    if (
+      filters.is_active !== null &&
+      Boolean(alert.is_active) !== filters.is_active
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <aside>
       <ul>
-        {alerts.map((alert) => (
+        {filteredAlerts.map((alert) => (
           <li key={alert.id}>
             <AlertCard alert={alert} />
           </li>

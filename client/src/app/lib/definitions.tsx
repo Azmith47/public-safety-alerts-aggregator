@@ -6,8 +6,8 @@ export type Alert = {
   type: number;
   category: string;
   alertLocation: { region: string; suburb: string };
-  datePublished: string;
-  active: boolean;
+  issued_at: string;
+  is_active: boolean;
 };
 
 export type AlertListProps = {
@@ -16,8 +16,8 @@ export type AlertListProps = {
 };
 
 export type AlertFilters = {
-  type: string | null;
-  active: boolean | null;
+  type: number | null;
+  is_active: boolean | null;
 };
 
 export type FilterKey = keyof AlertFilters;

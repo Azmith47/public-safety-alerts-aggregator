@@ -13,7 +13,7 @@ export default function DetailedModal() {
 
   const { selectedAlert: alert } = useContext(AlertsContext);
 
-//   if (alert === null) return null; //if alert is null render nothing
+  //   if (alert === null) return null; //if alert is null render nothing
   return (
     <div
       className={
@@ -38,7 +38,7 @@ export default function DetailedModal() {
             <p>{alert?.category}</p>
             <p>{alert?.alertLocation.region}</p>
             <p>{alert?.alertLocation.suburb}</p>
-            <p>{alert?.datePublished}</p>
+            <p>{alert?.issued_at}</p>
           </article>
           <p style={{ color: "red", fontWeight: "bold" }}>
             This is the view for a fire alert
@@ -58,9 +58,9 @@ export default function DetailedModal() {
           <article className="data">
             <p>{alert?.type}</p>
             <p>{alert?.category}</p>
-            <p>{alert?.alertLocation.region}</p>
-            <p>{alert?.alertLocation.suburb}</p>
-            <p>{alert?.datePublished}</p>
+            {/* <p>{alert?.alertLocation.region}</p>
+            <p>{alert?.alertLocation.suburb}</p> */}
+            <p>{alert?.issued_at}</p>
             <p>bla bla</p>
             <p>bla bla</p>
           </article>

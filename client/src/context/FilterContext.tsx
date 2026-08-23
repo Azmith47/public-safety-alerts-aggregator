@@ -1,17 +1,17 @@
 "use client";
 
-import { AlertFilters } from '@/app/lib/definitions';
-import { createContext, useState, type ReactNode } from 'react';
+import { AlertFilters } from "@/app/lib/definitions";
+import { createContext, useState, type ReactNode } from "react";
 
 interface FilterContextValue {
-    filters: AlertFilters;
-    updateFilters: (filters: AlertFilters) => void;
+  filters: AlertFilters;
+  updateFilters: (filters: AlertFilters) => void;
 }
 
 // 1. Create the context with an optional default value
 export const FilterContext = createContext<FilterContextValue>({
   filters: {
-    active: null,
+    is_active: null,
     type: null,
   },
   updateFilters: () => {},
@@ -22,15 +22,15 @@ interface FilterProviderProps {
 }
 
 export function FilterProvider({ children }: FilterProviderProps) {
-    //State variables
-    const [filters, setFilters] = useState<AlertFilters>({
-      active: null,
-      type: null,
-    });
+  //State variables
+  const [filters, setFilters] = useState<AlertFilters>({
+    is_active: null,
+    type: null,
+  });
 
-    const updateFilters = (newFilters: AlertFilters) => {
-        setFilters(newFilters);
-    };
+  const updateFilters = (newFilters: AlertFilters) => {
+    setFilters(newFilters);
+  };
 
   // 2. Provide the state and modifier function to children
   return (
