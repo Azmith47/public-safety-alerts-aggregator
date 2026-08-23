@@ -79,7 +79,7 @@ export default function DetailedModal({
             <p>Click to subscribe</p>
             <input
               type="checkbox"
-              onChange={() => console.log("alert clicked")}
+              onChange={() => window.alert("this will work some day")}
             />
           </div>
         </>
