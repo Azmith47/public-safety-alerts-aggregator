@@ -10,12 +10,24 @@ async function addColumnIfMissing(tableName, columnName, definition) {
 		return;
 	}
 
-	await exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`);
+	await exec(
+		`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition}`,
+	);
 }
 
 export async function migrateDatabase() {
-	await addColumnIfMissing("alert_polygons", "polygon_index", "INTEGER DEFAULT 0");
-	await addColumnIfMissing("alert_polygons", "ring_index", "INTEGER DEFAULT 0");
+	await addColumnIfMissing("alerts", "is_active", "INTEGER DEFAULT 1");
+
+	await addColumnIfMissing(
+		"alert_polygons",
+		"polygon_index",
+		"INTEGER DEFAULT 0",
+	);
+	await addColumnIfMissing(
+		"alert_polygons",
+		"ring_index",
+		"INTEGER DEFAULT 0",
+	);
 
 	await addColumnIfMissing("alert_roads", "location_qualifier", "TEXT");
 	await addColumnIfMissing("alert_roads", "condition_tendency", "TEXT");
