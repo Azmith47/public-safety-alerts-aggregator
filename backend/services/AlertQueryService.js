@@ -110,10 +110,33 @@ class AlertQueryService {
 		const total = countRow ? countRow.count : 0;
 
 		const rows = await AlertDAO.all(
-			`SELECT * FROM alerts ${whereClause} ${orderClause} LIMIT ? OFFSET ?`,
-			params.concat([limit, offset]),
+			`SELECT alerts.*, 
+			locations.id AS location_id_from_locations, 
+			locations.name AS location_name, 
+			council_areas.name AS location_council_area,
+			locations.postcode AS location_postcode,
+			regions.name AS location_region
+			FROM alerts
+			INNER JOIN locations ON alerts.location_id = locations.id
+			INNER JOIN council_areas ON locations.council_area_id = council_areas.id
+			INNER JOIN regions ON council_areas.region_id = regions.id
+			${whereClause} ${orderClause} LIMIT ? OFFSET ?`,
+			params.concat([limit, offset]), 
 		);
 
+		rows.map((alert) => {
+			if(alert.location_postcode === null){
+				const location_name_sections = alert.location_name.split(" ")
+				alert.location_postcode = Number(location_name_sections.pop())
+
+				let name = ""
+				location_name_sections.map((name_section) => {
+					name = name + " " + name_section
+				})
+
+				alert.location_name = name
+			}
+		})
 		return { total, rows };
 	}
 

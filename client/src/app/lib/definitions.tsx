@@ -21,6 +21,11 @@ export type Alert = {
   is_active: boolean;
   delay: boolean;
   raw_payload: string;
+  location_name: string;
+  location_postcode: number;
+  location_council_area: string;
+  location_region: string;
+
 };
 
 export type AlertListProps = {

@@ -11,6 +11,10 @@ function Firecard({ alert }: { alert: Alert }) {
     <div className="modal-grid">
       <article className="modal-label">
         {/* <p>description</p> */}
+        <p>Location:</p>
+        <p>Postcode:</p>
+        <p>Council Area:</p>
+        <p>Region:</p>
         <p>Issued:</p>
         <p>Last update:</p>
         <p>Source:</p>
@@ -24,6 +28,10 @@ function Firecard({ alert }: { alert: Alert }) {
       </article>
       <article className="modal-data">
         {/* <p>{alert.description}</p> */}
+        <p>{alert.location_name}</p>
+        <p>{alert.location_postcode}</p>
+        <p>{alert.location_council_area}</p>
+        <p>{alert.location_region}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
@@ -54,6 +62,10 @@ function TrafficCard({ alert }: { alert: Alert }) {
     <div className="modal-grid">
       <article className="modal-label">
         {/* <p>description</p> */}
+        <p>Location:</p>
+        <p>Postcode:</p>
+        <p>Council Area:</p>
+        <p>Region:</p>
         <p>Issued:</p>
         <p>Last update:</p>
         <p>Source:</p>
@@ -67,6 +79,10 @@ function TrafficCard({ alert }: { alert: Alert }) {
       </article>
       <article className="modal-data">
         {/* <p>{alert.description ?? "N/A"}</p> */}
+        <p>{alert.location_name}</p>
+        <p>{alert.location_postcode}</p>
+        <p>{alert.location_council_area}</p>
+        <p>{alert.location_region}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
