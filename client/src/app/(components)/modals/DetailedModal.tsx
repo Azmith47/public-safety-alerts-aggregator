@@ -75,10 +75,8 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>Delay:</p>
         <p>Start Date:</p>
         <p>End Date:</p>
-        {/* <p>raw_payload</p> */}
       </article>
       <article className="modal-data">
-        {/* <p>{alert.description ?? "N/A"}</p> */}
         <p>{alert.location_name}</p>
         <p>{alert.location_postcode}</p>
         <p>{alert.location_council_area}</p>
@@ -98,7 +96,6 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>{alert.delay === true ? "True" : "False"}</p>
         <p>{alert.start_date ?? "n/a"}</p>
         <p>{alert.end_date ?? "n/a"}</p>
-        {/* <p>{alert.raw_payload ?? "N/A"}</p> */}
       </article>
       <p style={{ color: "red", fontWeight: "bold" }}>
         // Any other type of alert // Source id: {alert.source_id} // category

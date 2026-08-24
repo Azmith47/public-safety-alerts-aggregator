@@ -99,6 +99,12 @@ export default function AlertList() {
     ) {
       return false;
     }
+    if (
+      filters.source_id !== null &&
+      Number(alert.source_id) !== filters.source_id
+    ) {
+      return false;
+    }
     return true;
   });
 
