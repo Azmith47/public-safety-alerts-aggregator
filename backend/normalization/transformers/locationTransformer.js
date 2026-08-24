@@ -440,3 +440,65 @@ export function normalizePolygonCoordinates(coordinates) {
 export function normalizePolylineCoordinates(coordinates) {
 	return normalizePolygonCoordinates(coordinates);
 }
+
+/**
+ * Decodes a Google encoded polyline into [longitude, latitude] pairs.
+ *
+ * @param {string|null|undefined} encodedPolyline
+ * @returns {Array}
+ */
+export function decodeEncodedPolyline(encodedPolyline) {
+	if (typeof encodedPolyline !== "string" || encodedPolyline.length === 0) {
+		return [];
+	}
+
+	const coordinates = [];
+	let index = 0;
+	let latitude = 0;
+	let longitude = 0;
+
+	try {
+		while (index < encodedPolyline.length) {
+			let result = 0;
+			let shift = 0;
+			let byte;
+
+			do {
+				byte = encodedPolyline.charCodeAt(index++) - 63;
+				if (byte < 0) return [];
+				result |= (byte & 0x1f) << shift;
+				shift += 5;
+			} while (byte >= 0x20 && index <= encodedPolyline.length);
+
+			const latitudeDelta = result & 1 ? ~(result >> 1) : result >> 1;
+			latitude += latitudeDelta;
+
+			result = 0;
+			shift = 0;
+
+			do {
+				byte = encodedPolyline.charCodeAt(index++) - 63;
+				if (byte < 0) return [];
+				result |= (byte & 0x1f) << shift;
+				shift += 5;
+			} while (byte >= 0x20 && index <= encodedPolyline.length);
+
+			const longitudeDelta = result & 1 ? ~(result >> 1) : result >> 1;
+			longitude += longitudeDelta;
+
+			const normalizedCoordinate = normalizePolylineCoordinates([
+				[longitude / 1e5, latitude / 1e5],
+			]);
+
+			if (normalizedCoordinate.length === 0) {
+				return [];
+			}
+
+			coordinates.push(normalizedCoordinate[0]);
+		}
+	} catch {
+		return [];
+	}
+
+	return coordinates;
+}
