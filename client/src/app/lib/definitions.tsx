@@ -19,6 +19,8 @@ export type Alert = {
   start_date: string | null;
   end_date: string | null;
   is_active: boolean;
+  delay: boolean;
+  raw_payload: string;
 };
 
 export type AlertListProps = {

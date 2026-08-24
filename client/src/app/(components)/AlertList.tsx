@@ -15,7 +15,7 @@ function getIcon(type: number) {
 }
 
 //Show issued + updated time relative to current time
-function convertTime(date: string): string {
+export function convertTime(date: string): string {
   const issuedDate = new Date(date).getTime();
   const currentDate = Date.now();
   const timeDifference = currentDate - issuedDate;
