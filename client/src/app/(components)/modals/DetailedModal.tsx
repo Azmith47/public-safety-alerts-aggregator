@@ -6,8 +6,90 @@ import { useContext } from "react";
 import { convertTime } from "../AlertList";
 import { Alert } from "@/app/lib/definitions";
 
-//TODO: Display different modals for fire & traffic
-//Current method DOES NOT scale well
+function Firecard({ alert }: { alert: Alert }) {
+  return (
+    <div className="modal-grid">
+      <article className="modal-label">
+        {/* <p>description</p> */}
+        <p>Issued:</p>
+        <p>Last update:</p>
+        <p>Source:</p>
+        <p>Planned:</p>
+        <p>Is Major:</p>
+        <p>Network Impacted:</p>
+        <p>Delay:</p>
+        <p>Start Date:</p>
+        <p>End Date:</p>
+        {/* <p>raw_payload</p> */}
+      </article>
+      <article className="modal-data">
+        {/* <p>{alert.description}</p> */}
+        <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
+        <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
+        <p>
+          {alert.source_url ? (
+            <a href={alert.source_url}>{alert.source_url}</a>
+          ) : (
+            "n/a"
+          )}
+        </p>
+        <p>{alert.planned === true ? "True" : "False"}</p>
+        <p>{alert.is_major === true ? "True" : "False"}</p>
+        <p>{alert.impacting_network === true ? "True" : "False"}</p>
+        <p>{alert.delay === true ? "True" : "False"}</p>
+        <p>{alert.start_date ?? "n/a"}</p>
+        <p>{alert.end_date ?? "n/a"}</p>
+        {/* <p>{alert.raw_payload}</p> */}
+      </article>
+      <p style={{ color: "red", fontWeight: "bold" }}>
+        // Fire alert view // Source id: {alert.source_id}
+      </p>
+    </div>
+  );
+}
+
+function TrafficCard({ alert }: { alert: Alert }) {
+  return (
+    <div className="modal-grid">
+      <article className="modal-label">
+        {/* <p>description</p> */}
+        <p>Issued:</p>
+        <p>Last update:</p>
+        <p>Source:</p>
+        <p>Planned:</p>
+        <p>Is Major:</p>
+        <p>Network Impacted:</p>
+        <p>Delay:</p>
+        <p>Start Date:</p>
+        <p>End Date:</p>
+        {/* <p>raw_payload</p> */}
+      </article>
+      <article className="modal-data">
+        {/* <p>{alert.description ?? "N/A"}</p> */}
+        <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
+        <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
+        <p>
+          {alert.source_url ? (
+            <a href={alert.source_url}>{alert.source_url}</a>
+          ) : (
+            "n/a"
+          )}
+        </p>
+        <p>{alert.planned ? "True" : "False"}</p>
+        <p>{alert.is_major === true ? "True" : "False"}</p>
+        <p>{alert.impacting_network === true ? "True" : "False"}</p>
+        <p>{alert.delay === true ? "True" : "False"}</p>
+        <p>{alert.start_date ?? "n/a"}</p>
+        <p>{alert.end_date ?? "n/a"}</p>
+        {/* <p>{alert.raw_payload ?? "N/A"}</p> */}
+      </article>
+      <p style={{ color: "red", fontWeight: "bold" }}>
+        // Any other type of alert // Source id: {alert.source_id}
+      </p>
+    </div>
+  );
+}
+
 export default function DetailedModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "detailedModal";
@@ -34,86 +116,6 @@ export default function DetailedModal() {
           <Firecard alert={alert} />
         </>
       )}
-    </div>
-  );
-}
-
-function Firecard({ alert }: { alert: Alert }) {
-  return (
-    <div className="data-grid">
-      <article className="labels">
-        {/* <p>title</p>
-        <p>description</p>
-        <p>issued_at</p>
-        <p>updated_at</p>
-        <p>source_url</p>
-        <p>planned</p>
-        <p>is_major</p>
-        <p>impacting_network</p>
-        <p>delay</p>
-        <p>start_date</p>
-        <p>end_date</p>
-        <p>raw_payload</p> */}
-      </article>
-      <article className="data">
-        {/* <p>{alert.title}</p>
-        <p>{alert.description}</p>
-        <p>{alert.issued_at}</p>
-        <p>{alert.updated_at}</p>
-        <p>{alert.source_url}</p>
-        <p>{alert.planned}</p>
-        <p>{alert.is_major}</p>
-        <p>{alert.impacting_network}</p>
-        <p>{alert.delay}</p>
-        <p>{alert.start_date}</p>
-        <p>{alert.end_date}</p>
-        <p>{alert.raw_payload}</p> */}
-        <p>{alert.source_id}</p>
-      </article>
-      <p style={{ color: "red", fontWeight: "bold" }}>
-        // This is the view for any other type of element //{" "}
-      </p>
-    </div>
-  );
-}
-
-function TrafficCard({ alert }: { alert: Alert }) {
-  return (
-    <div className="data-grid">
-      <article className="labels">
-        {/* <p>title</p>
-        <p>description</p>
-        <p>issued_at</p>
-        <p>updated_at</p>
-        <p>source_url</p>
-        <p>planned</p>
-        <p>is_major</p>
-        <p>impacting_network</p>
-        <p>delay</p>
-        <p>start_date</p>
-        <p>end_date</p>
-        <p>is_active</p>
-        <p>raw_payload</p> */}
-      </article>
-      <article className="data">
-        {/* <p>{alert.title ?? "N/A"}</p>
-        <p>{alert.description ?? "N/A"}</p>
-        <p>{alert.issued_at ?? "N/A"}</p>
-        <p>{alert.updated_at ?? "N/A"}</p>
-        <p>{alert.source_url ?? "N/A"}</p>
-        <p>{alert.planned ?? "N/A"}</p>
-        <p>{alert.is_major ?? "N/A"}</p>
-        <p>{alert.impacting_network ?? "N/A"}</p>
-        <p>{alert.delay ?? "N/A"}</p>
-        <p>{alert.start_date ?? "N/A"}</p>
-        <p>{alert.end_date ?? "N/A"}</p>
-        <p>{alert.is_active ?? "N/A"}</p>
-        <p>{alert.raw_payload ?? "N/A"}</p> */}
-        <p>{alert.source_id}</p>
-      </article>
-      <p style={{ color: "red", fontWeight: "bold" }}>
-        // This is the view for any other type of element //{" "}
-      </p>
     </div>
   );
 }
