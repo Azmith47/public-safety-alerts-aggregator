@@ -22,8 +22,6 @@ export function FilterTabs() {
   const typeLabels: Record<number, string> = {
     1: "Fire",
     2: "Traffic",
-    4: "Flood",
-    5: "Storm",
   };
 
   if (filters.is_active !== null) {
@@ -33,10 +31,10 @@ export function FilterTabs() {
     });
   }
 
-  if (filters.type !== null) {
+  if (filters.source_id !== null) {
     selectedFilters.push({
-      key: "type",
-      label: typeLabels[filters.type] ?? "Unknown",
+      key: "source_id",
+      label: typeLabels[filters.source_id] ?? "Unknown",
     });
   }
   return (
@@ -50,8 +48,6 @@ export function FilterTabs() {
   );
 }
 
-// Filter component
-// Fields need to be confirmed, everything below is placeholder
 export default function FilterModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "filter";
@@ -98,10 +94,10 @@ export default function FilterModal() {
         </select>
         <label htmlFor="">Incident type</label>
         <select
-          value={localFilters.type ?? ""}
+          value={localFilters.source_id ?? ""}
           onChange={(e) => {
             const value = e.target.value === "" ? null : Number(e.target.value);
-            setLocalFilters({ ...localFilters, type: value });
+            setLocalFilters({ ...localFilters, source_id: value });
           }}
         >
           <option value="">-</option>

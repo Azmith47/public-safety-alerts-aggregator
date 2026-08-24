@@ -29,7 +29,7 @@ export type AlertListProps = {
 };
 
 export type AlertFilters = {
-  type: number | null;
+  source_id: number | null;
   is_active: boolean | null;
 };
 

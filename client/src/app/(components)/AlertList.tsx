@@ -7,15 +7,13 @@ import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 
 function getIcon(source_id: number) {
-  if (source_id === 2)
-    return <img className="icon" src="\icons\traffic.svg" alt="" />;
-  if (source_id === 1)
+  if (Number(source_id) === 1)
     return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if (source_id === 4)
-    return <img className="icon" src="\icons\flood.svg" alt="" />;
-  if (source_id === 5)
-    return <img className="icon" src="\icons\storm.svg" alt="" />;
-  else return <img className="icon" src="\icons\traffic.svg" alt="" />;
+  if (Number(source_id) === 2)
+    return <img className="icon" src="\icons\traffic.svg" alt="" />;
+  else {
+    return <img className="" src="" alt="this is broken" />;
+  }
 }
 
 //Show issued + updated time relative to current time
@@ -63,7 +61,7 @@ function AlertCard({ alert }: { alert: Alert }) {
         </p>
       </div>
       <div className="alert-card-middle">
-        <p>{getIcon(alert.category_id)}</p>
+        <p>{getIcon(alert.source_id)}</p>
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">

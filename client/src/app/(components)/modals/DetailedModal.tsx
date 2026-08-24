@@ -42,7 +42,8 @@ function Firecard({ alert }: { alert: Alert }) {
         {/* <p>{alert.raw_payload}</p> */}
       </article>
       <p style={{ color: "red", fontWeight: "bold" }}>
-        // Fire alert view // Source id: {alert.source_id}
+        // Fire alert view // Source id: {alert.source_id} // category id:{" "}
+        {alert.category_id}
       </p>
     </div>
   );
@@ -84,7 +85,8 @@ function TrafficCard({ alert }: { alert: Alert }) {
         {/* <p>{alert.raw_payload ?? "N/A"}</p> */}
       </article>
       <p style={{ color: "red", fontWeight: "bold" }}>
-        // Any other type of alert // Source id: {alert.source_id}
+        // Any other type of alert // Source id: {alert.source_id} // category
+        id: {alert.category_id}
       </p>
     </div>
   );

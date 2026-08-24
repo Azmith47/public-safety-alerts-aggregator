@@ -12,7 +12,7 @@ interface FilterContextValue {
 export const FilterContext = createContext<FilterContextValue>({
   filters: {
     is_active: null,
-    type: null,
+    source_id: null,
   },
   updateFilters: () => {},
 });
@@ -25,7 +25,7 @@ export function FilterProvider({ children }: FilterProviderProps) {
   //State variables
   const [filters, setFilters] = useState<AlertFilters>({
     is_active: null,
-    type: null,
+    source_id: null,
   });
 
   const updateFilters = (newFilters: AlertFilters) => {
