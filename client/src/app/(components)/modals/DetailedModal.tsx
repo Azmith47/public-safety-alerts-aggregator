@@ -131,6 +131,13 @@ export default function DetailedModal() {
           <Firecard alert={alert} />
         </>
       )}
+      <div className="subscribe-section">
+        <p>Click to subscribe</p>
+        <input
+          type="checkbox"
+          onChange={() => console.log("checkbox ticked")}
+        />
+      </div>
     </div>
   );
 }
