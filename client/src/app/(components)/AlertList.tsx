@@ -6,20 +6,20 @@ import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 
-function getIcon(category_id: number) {
-  if (category_id === 2)
+function getIcon(source_id: number) {
+  if (source_id === 2)
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
-  if (category_id === 1)
+  if (source_id === 1)
     return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if (category_id === 4)
+  if (source_id === 4)
     return <img className="icon" src="\icons\flood.svg" alt="" />;
-  if (category_id === 5)
+  if (source_id === 5)
     return <img className="icon" src="\icons\storm.svg" alt="" />;
   else return <img className="icon" src="\icons\traffic.svg" alt="" />;
 }
 
 //Show issued + updated time relative to current time
-export function convertTime(date: string): string {
+export function convertTime(date: string) {
   const issuedDate = new Date(date).getTime();
   const currentDate = Date.now();
   const timeDifference = currentDate - issuedDate;
