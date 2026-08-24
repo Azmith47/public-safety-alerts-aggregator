@@ -23,7 +23,9 @@ export type Alert = {
   raw_payload: string;
   location_name: string;
   location_postcode: number;
-  location_council_area: number;
+  location_council_area: string;
+  location_region: string;
+
 };
 
 export type AlertListProps = {

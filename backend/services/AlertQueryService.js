@@ -113,10 +113,13 @@ class AlertQueryService {
 			`SELECT alerts.*, 
 			locations.id AS location_id_from_locations, 
 			locations.name AS location_name, 
-			locations.council_area_id AS location_council_area,
-			locations.postcode AS location_postcode
+			council_areas.name AS location_council_area,
+			locations.postcode AS location_postcode,
+			regions.name AS location_region
 			FROM alerts
-			INNER JOIN locations ON alerts.location_id = locations.id 
+			INNER JOIN locations ON alerts.location_id = locations.id
+			INNER JOIN council_areas ON locations.council_area_id = council_areas.id
+			INNER JOIN regions ON council_areas.region_id = regions.id
 			${whereClause} ${orderClause} LIMIT ? OFFSET ?`,
 			params.concat([limit, offset]), 
 		);
