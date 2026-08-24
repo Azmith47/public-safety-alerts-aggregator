@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert } from "../lib/definitions";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
@@ -79,8 +79,14 @@ export default function AlertList() {
   const { modalOpen } = useContext(MenuContext);
   const { filters } = useContext(FilterContext);
 
+  const listRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
-    console.log(selectedMarker)
+    if(listRef.current){
+      if(selectedMarker !== null){
+        listRef.current.scrollTop = 0
+      }
+    }
   }, [selectedMarker])
 
   useEffect(() => {
@@ -112,12 +118,18 @@ export default function AlertList() {
   });
 
   return (
-    <aside>
+    <aside ref={listRef} style={{overflowY: 'auto'}}>
       <ul>
-        {filteredAlerts.map((alert) => (
-          <li key={alert.id}>
-            <AlertCard alert={alert} />
+        {selectedMarker !== null ? (
+          <li className="focussed" key={selectedMarker.id}>
+              <AlertCard alert={selectedMarker}/>
           </li>
+        ) : null}
+        {filteredAlerts.map((alert) => (
+          alert.id !== selectedMarker?.id ?
+          (<li key={alert.id}>
+            <AlertCard alert={alert} />
+          </li>) : null
         ))}
       </ul>
     </aside>

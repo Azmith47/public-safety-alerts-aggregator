@@ -216,6 +216,10 @@ aside {
   font-size: 0.75rem;
 }
 
+.focussed article {
+  border: red solid 2px;
+}
+
 .icon {
   max-height: 4rem;
 }

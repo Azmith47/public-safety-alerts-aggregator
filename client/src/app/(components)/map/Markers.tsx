@@ -66,7 +66,7 @@ export default function Markers({map, markers,}: MarkersProps) {
           new markerLibrary.AdvancedMarkerElement({
             position: marker.coordinates,
 
-            content: pin.element,
+            content: pin,
 
             title: `Alert ${marker.alertId}`,
           }) as AlertMarker;
@@ -84,7 +84,7 @@ export default function Markers({map, markers,}: MarkersProps) {
          * - zoom to level 8
          */
         googleMarker.addListener(
-          "click",
+          "gmp-click",
           () => {
             map.panTo(marker.coordinates);
             map.setZoom(11);
