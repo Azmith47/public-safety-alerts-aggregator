@@ -6,12 +6,16 @@ import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 
-function getIcon(type: number) {
-  if ((type = 2))
+function getIcon(category_id: number) {
+  if (category_id === 2)
     return <img className="icon" src="\icons\traffic.svg" alt="" />;
-  if ((type = 1)) return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if ((type = 4)) return <img className="icon" src="\icons\flood.svg" alt="" />;
-  if ((type = 5)) return <img className="icon" src="\icons\storm.svg" alt="" />;
+  if (category_id === 1)
+    return <img className="icon" src="\icons\fire.svg" alt="" />;
+  if (category_id === 4)
+    return <img className="icon" src="\icons\flood.svg" alt="" />;
+  if (category_id === 5)
+    return <img className="icon" src="\icons\storm.svg" alt="" />;
+  else return <img className="icon" src="\icons\traffic.svg" alt="" />;
 }
 
 //Show issued + updated time relative to current time

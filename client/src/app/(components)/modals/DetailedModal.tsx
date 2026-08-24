@@ -31,7 +31,7 @@ export default function DetailedModal() {
         <TrafficCard alert={alert} />
       ) : (
         <>
-          <p>hi</p>
+          <Firecard alert={alert} />
         </>
       )}
     </div>
@@ -42,7 +42,7 @@ function Firecard({ alert }: { alert: Alert }) {
   return (
     <div className="data-grid">
       <article className="labels">
-        <p>title</p>
+        {/* <p>title</p>
         <p>description</p>
         <p>issued_at</p>
         <p>updated_at</p>
@@ -53,10 +53,10 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>delay</p>
         <p>start_date</p>
         <p>end_date</p>
-        <p>raw_payload</p>
+        <p>raw_payload</p> */}
       </article>
       <article className="data">
-        <p>{alert.title}</p>
+        {/* <p>{alert.title}</p>
         <p>{alert.description}</p>
         <p>{alert.issued_at}</p>
         <p>{alert.updated_at}</p>
@@ -67,7 +67,8 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>{alert.delay}</p>
         <p>{alert.start_date}</p>
         <p>{alert.end_date}</p>
-        <p>{alert.raw_payload}</p>
+        <p>{alert.raw_payload}</p> */}
+        <p>{alert.source_id}</p>
       </article>
       <p style={{ color: "red", fontWeight: "bold" }}>
         // This is the view for any other type of element //{" "}
@@ -80,7 +81,7 @@ function TrafficCard({ alert }: { alert: Alert }) {
   return (
     <div className="data-grid">
       <article className="labels">
-        <p>title</p>
+        {/* <p>title</p>
         <p>description</p>
         <p>issued_at</p>
         <p>updated_at</p>
@@ -92,10 +93,10 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>start_date</p>
         <p>end_date</p>
         <p>is_active</p>
-        <p>raw_payload</p>
+        <p>raw_payload</p> */}
       </article>
       <article className="data">
-        <p>{alert.title ?? "N/A"}</p>
+        {/* <p>{alert.title ?? "N/A"}</p>
         <p>{alert.description ?? "N/A"}</p>
         <p>{alert.issued_at ?? "N/A"}</p>
         <p>{alert.updated_at ?? "N/A"}</p>
@@ -107,7 +108,8 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>{alert.start_date ?? "N/A"}</p>
         <p>{alert.end_date ?? "N/A"}</p>
         <p>{alert.is_active ?? "N/A"}</p>
-        <p>{alert.raw_payload ?? "N/A"}</p>
+        <p>{alert.raw_payload ?? "N/A"}</p> */}
+        <p>{alert.source_id}</p>
       </article>
       <p style={{ color: "red", fontWeight: "bold" }}>
         // This is the view for any other type of element //{" "}
