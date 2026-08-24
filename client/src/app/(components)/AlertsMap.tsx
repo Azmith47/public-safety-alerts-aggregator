@@ -10,6 +10,7 @@ import {
   Polyline,
   Pin,
 } from "@vis.gl/react-google-maps";
+import { markerClusterer } from "@googlemaps/markerclusterer"
 
 type Marker = {
   alertId: number;
@@ -47,15 +48,14 @@ function GoogleMap() {
   const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [polylines, setPolylines] = useState<Polyline[]>([]);
   const [bounds, setBounds] = useState<Bounds | null>(null);
+  const [mapCentre, setCentre] = useState({
+    lat: -32.0,
+    lng: 147.0,
+  })
 
   const map = useMap();
   const boundsTimeout = useRef<NodeJS.Timeout | null>(null);
   const requestController = useRef<AbortController | null>(null);
-
-  const NSW_CENTER = {
-    lat: -32.0,
-    lng: 147.0,
-  };
 
   /*
    * Fetch geometry whenever the bounds settle.
@@ -208,8 +208,9 @@ function GoogleMap() {
     }, 300);
   };
 
-  const handleMarkerClick = (alertId: number) => {
-    console.log(alertId)
+  const handleMarkerClick = (marker: Marker) => {
+    map.panTo(marker.coordinates)
+    map.setZoom(8)
   };
 
   return (
@@ -217,15 +218,18 @@ function GoogleMap() {
       height="75vh"
       width="75vw"
       defaultZoom={6}
-      defaultCenter={NSW_CENTER}
+      defaultCenter={mapCentre}
       mapId="2e7b007641215b0ed5b276ef"
       onBoundsChanged={handleBoundsChanged}
+      onCameraChanged={(camera) => {
+        setCentre(camera.detail.center)
+      }}
     >
       {markers.map((marker) => (
         <AdvancedMarker
           key={`marker-${marker.alertId}`}
           position={marker.coordinates}
-          onClick={() => handleMarkerClick(marker.alertId)}
+          onClick={() => handleMarkerClick(marker)}
         >
           <Pin
             background= {marker.alertType === 1 ? "red" : "yellow"}
