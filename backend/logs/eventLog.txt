@@ -3698,3 +3698,45 @@
 20260823	21:34:05 	 2d595202-33fa-4395-90cd-9dbb4b724e73 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-34.08074196015193&maxLat=-33.557630092276355&minLng=150.832969315644&maxLng=152.12798274337837 
 20260823	21:34:06 	 49f897d9-167d-49c4-8106-560bec367701 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-33.91897352413938&maxLat=-33.788247411868475&minLng=151.04474215803748&maxLng=151.36849551497107 
 20260823	21:34:15 	 b02268eb-3b03-4106-ba26-4748c71f0640 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-33.949594626755776&maxLat=-33.8189154344685&minLng=151.11924319563514&maxLng=151.44299655256873 
+20260824	20:07:51 	 afa2e61c-7577-4b06-88d4-3a32885d17b9 	 POST	undefined	/subscriptions 
+20260824	20:07:51 	 f198d130-cc17-4df5-9dc7-eff698130612 	 next: undefined 
+20260824	20:11:23 	 5870a346-997f-4d6b-9413-cc3945ebb652 	 POST	undefined	/subscriptions 
+20260824	20:11:23 	 4592c3a1-68c1-47e6-9735-5e09566b81d9 	 next: undefined 
+20260824	20:11:58 	 fe181f15-2b5d-4c93-93df-f99fa5e24ac3 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:11:58 	 fc039bac-c5c2-42ba-aa2c-177b49810a5c 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:11:58 	 0ce544c9-b519-4278-a3fd-862519472591 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:12:01 	 44de26c7-efaa-44d3-badf-09129fb3ccfe 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:01 	 b5bf0bec-beac-4f86-93d3-245cdc5132a2 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:02 	 757f89e2-3886-46e3-88d1-0aeaadf53479 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:12:04 	 b65fe5cd-4cac-41f5-a4f6-11b992d60d4f 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:04 	 bbb381a1-1c7c-42a0-8976-a2e0f87f71a0 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:05 	 41106af2-94eb-4ce5-adf1-c61ed4de37a7 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:12:11 	 6203d8e2-63a8-433a-8f6e-26eb0925e50f 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:11 	 730049d0-1e10-4a11-a379-26b5087376e2 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:12 	 ccc8157e-a851-4426-bc3e-47a01a98fec8 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:12:47 	 b04288f5-c732-481b-892b-7bc008e7d315 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:47 	 1ddf6c1a-3984-45c5-8c53-bcb509916de1 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:12:48 	 637e985f-91bc-4468-9257-4959ec882ee2 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:13:19 	 13d552ee-aa03-458c-ba83-e6d99fa525ac 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:19 	 580210e5-21ca-401b-9ffc-8b5c210589c8 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:20 	 3e1232c4-754e-455c-9a8f-f695539590bd 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:13:22 	 cac7c6df-81cb-422f-9cd4-8987b7810839 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:22 	 487d2785-1c7d-4a09-831a-cd31c31e87f7 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:22 	 ab2097de-00c1-4122-a9c2-6def7b154775 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:13:29 	 8a5dedc7-e1d7-4e39-9071-e067469fef5b 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:29 	 030f199d-716f-464b-8dfa-47fa0d7af6c0 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:13:30 	 81f94b83-2b1d-445e-bfc3-9ac4f3e58c63 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:19:56 	 902866d3-2143-45ce-9bc3-bd27203a656d 	 POST	undefined	/subscriptions 
+20260824	20:19:56 	 6eae6705-efb9-47d8-bd23-248155765b46 	 next: undefined 
+20260824	20:22:28 	 0d45264d-b451-42a3-bcdf-78844ffdbf99 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:22:28 	 3ce6820c-c66a-4149-a1aa-0b44d9e4bbf2 	 GET	http://localhost:3000	/alerts/ 
+20260824	20:22:28 	 c72b99f8-31e1-4636-be7b-dca149a9a935 	 GET	http://localhost:3000	/map/loadgeometry?minLat=-40.129609591571&maxLat=-23.08107757648855&minLng=126.27978515624999&maxLng=167.72021484375 
+20260824	20:27:33 	 c958447c-3cf6-4f2c-8996-c9d2d3aeec0d 	 POST	undefined	/subscriptions 
+20260824	20:27:33 	 2506e2af-de15-4ba3-83e6-cccfe9ead89b 	 TypeError: SQLite3 can only bind numbers, strings, bigints, buffers, and null 
+20260824	20:28:57 	 908f7c96-028e-45e7-ae2a-fb425661ad45 	 POST	undefined	/subscriptions 
+20260824	20:28:57 	 5f60307f-bd1d-433e-b399-f14646422a1f 	 TypeError: SQLite3 can only bind numbers, strings, bigints, buffers, and null 
+20260824	20:29:40 	 e7ee2cd5-7942-4bb2-835d-9da125447f19 	 POST	undefined	/subscriptions 
+20260824	20:29:40 	 55842dae-b652-45a8-b4e0-9ce43e23d730 	 TypeError: SQLite3 can only bind numbers, strings, bigints, buffers, and null 
+20260824	20:31:25 	 4502c510-9c89-4754-bdf5-fb80d381b79b 	 POST	undefined	/subscriptions 
+20260824	20:32:54 	 b4299b88-6545-4c33-a1c5-31d57be0bbb2 	 GET	undefined	/subscriptions/confirm/18bf01a8d7c7a703bf6b917377f85ecd34322c4ab90a40ff23e0acf64def76da 
+20260824	20:32:54 	 8cb7f952-17d4-4325-b27d-1f52df235278 	 GET	undefined	/favicon.ico 

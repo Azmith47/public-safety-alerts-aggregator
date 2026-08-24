@@ -56,7 +56,9 @@ class BaseDAO {
 	insert(table, data) {
 		const columns = Object.keys(data);
 		const placeholders = columns.map(() => "?").join(", ");
-		const values = columns.map((column) => data[column]);
+		const values = columns.map((column) =>
+			this.serializeValue(data[column]),
+		);
 
 		return this.run(
 			`INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`,
@@ -68,13 +70,25 @@ class BaseDAO {
 		const columns = Object.keys(data);
 		const setClause = columns.map((column) => `${column} = ?`).join(", ");
 		const values = columns
-			.map((column) => data[column])
+			.map((column) => this.serializeValue(data[column]))
 			.concat(whereParams);
 
 		return this.run(
 			`UPDATE ${table} SET ${setClause} WHERE ${whereClause}`,
 			values,
 		);
+	}
+
+	serializeValue(value) {
+		if (value instanceof Date) {
+			return value.toISOString();
+		}
+
+		if (typeof value === "boolean") {
+			return value ? 1 : 0;
+		}
+
+		return value;
 	}
 
 	delete(table, whereClause, params = []) {

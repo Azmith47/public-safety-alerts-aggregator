@@ -43,6 +43,29 @@ describe("BaseDAO", () => {
 		expect(result).toEqual({ id: 42, changes: 1 });
 	});
 
+	test("serializes Date values before binding them", async () => {
+		run.mockReturnValue({ lastInsertRowid: 42, changes: 1 });
+		const createdAt = new Date("2026-08-24T10:00:00.000Z");
+
+		await dao.insert("example_table", { created_at: createdAt });
+
+		expect(run).toHaveBeenCalledWith(
+			"INSERT INTO example_table (created_at) VALUES (?)",
+			["2026-08-24T10:00:00.000Z"],
+		);
+	});
+
+	test("serializes boolean values before binding them", async () => {
+		run.mockReturnValue({ lastInsertRowid: 42, changes: 1 });
+
+		await dao.insert("example_table", { enabled: false, verified: true });
+
+		expect(run).toHaveBeenCalledWith(
+			"INSERT INTO example_table (enabled, verified) VALUES (?, ?)",
+			[0, 1],
+		);
+	});
+
 	test("update constructs valid SQL and parameters", async () => {
 		run.mockReturnValue({ lastInsertRowid: 0, changes: 1 });
 
