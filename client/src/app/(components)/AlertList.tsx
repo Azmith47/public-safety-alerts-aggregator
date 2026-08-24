@@ -74,19 +74,22 @@ function AlertCard({ alert }: { alert: Alert }) {
 }
 
 export default function AlertList() {
-  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } =
+  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert, selectedMarker } =
     useContext(AlertsContext);
   const { modalOpen } = useContext(MenuContext);
   const { filters } = useContext(FilterContext);
 
   useEffect(() => {
+    console.log(selectedMarker)
+  }, [selectedMarker])
+
+  useEffect(() => {
     // Fetch alerts from API and update context
-    fetch("http://localhost:3001/alerts/")
+    fetch("http://localhost:3001/alerts/?limit=10000")
       .then((response) => response.json())
       .then((data) => {
         // Update the alerts in the context
         updateAlerts(data.rows);
-        console.log(data.rows[0]);
       });
   }, []);
 
