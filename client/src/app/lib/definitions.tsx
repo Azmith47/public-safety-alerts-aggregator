@@ -80,3 +80,34 @@ export type PageOverlayProps = {
   modalOpen: string | null;
   onClick: () => void;
 };
+
+export type MarkerType = {
+  alertId: number;
+  alertType: number;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+};
+
+export type PolygonType = {
+  alertId: number;
+  alertType: number;
+  paths: {
+    lat: number;
+    lng: number;
+  }[];
+};
+
+export type PolylineType = {
+  alertId: number;
+  alertType: number;
+  encodedPath: string;
+};
+
+export type BoundsType = {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+};

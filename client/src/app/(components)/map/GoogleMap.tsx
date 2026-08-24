@@ -2,52 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  APIProvider,
   Map,
   Polygon,
-  AdvancedMarker,
   useMap,
   Polyline,
-  Pin,
 } from "@vis.gl/react-google-maps";
-import { markerClusterer } from "@googlemaps/markerclusterer"
+import { BoundsType, PolygonType, PolylineType, MarkerType } from "../../lib/definitions"
+import Markers from "./Markers";
 
-type Marker = {
-  alertId: number;
-  alertType: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-};
-
-type Polygon = {
-  alertId: number;
-  alertType: number;
-  paths: {
-    lat: number;
-    lng: number;
-  }[];
-};
-
-type Polyline = {
-  alertId: number;
-  alertType: number;
-  encodedPath: string;
-};
-
-type Bounds = {
-  north: number;
-  south: number;
-  east: number;
-  west: number;
-};
-
-function GoogleMap() {
-  const [markers, setMarkers] = useState<Marker[]>([]);
-  const [polygons, setPolygons] = useState<Polygon[]>([]);
-  const [polylines, setPolylines] = useState<Polyline[]>([]);
-  const [bounds, setBounds] = useState<Bounds | null>(null);
+export default function GoogleMap() {
+  const [markers, setMarkers] = useState<MarkerType[]>([]);
+  const [polygons, setPolygons] = useState<PolygonType[]>([]);
+  const [polylines, setPolylines] = useState<PolylineType[]>([]);
+  const [bounds, setBounds] = useState<BoundsType | null>(null);
   const [mapCentre, setCentre] = useState({
     lat: -32.0,
     lng: 147.0,
@@ -91,9 +58,9 @@ function GoogleMap() {
 
         const data = await response.json();
 
-        const newMarkers: Marker[] = [];
-        const newPolygons: Polygon[] = [];
-        const newPolylines: Polyline[] = [];
+        const newMarkers: MarkerType[] = [];
+        const newPolygons: PolygonType[] = [];
+        const newPolylines: PolylineType[] = [];
 
         for (const alert of data) {
           const {
@@ -208,15 +175,8 @@ function GoogleMap() {
     }, 300);
   };
 
-  const handleMarkerClick = (marker: Marker) => {
-    map.panTo(marker.coordinates)
-    map.setZoom(8)
-  };
-
   return (
     <Map
-      height="75vh"
-      width="75vw"
       defaultZoom={6}
       defaultCenter={mapCentre}
       mapId="2e7b007641215b0ed5b276ef"
@@ -225,31 +185,17 @@ function GoogleMap() {
         setCentre(camera.detail.center)
       }}
     >
-      {markers.map((marker) => (
-        <AdvancedMarker
-          key={`marker-${marker.alertId}`}
-          position={marker.coordinates}
-          onClick={() => handleMarkerClick(marker)}
-        >
-          <Pin
-            background= {marker.alertType === 1 ? "red" : "yellow"}
-            borderColor="black"
-            glyphColor="white"
-          />
-        </AdvancedMarker>
-      ))}
+      <Markers markers={markers} map={map}/>
 
       {polygons.map((polygon) => (
         <Polygon
           key={`polygon-${polygon.alertId}`}
           paths={polygon.paths}
-          options={{
-            fillColor: polygon.alertType === 1 ? "red" : "yellow",
-            fillOpacity: 0.5,
-            strokeColor: polygon.alertType === 1 ? "red" : "yellow",
-            strokeOpacity: 1,
-            strokeWeight: 2,
-          }}
+          fillColor={polygon.alertType === 1 ? "red" : "yellow"}
+          fillOpacity={0.5}
+          strokeColor={polygon.alertType === 1 ? "red" : "yellow"}
+          strokeOpacity={1}
+          strokeWeight={2}
         />
       ))}
 
@@ -257,23 +203,11 @@ function GoogleMap() {
         <Polyline
           key={`polyline-${polyline.alertId}`}
           path={polyline.encodedPath}
-          options={{
-            strokeColor: "blue",
-            strokeOpacity: 1,
-            strokeWeight: 2,
-          }}
+          strokeColor="blue"
+          strokeOpacity={1}
+          strokeWeight={2}
         />
       ))}
     </Map>
   );
 }
-
-function AlertMap({ apiKey }: { apiKey: string }) {
-  return (
-    <APIProvider apiKey={apiKey}>
-      <GoogleMap />
-    </APIProvider>
-  );
-}
-
-export default AlertMap;
