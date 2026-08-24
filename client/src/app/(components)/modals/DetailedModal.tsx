@@ -108,9 +108,9 @@ function TrafficCard({ alert }: { alert: Alert }) {
 export default function DetailedModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "detailedModal";
-  const onClose = () => toggleMenu(false, null);
+  const onClose = () => {toggleMenu(false, null); updateSelectedAlert(null)};
 
-  const { selectedAlert: alert } = useContext(AlertsContext);
+  const { selectedAlert: alert, updateSelectedAlert } = useContext(AlertsContext);
 
   if (alert === null) return null; //if alert is null render nothing
 

@@ -82,6 +82,10 @@ export default function AlertList() {
   const listRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    console.log(selectedAlert)
+  }, [selectedAlert])
+
+  useEffect(() => {
     if(listRef.current){
       if(selectedMarker !== null){
         listRef.current.scrollTop = 0

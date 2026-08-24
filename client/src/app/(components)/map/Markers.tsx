@@ -2,6 +2,7 @@
 
 import { useEffect, useContext } from "react";
 import { AlertsContext } from "../../../context/AlertsContext"
+import { MenuContext } from "../../../context/MenuContext"
 import { useMapsLibrary} from "@vis.gl/react-google-maps";
 import {
   MarkerClusterer,
@@ -21,7 +22,8 @@ type AlertMarker =
   };
 
 export default function Markers({map, markers,}: MarkersProps) {
-    const { updateSelectedMarker, alerts } = useContext(AlertsContext)
+    const { updateSelectedMarker, alerts, updateSelectedAlert } = useContext(AlertsContext)
+    const { toggleMenu } = useContext(MenuContext)
   /*
    * Load the Google Maps marker library.
    *
@@ -90,6 +92,9 @@ export default function Markers({map, markers,}: MarkersProps) {
             map.setZoom(11);
             const alert = alerts.find(alert => alert.id === marker.alertId) || null;
             updateSelectedMarker(alert)
+            updateSelectedAlert(alert)
+            console.log(marker.alertId)
+            toggleMenu(false, "detailedModal")
           }
         );
 

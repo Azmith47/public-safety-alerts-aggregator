@@ -100,7 +100,7 @@ class AlertQueryService {
 				: "DESC";
 		const orderClause = `ORDER BY ${sortBy} ${sortDir}`;
 
-		const limit = Math.min(options.limit || 50, 10000);
+		const limit = Math.min(options.limit || 1000, 100000);
 		const offset = options.offset || 0;
 
 		const countRow = await AlertDAO.get(

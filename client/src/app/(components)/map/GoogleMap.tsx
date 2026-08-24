@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import {
   Map,
   Polygon,
@@ -9,6 +9,7 @@ import {
 } from "@vis.gl/react-google-maps";
 import { BoundsType, PolygonType, PolylineType, MarkerType } from "../../lib/definitions"
 import Markers from "./Markers";
+import { AlertsContext } from "../../../context/AlertsContext"
 
 export default function GoogleMap() {
   const [markers, setMarkers] = useState<MarkerType[]>([]);
@@ -23,6 +24,17 @@ export default function GoogleMap() {
   const map = useMap();
   const boundsTimeout = useRef<NodeJS.Timeout | null>(null);
   const requestController = useRef<AbortController | null>(null);
+  const { selectedAlert } = useContext(AlertsContext)
+
+  useEffect(() => {
+    if(selectedAlert !== null){
+      const marker = markers.find(marker => marker.alertId = selectedAlert.id)
+      if(marker?.coordinates){
+        map?.panTo(marker?.coordinates)
+        map?.setZoom(15)
+      }
+    }
+  }, [selectedAlert])
 
   /*
    * Fetch geometry whenever the bounds settle.
