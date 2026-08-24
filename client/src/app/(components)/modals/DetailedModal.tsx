@@ -24,7 +24,7 @@ export default function DetailedModal() {
         <button onClick={onClose}>✕</button>
       </div>
       <h4>{alert?.title}</h4>
-      {alert?.type === 2 ? (
+      {alert?.category_id === 2 ? (
         <div className="data-grid">
           <article className="labels">
             <p>Type:</p>
@@ -33,13 +33,7 @@ export default function DetailedModal() {
             <p>Suburb:</p>
             <p>Date Published:</p>
           </article>
-          <article className="data">
-            <p>{alert?.type}</p>
-            <p>{alert?.category}</p>
-            <p>{alert?.alertLocation.region}</p>
-            <p>{alert?.alertLocation.suburb}</p>
-            <p>{alert?.issued_at}</p>
-          </article>
+          <article className="data"></article>
           <p style={{ color: "red", fontWeight: "bold" }}>
             This is the view for a fire alert
           </p>
@@ -55,15 +49,7 @@ export default function DetailedModal() {
             <p>Road:</p>
             <p>Cross Road: </p>
           </article>
-          <article className="data">
-            <p>{alert?.type}</p>
-            <p>{alert?.category}</p>
-            {/* <p>{alert?.alertLocation.region}</p>
-            <p>{alert?.alertLocation.suburb}</p> */}
-            <p>{alert?.issued_at}</p>
-            <p>bla bla</p>
-            <p>bla bla</p>
-          </article>
+          <article className="data"></article>
           <p style={{ color: "green", fontWeight: "bold" }}>
             This is the view for any other type of element
           </p>

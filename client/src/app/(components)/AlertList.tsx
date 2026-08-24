@@ -14,7 +14,28 @@ function getIcon(type: number) {
   if ((type = 5)) return <img className="icon" src="\icons\storm.svg" alt="" />;
 }
 
-// Renders the AlertCard
+//Show issued + updated time relative to current time
+function convertTime(date: string): string {
+  const issuedDate = new Date(date).getTime();
+  const currentDate = Date.now();
+  const timeDifference = currentDate - issuedDate;
+
+  const minutesSinceIssue = Math.floor(timeDifference / (1000 * 60));
+  const hoursSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60));
+  const daysSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+  if (minutesSinceIssue < 1) {
+    return "just now";
+  }
+  if (minutesSinceIssue >= 1 && minutesSinceIssue < 60) {
+    return `${minutesSinceIssue} minutes ago`;
+  }
+  if (hoursSinceIssue >= 1 && hoursSinceIssue < 24) {
+    return `${hoursSinceIssue} hours ago`;
+  }
+  return `${daysSinceIssue} days ago`;
+}
+
 function AlertCard({ alert }: { alert: Alert }) {
   const { toggleMenu } = useContext(MenuContext);
   const { selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
@@ -29,26 +50,27 @@ function AlertCard({ alert }: { alert: Alert }) {
       className={alert.is_active ? "alert-card-active" : "alert-card-inactive"}
       onClick={() => onAlertClick(alert)}
     >
-      {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
-      <span className={alert.is_active ? "dot-active" : "dot-inactive"}>
-        {alert.is_active ? "Active" : "Inactive"}
-      </span>
       <div className="alert-card-top">
-        <p>x hours ago</p>
+        <span className={alert.is_active ? "dot-active" : "dot-inactive"}>
+          {alert.is_active ? "Active" : "Inactive"}
+        </span>
+        <p>
+          <strong>Issued:</strong> {convertTime(alert.issued_at)}
+        </p>
       </div>
       <div className="alert-card-middle">
         <p>{getIcon(alert.category_id)}</p>
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">
-        <p>alert region and suburb</p>
+        <p>
+          <strong>last update:</strong> {convertTime(alert.updated_at)}
+        </p>
       </div>
     </article>
   );
 }
 
-// Hardcoded data needs to be replaced with API fetch (useEffect?)
-// Each AlertCard will receive JSON alert data as props
 export default function AlertList() {
   const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } =
     useContext(AlertsContext);

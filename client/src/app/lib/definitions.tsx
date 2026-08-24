@@ -2,12 +2,22 @@
 
 export type Alert = {
   id: number;
+  external_id: string;
   title: string;
-  type: number;
+  description: string;
   category_id: number;
-  category: string;
-  alertLocation: { region: string; suburb: string };
+  source_id: number;
+  location_id: number;
+  status_type_id: number;
+  severity_level_id: number;
   issued_at: string;
+  updated_at: string;
+  source_url: string | null;
+  planned: boolean;
+  is_major: boolean;
+  impacting_network: boolean;
+  start_date: string | null;
+  end_date: string | null;
   is_active: boolean;
 };
 
