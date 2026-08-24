@@ -166,6 +166,8 @@ aside {
   font-weight: 650;
   width: fit-content;
   border-radius: 999px;
+  border: 1px solid black;
+  box-shadow: 0 0 2px 0 black;
   padding: 0.3em 0.8em;
   font-size: 0.8rem;
   display: inline-block;
@@ -179,6 +181,8 @@ aside {
   font-weight: 650;
   width: fit-content;
   border-radius: 999px;
+  border: 1px solid black;
+  box-shadow: 0 0 2px 0 black;
   padding: 0.3em 0.8em;
   font-size: 0.8rem;
   display: inline-block;
