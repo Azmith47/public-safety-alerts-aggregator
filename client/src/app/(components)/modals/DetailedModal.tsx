@@ -10,7 +10,6 @@ function Firecard({ alert }: { alert: Alert }) {
   return (
     <div className="modal-grid">
       <article className="modal-label">
-        {/* <p>description</p> */}
         <p>Location:</p>
         <p>Postcode:</p>
         <p>Council Area:</p>
@@ -24,10 +23,8 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>Delay:</p>
         <p>Start Date:</p>
         <p>End Date:</p>
-        {/* <p>raw_payload</p> */}
       </article>
       <article className="modal-data">
-        {/* <p>{alert.description}</p> */}
         <p>{alert.location_name}</p>
         <p>{alert.location_postcode}</p>
         <p>{alert.location_council_area}</p>
@@ -47,12 +44,11 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>{alert.delay === true ? "True" : "False"}</p>
         <p>{alert.start_date ?? "n/a"}</p>
         <p>{alert.end_date ?? "n/a"}</p>
-        {/* <p>{alert.raw_payload}</p> */}
       </article>
-      <p style={{ color: "red", fontWeight: "bold" }}>
+      {/* <p style={{ color: "red", fontWeight: "bold" }}>
         // Fire alert view // Source id: {alert.source_id} // category id:{" "}
         {alert.category_id}
-      </p>
+      </p> */}
     </div>
   );
 }
@@ -61,7 +57,6 @@ function TrafficCard({ alert }: { alert: Alert }) {
   return (
     <div className="modal-grid">
       <article className="modal-label">
-        {/* <p>description</p> */}
         <p>Location:</p>
         <p>Postcode:</p>
         <p>Council Area:</p>
@@ -97,10 +92,10 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>{alert.start_date ?? "n/a"}</p>
         <p>{alert.end_date ?? "n/a"}</p>
       </article>
-      <p style={{ color: "red", fontWeight: "bold" }}>
+      {/* <p style={{ color: "red", fontWeight: "bold" }}>
         // Any other type of alert // Source id: {alert.source_id} // category
         id: {alert.category_id}
-      </p>
+      </p> */}
     </div>
   );
 }
@@ -109,8 +104,12 @@ export default function DetailedModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "detailedModal";
   const onClose = () => toggleMenu(false, null);
-
-  const { selectedAlert: alert } = useContext(AlertsContext);
+  const {
+    selectedAlert: alert,
+    addSubscribedAlert,
+    removeSubscribedAlert,
+    subscribedAlertTitles,
+  } = useContext(AlertsContext);
 
   if (alert === null) return null; //if alert is null render nothing
 
@@ -135,8 +134,17 @@ export default function DetailedModal() {
         <p>Click to subscribe</p>
         <input
           type="checkbox"
-          onChange={() => console.log("checkbox ticked")}
+          //Re-render checkbox if title is in subscribedAlertTitles array
+          //Otherwise checkbox stays clicked for every alert
+          checked={subscribedAlertTitles.includes(alert.title)}
+          //Click checkbox => if title is in subscribedAlertTitles array remove it, otherwise add it
+          onChange={() =>
+            subscribedAlertTitles.includes(alert.title)
+              ? removeSubscribedAlert(alert.title)
+              : addSubscribedAlert(alert.title)
+          }
         />
+        <p>CURRENT ARRAY = {subscribedAlertTitles.join(" /// ")}</p>
       </div>
     </div>
   );

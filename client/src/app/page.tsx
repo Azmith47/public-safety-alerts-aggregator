@@ -16,32 +16,32 @@ import { AlertsProvider } from "@/context/AlertsContext";
 import { FilterProvider } from "@/context/FilterContext";
 
 export default function Home() {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY || '';
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY || "";
 
   return (
     <MenuProvider>
-      <PageOverlay/>
-      <Navbar/>
-      <MenuDrawer/>
-      <SubscribeModal/>
+      <PageOverlay />
+      <Navbar />
+      <MenuDrawer />
+      <SubscribeModal />
       <FilterProvider>
-        <FilterModal/>
-        <MySearchesModal/>
-        <MyAlertsModal/>
-          <AlertsProvider>
-            <DetailedModal/>
+        <FilterModal />
+        <MySearchesModal />
+        <AlertsProvider>
+          <DetailedModal />
+          <MyAlertsModal />
 
-            <main>
-                  <AlertList />
+          <main>
+            <AlertList />
 
-              <div className="map-area">
-                <FilterTabs />
-                <Suspense fallback={<div>Loading...</div>}>
-                  <GoogleMap apiKey={apiKey} />
-                </Suspense>
-              </div>
-            </main>
-            <Footer />
+            <div className="map-area">
+              <FilterTabs />
+              <Suspense fallback={<div>Loading...</div>}>
+                <GoogleMap apiKey={apiKey} />
+              </Suspense>
+            </div>
+          </main>
+          <Footer />
         </AlertsProvider>
       </FilterProvider>
     </MenuProvider>

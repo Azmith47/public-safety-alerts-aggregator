@@ -2,16 +2,16 @@
 
 import { useContext } from "react";
 import { MenuContext } from "@/context/MenuContext";
+import { AlertsContext } from "@/context/AlertsContext";
 
-// Collection of alerts
-// Saved when the user ticks the 'subscribe to this alert' checkbox?
-// I'm not sure how to do this yet
 export default function MyAlertsModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
+  //subscription
+  const { subscribedAlertTitles } = useContext(AlertsContext);
   const isOpen = modalOpen === "myAlerts";
   const onClose = () => toggleMenu(false, null);
-  
-    return (
+
+  return (
     <div
       className={isOpen ? "modal-container-visible" : "modal-container-hidden"}
     >
@@ -19,7 +19,11 @@ export default function MyAlertsModal() {
         <button onClick={onClose}>✕</button>
       </div>
       <h4>Alert Subscriptions</h4>
-      <form action="" className="modal-form"></form>
+      <ul>
+        {subscribedAlertTitles.map((title, i) => (
+          <li key={i}>{title}</li>
+        ))}
+      </ul>
     </div>
   );
 }
