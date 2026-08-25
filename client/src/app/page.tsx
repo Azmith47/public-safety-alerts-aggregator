@@ -2,7 +2,7 @@ import Navbar from "./(components)/Navbar";
 import MenuDrawer from "./(components)/MenuDrawer";
 import { FilterTabs } from "./(components)/modals/FilterModal";
 import AlertList from "./(components)/AlertList";
-import GoogleMap from "./(components)/AlertsMap";
+import GoogleMap from "./(components)/map/AlertsMap";
 import Footer from "./(components)/Footer";
 import FilterModal from "./(components)/modals/FilterModal";
 import MySearchesModal from "./(components)/modals/MySearchesModal";
@@ -30,10 +30,8 @@ export default function Home() {
         <AlertsProvider>
           <DetailedModal />
           <MyAlertsModal />
-
           <main>
             <AlertList />
-
             <div className="map-area">
               <FilterTabs />
               <Suspense fallback={<div>Loading...</div>}>

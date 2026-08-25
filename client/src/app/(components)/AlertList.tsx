@@ -1,7 +1,7 @@
 "use client";
 
 import { Alert } from "../lib/definitions";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
@@ -74,19 +74,32 @@ function AlertCard({ alert }: { alert: Alert }) {
 }
 
 export default function AlertList() {
-  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } =
+  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert, selectedMarker } =
     useContext(AlertsContext);
   const { modalOpen } = useContext(MenuContext);
   const { filters } = useContext(FilterContext);
 
+  const listRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    console.log(selectedAlert)
+  }, [selectedAlert])
+
+  useEffect(() => {
+    if(listRef.current){
+      if(selectedMarker !== null){
+        listRef.current.scrollTop = 0
+      }
+    }
+  }, [selectedMarker])
+
   useEffect(() => {
     // Fetch alerts from API and update context
-    fetch("http://localhost:3001/alerts/")
+    fetch("http://localhost:3001/alerts/?limit=10000")
       .then((response) => response.json())
       .then((data) => {
         // Update the alerts in the context
         updateAlerts(data.rows);
-        console.log(data.rows[0]);
       });
   }, []);
 
@@ -109,12 +122,18 @@ export default function AlertList() {
   });
 
   return (
-    <aside>
+    <aside ref={listRef} style={{overflowY: 'auto'}}>
       <ul>
-        {filteredAlerts.map((alert) => (
-          <li key={alert.id}>
-            <AlertCard alert={alert} />
+        {selectedMarker !== null ? (
+          <li className="focussed" key={selectedMarker.id}>
+              <AlertCard alert={selectedMarker}/>
           </li>
+        ) : null}
+        {filteredAlerts.map((alert) => (
+          alert.id !== selectedMarker?.id ?
+          (<li key={alert.id}>
+            <AlertCard alert={alert} />
+          </li>) : null
         ))}
       </ul>
     </aside>

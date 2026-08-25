@@ -12,6 +12,8 @@ interface AlertsContextValue {
   subscribedAlertTitles: string[];
   addSubscribedAlert: (title: string) => void;
   removeSubscribedAlert: (title: string) => void;
+  selectedMarker: Alert | null;
+  updateSelectedMarker: (alert: Alert | null) => void;
 }
 
 // 1. Create the context with an optional default value
@@ -24,6 +26,8 @@ export const AlertsContext = createContext<AlertsContextValue>({
   subscribedAlertTitles: [],
   addSubscribedAlert: () => {},
   removeSubscribedAlert: () => {},
+  selectedMarker: null,
+  updateSelectedMarker: () => {},
 });
 
 interface AlertsProviderProps {
@@ -34,6 +38,7 @@ export function AlertsProvider({ children }: AlertsProviderProps) {
   //State variables
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<Alert | null>(null);
   //Subscription state
   const [subscribedAlertTitles, setSubscribedTitles] = useState<string[]>([]);
 
@@ -54,6 +59,10 @@ export function AlertsProvider({ children }: AlertsProviderProps) {
     setSubscribedTitles((prev) => prev.filter((t) => t !== title));
   };
 
+  const updateSelectedMarker = (alert: Alert | null) => {
+    setSelectedMarker(alert);
+  };
+
   // 2. Provide the state and modifier function to children
   return (
     <AlertsContext.Provider
@@ -65,6 +74,8 @@ export function AlertsProvider({ children }: AlertsProviderProps) {
         subscribedAlertTitles,
         addSubscribedAlert,
         removeSubscribedAlert,
+        selectedMarker,
+        updateSelectedMarker,
       }}
     >
       {children}
