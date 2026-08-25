@@ -5,14 +5,33 @@ import { useContext, useEffect, useRef } from "react";
 import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
+import Image from "next/image";
 
 function getIcon(source_id: number) {
   if (Number(source_id) === 1)
-    return <img className="icon" src="\icons\fire.svg" alt="" />;
+    return (
+      <Image
+        className="icon"
+        src="\icons\fire.svg"
+        alt="fire icon"
+        width={0}
+        height={0}
+      />
+    );
   if (Number(source_id) === 2)
-    return <img className="icon" src="\icons\traffic.svg" alt="" />;
+    return (
+      <Image
+        className="icon"
+        src="\icons\traffic.svg"
+        alt="traffic icon"
+        width={10}
+        height={10}
+      />
+    );
   else {
-    return <img className="" src="" alt="this is broken" />;
+    return (
+      <Image className="" src="" alt="this is broken" width={10} height={10} />
+    );
   }
 }
 
@@ -21,7 +40,6 @@ export function convertTime(date: string) {
   const issuedDate = new Date(date).getTime();
   const currentDate = Date.now();
   const timeDifference = currentDate - issuedDate;
-
   const minutesSinceIssue = Math.floor(timeDifference / (1000 * 60));
   const hoursSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60));
   const daysSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
@@ -30,10 +48,19 @@ export function convertTime(date: string) {
     return "just now";
   }
   if (minutesSinceIssue >= 1 && minutesSinceIssue < 60) {
+    if (minutesSinceIssue === 1) {
+      return `${minutesSinceIssue} minute ago`;
+    }
     return `${minutesSinceIssue} minutes ago`;
   }
   if (hoursSinceIssue >= 1 && hoursSinceIssue < 24) {
+    if (hoursSinceIssue === 1) {
+      return `${hoursSinceIssue} hour ago`;
+    }
     return `${hoursSinceIssue} hours ago`;
+  }
+  if (daysSinceIssue === 1) {
+    return `${daysSinceIssue} day ago`;
   }
   return `${daysSinceIssue} days ago`;
 }
@@ -65,8 +92,9 @@ function AlertCard({ alert }: { alert: Alert }) {
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">
+        <p>{alert.location_region}</p>
         <p>
-          <strong>last update:</strong> {convertTime(alert.updated_at)}
+          <strong>Updated:</strong> {convertTime(alert.updated_at)}
         </p>
       </div>
     </article>
@@ -74,24 +102,29 @@ function AlertCard({ alert }: { alert: Alert }) {
 }
 
 export default function AlertList() {
-  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert, selectedMarker } =
-    useContext(AlertsContext);
+  const {
+    alerts,
+    updateAlerts,
+    selectedAlert,
+    updateSelectedAlert,
+    selectedMarker,
+  } = useContext(AlertsContext);
   const { modalOpen } = useContext(MenuContext);
   const { filters } = useContext(FilterContext);
 
   const listRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    console.log(selectedAlert)
-  }, [selectedAlert])
+    console.log(selectedAlert);
+  }, [selectedAlert]);
 
   useEffect(() => {
-    if(listRef.current){
-      if(selectedMarker !== null){
-        listRef.current.scrollTop = 0
+    if (listRef.current) {
+      if (selectedMarker !== null) {
+        listRef.current.scrollTop = 0;
       }
     }
-  }, [selectedMarker])
+  }, [selectedMarker]);
 
   useEffect(() => {
     // Fetch alerts from API and update context
@@ -122,19 +155,20 @@ export default function AlertList() {
   });
 
   return (
-    <aside ref={listRef} style={{overflowY: 'auto'}}>
+    <aside ref={listRef} style={{ overflowY: "auto" }}>
       <ul>
         {selectedMarker !== null ? (
           <li className="focussed" key={selectedMarker.id}>
-              <AlertCard alert={selectedMarker}/>
+            <AlertCard alert={selectedMarker} />
           </li>
         ) : null}
-        {filteredAlerts.map((alert) => (
-          alert.id !== selectedMarker?.id ?
-          (<li key={alert.id}>
-            <AlertCard alert={alert} />
-          </li>) : null
-        ))}
+        {filteredAlerts.map((alert) =>
+          alert.id !== selectedMarker?.id ? (
+            <li key={alert.id}>
+              <AlertCard alert={alert} />
+            </li>
+          ) : null,
+        )}
       </ul>
     </aside>
   );

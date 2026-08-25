@@ -7,19 +7,19 @@ import { MenuContext } from "@/context/MenuContext";
 //Passing onMenuClick as a prop
 export default function Navbar() {
   const { menuOpen, toggleMenu } = useContext(MenuContext);
-  
+
   return (
     <nav>
       <div className="nav-logo">
         <img className="nav-icon" src="icons/logo.svg" />
-        <p>Critical Signal</p>
+        <p>Public Safety Alerts Aggregator</p>
       </div>
       <div className="nav-controls">
-        <input
+        {/* <input
           className="search-input"
           type="text"
           placeholder="Search alerts"
-        />
+        /> */}
         <IconButton
           onClick={() => toggleMenu(!menuOpen, null)}
           icon="icons/hamburger-menu.svg"
