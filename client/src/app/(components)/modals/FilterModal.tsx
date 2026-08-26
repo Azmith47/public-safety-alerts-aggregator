@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import { AlertFilters, FilterKey } from "@/app/lib/definitions";
-import { allLgas } from "@/app/lib/placeholder-data";
+import { lgaGroups } from "@/app/lib/placeholder-data";
 import { convertActiveToString, removeFormatting } from "@/app/lib/utils";
 
 export function FilterTabs() {
@@ -29,6 +29,14 @@ export function FilterTabs() {
       label: typeLabels[filters.source_id] ?? "Unknown",
     });
   }
+
+  if (filters.location_council_area !== null) {
+    selectedFilters.push({
+      key: "location_council_area",
+      label: filters.location_council_area ?? "Unknown",
+    });
+  }
+
   return (
     <div className={selectedFilters.length > 0 ? "filter-bar" : ""}>
       {selectedFilters.map((filter) => (
@@ -106,13 +114,19 @@ export default function FilterModal() {
           }}
         >
           <option value="">Select LGA</option>
-          {allLgas.map((lga) => (
-            <option key={lga} value={lga}>
-              {lga}
-            </option>
+          {Object.entries(lgaGroups).map(([region, lgas]) => (
+            <optgroup key={region} label={region} className="optgroup-label">
+              {[...lgas]
+                .sort((a, b) => a.localeCompare(b))
+                .map((lga) => (
+                  <option key={lga} value={lga}>
+                    {lga}
+                  </option>
+                ))}
+            </optgroup>
           ))}
         </select>
-        {/*  */}
+        {/* testing lgas */}
         <button
           type="button"
           className="apply-btn"

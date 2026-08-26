@@ -165,18 +165,18 @@ export const southEastTableandsLgas = [
 export const southCoastLgas = ["Eurobodalla"];
 
 //Combined all lgas
-export const allLgas = [
-  ...greaterSydneyLgas,
-  ...centralCoastLgas,
-  ...centralWestOrganaLgas,
-  ...farWestLgas,
-  ...hunterLgas,
-  ...illawarraShoalhavenLgas,
-  ...newEnglandNorthWestLgas,
-  ...northCoastLgas,
-  ...northernRiversLgas,
-  ...riverinaLgas,
-  ...murrayRiverinaRegionalLgas,
-  ...southEastTableandsLgas,
-  ...southCoastLgas,
-];
+export const lgaGroups = {
+  "Greater Sydney": greaterSydneyLgas,
+  "Central Coast": centralCoastLgas,
+  "Central West": centralWestOrganaLgas,
+  "Far West": farWestLgas,
+  Hunter: hunterLgas,
+  "Illawarra Shoalhaven": illawarraShoalhavenLgas,
+  "New England North West": newEnglandNorthWestLgas,
+  "North Coast": northCoastLgas,
+  "Northern Rivers": northernRiversLgas,
+  Riverina: riverinaLgas,
+  "Murray Riverina": murrayRiverinaRegionalLgas,
+  "South East Tablelands": southEastTableandsLgas,
+  "South Coast": southCoastLgas,
+};
