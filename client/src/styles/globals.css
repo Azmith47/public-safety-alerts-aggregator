@@ -232,13 +232,21 @@ aside {
   vertical-align: middle;
 }
 
+.no-results-found {
+  text-align: center;
+  padding-top: 100px;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
 /* FILTER */
 .filter-bar {
   position: absolute;
   top: 6em;
   left: 50%;
   transform: translateX(-50%);
-  background: black;
+  background: var(--nav-footer-bg);
   border-radius: 8px;
   padding: 0.5em 1em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -257,7 +265,7 @@ aside {
   gap: 0.4em;
   color: black;
   font-weight: 500;
-  background: var(--card-bg);
+  background: var(--accent-color);
   border-radius: 999px;
   padding: 0.3em 0.8em;
   font-size: 0.9rem;
@@ -407,7 +415,17 @@ footer p {
 }
 
 /* FILTER ALERTS MODAL */
-.apply-btn {
+.filter-btn-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+  gap: 50px;
+  padding-top: 1em;
+}
+
+.apply-btn .reset-btn {
   font-size: 0.9em;
   width: fit-content;
   margin: auto;

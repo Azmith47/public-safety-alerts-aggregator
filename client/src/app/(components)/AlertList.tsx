@@ -148,6 +148,10 @@ export default function AlertList() {
           ) : null,
         )}
       </ul>
+      <div className="no-results-found">
+        {" "}
+        {filteredAlerts.length === 0 && <p>No results found</p>}
+      </div>
     </aside>
   );
 }

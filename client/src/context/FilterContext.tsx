@@ -11,7 +11,7 @@ interface FilterContextValue {
 // 1. Create the context with an optional default value
 export const FilterContext = createContext<FilterContextValue>({
   filters: {
-    is_active: null,
+    is_active: true,
     source_id: null,
     location_council_area: null,
   },

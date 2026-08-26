@@ -127,15 +127,18 @@ export default function FilterModal() {
           ))}
         </select>
         {/* testing lgas */}
-        <button
-          type="button"
-          className="apply-btn"
-          onClick={() => {
-            onApply(localFilters);
-          }}
-        >
-          Filter
-        </button>
+        <div className="filter-btn-container">
+          <button
+            type="button"
+            className="apply-btn"
+            onClick={() => {
+              onApply(localFilters);
+            }}
+          >
+            Apply Filters
+          </button>
+          <button className="reset-btn">Reset Filters</button>
+        </div>
       </form>
     </div>
   );
