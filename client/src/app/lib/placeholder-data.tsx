@@ -1,76 +1,182 @@
-export const alerts = [
-  {
-    id: 1,
-    title: "Changed traffic conditions Mamre Road upgrade",
-    type: "traffic",
-    category: "Changed traffic conditions",
-    alertLocation: { region: "Sydney", suburb: "St Clair to Erskine Park" },
-    datePublished: "18 hours ago",
-    active: false,
-  },
-  {
-    id: 2,
-    title: "Flood Watch - Hawkesbury River",
-    type: "flood",
-    category: "Flood Watch",
-    alertLocation: { region: "Hawkesbury", suburb: "Windsor" },
-    datePublished: "2 hours ago",
-    active: true,
-  },
-  {
-    id: 3,
-    title: "Bush Fire Warning - Blue Mountains",
-    type: "fire",
-    category: "Bush Fire Warning",
-    alertLocation: { region: "Blue Mountains", suburb: "Katoomba" },
-    datePublished: "45 minutes ago",
-    active: true,
-  },
-  {
-    id: 4,
-    title: "Severe Thunderstorm Warning",
-    type: "storm",
-    category: "Severe Thunderstorm Warning",
-    alertLocation: { region: "Newcastle", suburb: "Cessnock" },
-    datePublished: "5 hours ago",
-    active: true,
-  },
-  {
-    id: 5,
-    title: "Road Closure - Pacific Highway",
-    type: "traffic",
-    category: "Road Closure",
-    alertLocation: { region: "Central Coast", suburb: "Gosford" },
-    datePublished: "30 minutes ago",
-    active: true,
-  },
-  {
-    id: 6,
-    title: "Bush Fire Emergency - Ku-ring-gai",
-    type: "fire",
-    category: "Bush Fire Emergency Warning",
-    alertLocation: { region: "Northern Sydney", suburb: "Turramurra" },
-    datePublished: "20 minutes ago",
-    active: false,
-  },
-  {
-    id: 7,
-    title: "Lane Closure - M1 Motorway Northbound",
-    type: "traffic",
-    category: "Lane Closure",
-    alertLocation: { region: "Sydney", suburb: "Berowra" },
-    datePublished: "3 hours ago",
-    active: true,
-  },
+export const greaterSydneyLgas = [
+  "Bayside",
+  "Blacktown",
+  "Blue Mountains",
+  "Burwood",
+  "Camden",
+  "Campbelltown",
+  "Canada Bay",
+  "Canterbury",
+  "Bankstown",
+  "Cumberland",
+  "Fairfield",
+  "Georges River",
+  "Hawkesbury",
+  "Hornsby",
+  "Hunter's Hill",
+  "Inner West",
+  "Ku-ring-gai",
+  "Lane Cove",
+  "Liverpool",
+  "Mosman",
+  "North Sydney",
+  "Northern Beaches",
+  "City of Parramatta",
+  "Penrith",
+  "Randwick",
+  "Ryde",
+  "Strathfield",
+  "Sutherland Shire",
+  "Sydney",
+  "Waverley",
+  "Willoughby",
+  "Wollondilly",
+  "Woollahra",
+  "Sydney Harbour",
 ];
 
-//Filter Modal Placeholder data - DELETE
-export const agencies = [
-  "NSW Rural Fire Service (RFS)",
-  "Transport for New South Wales",
-  "NSW State Emergency Service (SES)",
+export const centralCoastLgas = ["Central Coast"];
+
+export const centralWestOrganaLgas = [
+  "Bathurst",
+  "Blayney",
+  "Bogan",
+  "Cabonne",
+  "Coonamble",
+  "Cowra",
+  "Dubbo",
+  "Forbes",
+  "Gilgandra",
+  "Lachlan",
+  "Lithgow City",
+  "Mid-Western Regional",
+  "Narromine",
+  "Oberon",
+  "Orange",
+  "Parkes",
+  "Warren",
+  "Warrumbungle",
+  "Weddin",
 ];
 
-export const incidentTypes = ["Fire", "Flood", "Roadwork"];
-export const regions = ["Greater Sydney", "Hornsby Shire", "The Hills Shire"];
-export const statuses = ["Active", "Inactive"];
+export const farWestLgas = [
+  "Balranald",
+  "Broken Hill",
+  "Central Darling",
+  "Wentworth",
+  "Far West",
+  "Cobar",
+  "Bourke",
+  "Brewarrina",
+  "Walgett",
+];
+
+export const hunterLgas = [
+  "Cessnock",
+  "Dungog",
+  "Lake Macquarie",
+  "Maitland",
+  "Mid-Coast",
+  "Muswellbrook",
+  "Newcastle",
+  "Port Stephens",
+  "Singleton",
+  "Upper Hunter",
+];
+
+export const illawarraShoalhavenLgas = [
+  "Kiama",
+  "Shellharbour",
+  "Shoalhaven",
+  "Wollongong",
+];
+
+export const newEnglandNorthWestLgas = [
+  "Armidale",
+  "Glen Innes Severn",
+  "Gunnedah",
+  "Gwydir",
+  "Inverell",
+  "Liverpool Plains",
+  "Moree Plains",
+  "Narrabri ",
+  "Tamworth",
+  "Tenterfield",
+  "Uralla",
+  "Walcha",
+];
+
+export const northCoastLgas = [
+  "Bellingen",
+  "Coffs Harbour",
+  "Kempsey",
+  "Nambucca Valley",
+  "Port Macquarie-Hastings",
+  "Tweed",
+  "Lord Howe Island",
+];
+
+export const northernRiversLgas = [
+  "Ballina",
+  "Byron",
+  "Clarence",
+  "Kyogle",
+  "Lismore",
+  "Richmond Valley",
+];
+
+export const riverinaLgas = [
+  "Bland",
+  "Coolamon",
+  "Cootamundra-Gundagai",
+  "Greater Hume",
+  "Junee",
+  "Lockhart",
+  "Snowy Valleys",
+  "Temora",
+  "Wagga Wagga",
+];
+
+export const murrayRiverinaRegionalLgas = [
+  "Albury",
+  "Berrigan",
+  "Carrathool",
+  "Edward River",
+  "Federation",
+  "Griffith",
+  "Hay",
+  "Leeton",
+  "Murray River",
+  "Murrumbidgee",
+  "Narrandera",
+];
+
+export const southEastTableandsLgas = [
+  "Goulburn Mulwaree",
+  "Hilltops",
+  "Queanbeyan-Palerang",
+  "Upper Lachlan",
+  "Wingecarribee",
+  "Yass Valley",
+  "Snowy Monaro Regional",
+  "Bega Valley",
+];
+
+export const southCoastLgas = ["Eurobodalla"];
+
+//Combined all lgas
+export const allLgas = [
+  ...greaterSydneyLgas,
+  ...centralCoastLgas,
+  ...centralWestOrganaLgas,
+  ...farWestLgas,
+  ...hunterLgas,
+  ...illawarraShoalhavenLgas,
+  ...newEnglandNorthWestLgas,
+  ...northCoastLgas,
+  ...northernRiversLgas,
+  ...riverinaLgas,
+  ...murrayRiverinaRegionalLgas,
+  ...southEastTableandsLgas,
+  ...southCoastLgas,
+];

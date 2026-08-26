@@ -25,7 +25,6 @@ export type Alert = {
   location_postcode: number;
   location_council_area: string;
   location_region: string;
-
 };
 
 export type AlertListProps = {
@@ -36,6 +35,7 @@ export type AlertListProps = {
 export type AlertFilters = {
   source_id: number | null;
   is_active: boolean | null;
+  location_council_area: string | null;
 };
 
 export type FilterKey = keyof AlertFilters;

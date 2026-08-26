@@ -6,6 +6,7 @@ import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import Image from "next/image";
+import { convertTime, removeFormatting } from "../lib/utils";
 
 function getIcon(source_id: number) {
   if (Number(source_id) === 1)
@@ -33,36 +34,6 @@ function getIcon(source_id: number) {
       <Image className="" src="" alt="this is broken" width={10} height={10} />
     );
   }
-}
-
-//Show issued + updated time relative to current time
-export function convertTime(date: string) {
-  const issuedDate = new Date(date).getTime();
-  const currentDate = Date.now();
-  const timeDifference = currentDate - issuedDate;
-  const minutesSinceIssue = Math.floor(timeDifference / (1000 * 60));
-  const hoursSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60));
-  const daysSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-  if (minutesSinceIssue < 1) {
-    return "just now";
-  }
-  if (minutesSinceIssue >= 1 && minutesSinceIssue < 60) {
-    if (minutesSinceIssue === 1) {
-      return `${minutesSinceIssue} minute ago`;
-    }
-    return `${minutesSinceIssue} minutes ago`;
-  }
-  if (hoursSinceIssue >= 1 && hoursSinceIssue < 24) {
-    if (hoursSinceIssue === 1) {
-      return `${hoursSinceIssue} hour ago`;
-    }
-    return `${hoursSinceIssue} hours ago`;
-  }
-  if (daysSinceIssue === 1) {
-    return `${daysSinceIssue} day ago`;
-  }
-  return `${daysSinceIssue} days ago`;
 }
 
 function AlertCard({ alert }: { alert: Alert }) {
@@ -148,6 +119,13 @@ export default function AlertList() {
     if (
       filters.source_id !== null &&
       Number(alert.source_id) !== filters.source_id
+    ) {
+      return false;
+    }
+    if (
+      filters.location_council_area !== null &&
+      removeFormatting(alert.location_council_area) !==
+        removeFormatting(filters.location_council_area)
     ) {
       return false;
     }

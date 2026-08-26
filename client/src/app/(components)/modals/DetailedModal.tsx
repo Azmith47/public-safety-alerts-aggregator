@@ -3,8 +3,8 @@
 import { MenuContext } from "@/context/MenuContext";
 import { AlertsContext } from "@/context/AlertsContext";
 import { useContext } from "react";
-import { convertTime } from "../AlertList";
 import { Alert } from "@/app/lib/definitions";
+import { convertTime, removeFormatting } from "@/app/lib/utils";
 
 function Firecard({ alert }: { alert: Alert }) {
   return (
@@ -27,7 +27,7 @@ function Firecard({ alert }: { alert: Alert }) {
       <article className="modal-data">
         <p>{alert.location_name}</p>
         <p>{alert.location_postcode}</p>
-        <p>{alert.location_council_area}</p>
+        <p>{removeFormatting(alert.location_council_area)}</p>
         <p>{alert.location_region}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
@@ -74,7 +74,7 @@ function TrafficCard({ alert }: { alert: Alert }) {
       <article className="modal-data">
         <p>{alert.location_name}</p>
         <p>{alert.location_postcode}</p>
-        <p>{alert.location_council_area}</p>
+        <p>{removeFormatting(alert.location_council_area)}</p>
         <p>{alert.location_region}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>

@@ -4,16 +4,8 @@ import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import { AlertFilters, FilterKey } from "@/app/lib/definitions";
-
-//Convert string to null | true |false
-function convertActiveToString(value: string): boolean | null {
-  if (value === "") {
-    return null;
-  } else if (value === "true") {
-    return true;
-  }
-  return false;
-}
+import { allLgas } from "@/app/lib/placeholder-data";
+import { convertActiveToString, removeFormatting } from "@/app/lib/utils";
 
 export function FilterTabs() {
   const selectedFilters: { key: FilterKey; label: string }[] = [];
@@ -88,7 +80,7 @@ export default function FilterModal() {
             setLocalFilters({ ...localFilters, is_active: value });
           }}
         >
-          <option value="">-</option>
+          <option value="">Select Incident status</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
@@ -100,10 +92,27 @@ export default function FilterModal() {
             setLocalFilters({ ...localFilters, source_id: value });
           }}
         >
-          <option value="">-</option>
+          <option value="">Select Incident Type</option>
           <option value="1">Fire</option>
           <option value="2">Traffic</option>
         </select>
+        {/* testing lgas */}
+        <label htmlFor="">LGA</label>
+        <select
+          value={localFilters.location_council_area ?? ""}
+          onChange={(e) => {
+            const value = e.target.value === "" ? null : e.target.value;
+            setLocalFilters({ ...localFilters, location_council_area: value });
+          }}
+        >
+          <option value="">Select LGA</option>
+          {allLgas.map((lga) => (
+            <option key={lga} value={lga}>
+              {lga}
+            </option>
+          ))}
+        </select>
+        {/*  */}
         <button
           type="button"
           className="apply-btn"
