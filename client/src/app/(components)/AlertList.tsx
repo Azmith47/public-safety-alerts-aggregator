@@ -63,10 +63,8 @@ function AlertCard({ alert }: { alert: Alert }) {
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">
+        <p>{alert.location_council_area}</p>
         <p>{alert.location_region}</p>
-        <p>
-          <strong>Updated:</strong> {convertTime(alert.updated_at)}
-        </p>
       </div>
     </article>
   );
