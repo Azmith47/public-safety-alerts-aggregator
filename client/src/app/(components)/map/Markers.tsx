@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useContext } from "react";
-import { AlertsContext } from "../../../context/AlertsContext"
-import { MenuContext } from "../../../context/MenuContext"
-import { useMapsLibrary} from "@vis.gl/react-google-maps";
-import {
-  MarkerClusterer,
-  type Renderer,
-} from "@googlemaps/markerclusterer";
+import { AlertsContext } from "../../../context/AlertsContext";
+import { MenuContext } from "../../../context/MenuContext";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { MarkerClusterer, type Renderer } from "@googlemaps/markerclusterer";
 
 import { MarkerType } from "../../lib/definitions";
 
@@ -16,14 +13,14 @@ type MarkersProps = {
   markers: MarkerType[];
 };
 
-type AlertMarker =
-  google.maps.marker.AdvancedMarkerElement & {
-    alertType?: number;
-  };
+type AlertMarker = google.maps.marker.AdvancedMarkerElement & {
+  alertType?: number;
+};
 
-export default function Markers({map, markers,}: MarkersProps) {
-    const { updateSelectedMarker, alerts, updateSelectedAlert } = useContext(AlertsContext)
-    const { toggleMenu } = useContext(MenuContext)
+export default function Markers({ map, markers }: MarkersProps) {
+  const { updateSelectedMarker, alerts, updateSelectedAlert } =
+    useContext(AlertsContext);
+  const { toggleMenu } = useContext(MenuContext);
   /*
    * Load the Google Maps marker library.
    *
@@ -42,91 +39,88 @@ export default function Markers({map, markers,}: MarkersProps) {
       return;
     }
 
+    /////////////////////////////Uncomment this to revert
     /*
      * Create the individual Google Maps markers.
      */
-    const googleMarkers: AlertMarker[] =
-      markers.map((marker) => {
-        /*
-         * Create the pin used for individual alerts.
-         */
-        const pin = new markerLibrary.PinElement({
-          background:
-            marker.alertType === 1
-              ? "red"
-              : "yellow",
+    // const googleMarkers: AlertMarker[] = markers.map((marker) => {
+    /*
+     * Create the pin used for individual alerts.
+     */
+    // const pin = new markerLibrary.PinElement({
+    //   background: marker.alertType === 1 ? "red" : "yellow",
 
-          borderColor: "black",
+    //   borderColor: "black",
 
-          glyphColor: "white",
-        });
+    //   glyphColor: "white",
+    // });
 
-        /*
-         * Create the Google Maps AdvancedMarkerElement.
-         */
-        const googleMarker =
-          new markerLibrary.AdvancedMarkerElement({
-            position: marker.coordinates,
+    /*
+     * Create the Google Maps AdvancedMarkerElement.
+     */
+    // const googleMarker = new markerLibrary.AdvancedMarkerElement({
+    //   position: marker.coordinates,
 
-            content: pin,
+    //   content: pin,
 
-            title: `Alert ${marker.alertId}`,
-          }) as AlertMarker;
+    //   title: `Alert ${marker.alertId}`,
+    // }) as AlertMarker;
 
-        /*
-         * Store the alert type on the Google Maps
-         * marker so the cluster renderer can inspect it.
-         */
-        googleMarker.alertType =
-          marker.alertType;
+    /*
+     * Store the alert type on the Google Maps
+     * marker so the cluster renderer can inspect it.
+     */
+    // googleMarker.alertType = marker.alertType;
 
-        /*
-         * Clicking an individual alert:
-         * - pan to the alert
-         * - zoom to level 8
-         */
-        googleMarker.addListener(
-          "gmp-click",
-          () => {
-            map.panTo(marker.coordinates);
-            map.setZoom(11);
-            const alert = alerts.find(alert => alert.id === marker.alertId) || null;
-            updateSelectedMarker(alert)
-            updateSelectedAlert(alert)
-            console.log(marker.alertId)
-            toggleMenu(false, "detailedModal")
-          }
-        );
+    /*
+     * Clicking an individual alert:
+     * - pan to the alert
+     * - zoom to level 8
+     */
 
-        return googleMarker;
+    //TEST CODE:
+    const googleMarkers: AlertMarker[] = markers.map((marker) => {
+      const img = document.createElement("img");
+      img.src =
+        marker.alertType === 1 ? "/icons/fire.svg" : "/icons/traffic.svg";
+      img.style.width = "50px";
+      img.style.height = "50px";
+
+      const googleMarker = new markerLibrary.AdvancedMarkerElement({
+        position: marker.coordinates,
+        content: img,
+        title: `Alert ${marker.alertId}`,
+      }) as AlertMarker;
+      googleMarker.alertType = marker.alertType;
+      googleMarker.addListener("gmp-click", () => {
+        map.panTo(marker.coordinates);
+        map.setZoom(11);
+        const alert =
+          alerts.find((alert) => alert.id === marker.alertId) || null;
+        updateSelectedMarker(alert);
+        updateSelectedAlert(alert);
+        console.log(marker.alertId);
+        toggleMenu(false, "detailedModal");
       });
+      return googleMarker;
+    });
 
     /*
      * Custom renderer for clusters.
      */
     const renderer: Renderer = {
-      render({
-        count,
-        position,
-        markers: clusterMarkers,
-      }) {
+      render({ count, position, markers: clusterMarkers }) {
         /*
          * Determine which types of alerts are
          * contained in this cluster.
          */
-        const hasFireAlerts =
-          clusterMarkers.some(
-            (marker) =>
-              (marker as AlertMarker)
-                .alertType === 1
-          );
+        const hasFireAlerts = clusterMarkers.some(
+          (marker) => (marker as AlertMarker).alertType === 1,
+        );
 
-        const hasTrafficAlerts =
-          clusterMarkers.some(
-            (marker) =>
-              (marker as AlertMarker)
-                .alertType !== 1
-          );
+        const hasTrafficAlerts = clusterMarkers.some(
+          (marker) => (marker as AlertMarker).alertType !== 1,
+        );
 
         /*
          * Determine the cluster background.
@@ -142,10 +136,7 @@ export default function Markers({map, markers,}: MarkersProps) {
          */
         let background: string;
 
-        if (
-          hasFireAlerts &&
-          hasTrafficAlerts
-        ) {
+        if (hasFireAlerts && hasTrafficAlerts) {
           background =
             "linear-gradient(" +
             "90deg, " +
@@ -163,8 +154,7 @@ export default function Markers({map, markers,}: MarkersProps) {
         /*
          * Create the cluster element.
          */
-        const div =
-          document.createElement("div");
+        const div = document.createElement("div");
 
         div.style.width = "44px";
         div.style.height = "44px";
@@ -173,74 +163,55 @@ export default function Markers({map, markers,}: MarkersProps) {
 
         div.style.background = background;
 
-        div.style.border =
-          "3px solid black";
+        div.style.border = "3px solid black";
 
         div.style.display = "flex";
         div.style.alignItems = "center";
         div.style.justifyContent = "center";
 
-        div.style.boxSizing =
-          "border-box";
+        div.style.boxSizing = "border-box";
 
         /*
          * Create the black circle behind
          * the cluster count.
          */
-        const countDiv =
-          document.createElement("div");
+        const countDiv = document.createElement("div");
 
         /*
          * Give three-digit counts a little
          * more room.
          */
-        const badgeSize =
-          count >= 100 ? 28 : 24;
+        const badgeSize = count >= 100 ? 28 : 24;
 
-        countDiv.style.width =
-          `${badgeSize}px`;
+        countDiv.style.width = `${badgeSize}px`;
 
-        countDiv.style.height =
-          `${badgeSize}px`;
+        countDiv.style.height = `${badgeSize}px`;
 
-        countDiv.style.borderRadius =
-          "50%";
+        countDiv.style.borderRadius = "50%";
 
-        countDiv.style.background =
-          "black";
+        countDiv.style.background = "black";
 
-        countDiv.style.color =
-          "white";
+        countDiv.style.color = "white";
 
-        countDiv.style.display =
-          "flex";
+        countDiv.style.display = "flex";
 
-        countDiv.style.alignItems =
-          "center";
+        countDiv.style.alignItems = "center";
 
-        countDiv.style.justifyContent =
-          "center";
+        countDiv.style.justifyContent = "center";
 
-        countDiv.style.fontSize =
-          count >= 100
-            ? "10px"
-            : "12px";
+        countDiv.style.fontSize = count >= 100 ? "10px" : "12px";
 
-        countDiv.style.fontWeight =
-          "bold";
+        countDiv.style.fontWeight = "bold";
 
-        countDiv.style.lineHeight =
-          "1";
+        countDiv.style.lineHeight = "1";
 
-        countDiv.style.boxSizing =
-          "border-box";
+        countDiv.style.boxSizing = "border-box";
 
         /*
          * Display the number of alerts
          * contained in the cluster.
          */
-        countDiv.textContent =
-          String(count);
+        countDiv.textContent = String(count);
 
         /*
          * Put the count badge inside
@@ -252,35 +223,30 @@ export default function Markers({map, markers,}: MarkersProps) {
          * Return an AdvancedMarkerElement
          * for the cluster itself.
          */
-        return new markerLibrary.AdvancedMarkerElement(
-          {
-            position,
+        return new markerLibrary.AdvancedMarkerElement({
+          position,
 
-            content: div,
+          content: div,
 
-            /*
-             * Make clusters appear above
-             * normal markers.
-             */
-            zIndex:
-              google.maps.Marker.MAX_ZINDEX +
-              count,
-          }
-        );
+          /*
+           * Make clusters appear above
+           * normal markers.
+           */
+          zIndex: google.maps.Marker.MAX_ZINDEX + count,
+        });
       },
     };
 
     /*
      * Create the MarkerClusterer.
      */
-    const clusterer =
-      new MarkerClusterer({
-        map,
+    const clusterer = new MarkerClusterer({
+      map,
 
-        markers: googleMarkers,
+      markers: googleMarkers,
 
-        renderer,
-      });
+      renderer,
+    });
 
     /*
      * Clean up when:
@@ -292,11 +258,7 @@ export default function Markers({map, markers,}: MarkersProps) {
       clusterer.clearMarkers();
       clusterer.setMap(null);
     };
-  }, [
-    map,
-    markerLibrary,
-    markers,
-  ]);
+  }, [map, markerLibrary, markers]);
 
   /*
    * All marker rendering is handled

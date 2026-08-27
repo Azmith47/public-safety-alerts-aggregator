@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useContext } from "react";
+import { Map, Polygon, useMap, Polyline } from "@vis.gl/react-google-maps";
 import {
-  Map,
-  Polygon,
-  useMap,
-  Polyline,
-} from "@vis.gl/react-google-maps";
-import { BoundsType, PolygonType, PolylineType, MarkerType } from "../../lib/definitions"
+  BoundsType,
+  PolygonType,
+  PolylineType,
+  MarkerType,
+} from "../../lib/definitions";
 import Markers from "./Markers";
-import { AlertsContext } from "../../../context/AlertsContext"
+import { AlertsContext } from "../../../context/AlertsContext";
 
 export default function GoogleMap() {
   const [markers, setMarkers] = useState<MarkerType[]>([]);
@@ -19,22 +19,24 @@ export default function GoogleMap() {
   const [mapCentre, setCentre] = useState({
     lat: -32.0,
     lng: 147.0,
-  })
+  });
 
   const map = useMap();
   const boundsTimeout = useRef<NodeJS.Timeout | null>(null);
   const requestController = useRef<AbortController | null>(null);
-  const { selectedAlert } = useContext(AlertsContext)
+  const { selectedAlert } = useContext(AlertsContext);
 
   useEffect(() => {
-    if(selectedAlert !== null){
-      const marker = markers.find(marker => marker.alertId = selectedAlert.id)
-      if(marker?.coordinates){
-        map?.panTo(marker?.coordinates)
-        map?.setZoom(15)
+    if (selectedAlert !== null) {
+      const marker = markers.find(
+        (marker) => (marker.alertId = selectedAlert.id),
+      );
+      if (marker?.coordinates) {
+        map?.panTo(marker?.coordinates);
+        map?.setZoom(15);
       }
     }
-  }, [selectedAlert])
+  }, [selectedAlert]);
 
   /*
    * Fetch geometry whenever the bounds settle.
@@ -57,15 +59,12 @@ export default function GoogleMap() {
           `&minLng=${bounds.west}` +
           `&maxLng=${bounds.east}`;
 
-
         const response = await fetch(url, {
           signal: controller.signal,
         });
 
         if (!response.ok) {
-          throw new Error(
-            `Geometry request failed: ${response.status}`
-          );
+          throw new Error(`Geometry request failed: ${response.status}`);
         }
 
         const data = await response.json();
@@ -75,13 +74,7 @@ export default function GoogleMap() {
         const newPolylines: PolylineType[] = [];
 
         for (const alert of data) {
-          const {
-            alertId,
-            alertType,
-            marker,
-            polygon,
-            polyline,
-          } = alert;
+          const { alertId, alertType, marker, polygon, polyline } = alert;
 
           /*
            * Marker
@@ -104,10 +97,12 @@ export default function GoogleMap() {
             newPolygons.push({
               alertId,
               alertType,
-              paths: polygon.map((point: { latitude: number; longitude: number }) => ({
-                lat: point.latitude,
-                lng: point.longitude,
-              })),
+              paths: polygon.map(
+                (point: { latitude: number; longitude: number }) => ({
+                  lat: point.latitude,
+                  lng: point.longitude,
+                }),
+              ),
             });
           }
 
@@ -136,7 +131,7 @@ export default function GoogleMap() {
         setMarkers(newMarkers);
         setPolygons(newPolygons);
         setPolylines(newPolylines);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         /*
          * AbortError is expected when the user moves
@@ -194,10 +189,10 @@ export default function GoogleMap() {
       mapId="2e7b007641215b0ed5b276ef"
       onBoundsChanged={handleBoundsChanged}
       onCameraChanged={(camera) => {
-        setCentre(camera.detail.center)
+        setCentre(camera.detail.center);
       }}
     >
-      <Markers markers={markers} map={map}/>
+      <Markers markers={markers} map={map} />
 
       {polygons.map((polygon) => (
         <Polygon
