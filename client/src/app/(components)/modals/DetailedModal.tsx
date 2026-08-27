@@ -45,10 +45,12 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>{alert.start_date ?? "n/a"}</p>
         <p>{alert.end_date ?? "n/a"}</p>
       </article>
-      {/* <p style={{ color: "red", fontWeight: "bold" }}>
-        // Fire alert view // Source id: {alert.source_id} // category id:{" "}
-        {alert.category_id}
-      </p> */}
+      <p>
+        Alert source: {alert.source_id} //{" "}
+        {alert.source_id === 1
+          ? "This should be a fire alert"
+          : "This should be a traffic alert"}
+      </p>
     </div>
   );
 }
@@ -92,10 +94,12 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>{alert.start_date ?? "n/a"}</p>
         <p>{alert.end_date ?? "n/a"}</p>
       </article>
-      {/* <p style={{ color: "red", fontWeight: "bold" }}>
-        // Any other type of alert // Source id: {alert.source_id} // category
-        id: {alert.category_id}
-      </p> */}
+      <p>
+        Alert source: {alert.source_id} //{" "}
+        {alert.source_id === 1
+          ? "This should be a fire alert"
+          : "This should be a traffic alert"}
+      </p>
     </div>
   );
 }
