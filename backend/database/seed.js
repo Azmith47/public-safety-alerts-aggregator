@@ -16,6 +16,45 @@ import {
 	Statuses,
 	Regions,
 } from "../models/globalEnums.js";
+import { normalizeRegion } from "../normalization/transformers/locationTransformer.js";
+
+async function dedupeRegions() {
+	const rows = await RegionDAO.getAll();
+	const canonicalMap = new Map();
+	const preferredNames = new Map(
+		Object.values(Regions).map((name) => [normalizeRegion(name), name]),
+	);
+
+	for (const row of rows) {
+		const rawName = String(row.name || "").trim();
+		const key = normalizeRegion(rawName) || normalizeRegion(row.name);
+		if (!key) continue;
+
+		const canonicalName = preferredNames.get(key) || rawName;
+		const current = canonicalMap.get(key);
+
+		if (!current) {
+			canonicalMap.set(key, { id: row.id, name: canonicalName });
+			continue;
+		}
+
+		if (current.id !== row.id) {
+			await RegionDAO.delete("regions", "id = ?", [row.id]);
+		}
+	}
+
+	for (const [key, region] of canonicalMap.entries()) {
+		const expectedName = preferredNames.get(key) || region.name;
+		if (region.name !== expectedName) {
+			await RegionDAO.update(
+				"regions",
+				{ name: expectedName },
+				"id = ?",
+				[region.id],
+			);
+		}
+	}
+}
 
 async function seedCategories() {
 	for (const category of Object.values(Categories)) {
@@ -74,6 +113,7 @@ export async function seed() {
 		// Regions
 		// -----------------------------------------
 		console.log("Seeding regions...");
+		await dedupeRegions();
 		await seedRegions();
 		console.log("Regions seeded.");
 
