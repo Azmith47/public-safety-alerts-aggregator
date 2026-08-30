@@ -9,8 +9,25 @@ import {
 } from "../../data-collection/api_collectors/tfnswCollector.js";
 
 const originalApiKey = process.env.TFNSW_API_KEY;
+const endpointKeys = [
+	"TFNSW_API_URL_INCIDENTS",
+	"TFNSW_API_URL_ROADWORK",
+	"TFNSW_API_URL_ALPINE",
+	"TFNSW_API_URL_FIRE",
+	"TFNSW_API_URL_FLOOD",
+	"TFNSW_API_URL_MAJOR_EVENT",
+];
+const originalEndpoints = Object.fromEntries(
+	endpointKeys.map((key) => [key, process.env[key]]),
+);
 
 describe("tfnswCollector", () => {
+	beforeEach(() => {
+		endpointKeys.forEach((key, index) => {
+			process.env[key] = `https://example.com/tfnsw/${index}`;
+		});
+	});
+
 	afterEach(() => {
 		jest.restoreAllMocks();
 		delete global.fetch;
@@ -19,6 +36,10 @@ describe("tfnswCollector", () => {
 			delete process.env.TFNSW_API_KEY;
 		} else {
 			process.env.TFNSW_API_KEY = originalApiKey;
+		}
+		for (const key of endpointKeys) {
+			if (originalEndpoints[key] === undefined) delete process.env[key];
+			else process.env[key] = originalEndpoints[key];
 		}
 	});
 
@@ -42,6 +63,9 @@ describe("tfnswCollector", () => {
 
 	test("fetches all TFNSW endpoints with the API key and combines features", async () => {
 		process.env.TFNSW_API_KEY = "test-api-key";
+		endpointKeys.forEach((key, index) => {
+			process.env[key] = `https://example.com/tfnsw/${index}`;
+		});
 		global.fetch = jest.fn().mockResolvedValue({
 			ok: true,
 			json: jest.fn().mockResolvedValue(tfnswFixture),
@@ -50,13 +74,19 @@ describe("tfnswCollector", () => {
 		const result = await run();
 
 		expect(global.fetch).toHaveBeenCalledTimes(apiURLs.length);
-		expect(global.fetch).toHaveBeenNthCalledWith(1, apiURLs[0], {
-			headers: {
-				Authorization: "apikey test-api-key",
-				Accept: "application/json",
+		expect(global.fetch).toHaveBeenNthCalledWith(
+			1,
+			"https://example.com/tfnsw/0",
+			{
+				headers: {
+					Authorization: "apikey test-api-key",
+					Accept: "application/json",
+				},
 			},
-		});
-		expect(result).toHaveLength(tfnswFixture.features.length * apiURLs.length);
+		);
+		expect(result).toHaveLength(
+			tfnswFixture.features.length * apiURLs.length,
+		);
 		expect(result.slice(0, tfnswFixture.features.length)).toEqual(
 			tfnswFixture.features,
 		);
@@ -79,7 +109,7 @@ describe("tfnswCollector", () => {
 
 		await expect(run()).resolves.toEqual([]);
 		expect(console.error).toHaveBeenCalledWith(
-			"TFNSW Collector error:",
+			"TFNSW endpoint failed (https://example.com/tfnsw/0):",
 			"network down",
 		);
 	});
@@ -95,7 +125,7 @@ describe("tfnswCollector", () => {
 
 		await expect(run()).resolves.toEqual([]);
 		expect(console.error).toHaveBeenCalledWith(
-			"TFNSW Collector error:",
+			"TFNSW endpoint failed (https://example.com/tfnsw/0):",
 			"TFNSW request failed with status 401",
 		);
 	});

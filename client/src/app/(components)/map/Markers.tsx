@@ -82,7 +82,7 @@ export default function Markers({ map, markers }: MarkersProps) {
     const googleMarkers: AlertMarker[] = markers.map((marker) => {
       const img = document.createElement("img");
       img.src =
-        marker.alertType === 1 ? "/icons/fire.svg" : "/icons/traffic.svg";
+        marker.alertType === 1 || marker.alertType === 10 || marker.alertType === 7 ? "/icons/fire.svg" : "/icons/traffic.svg";
       img.style.width = "50px";
       img.style.height = "50px";
 
@@ -99,7 +99,6 @@ export default function Markers({ map, markers }: MarkersProps) {
           alerts.find((alert) => alert.id === marker.alertId) || null;
         updateSelectedMarker(alert);
         updateSelectedAlert(alert);
-        console.log(marker.alertId);
         toggleMenu(false, "detailedModal");
       });
       return googleMarker;

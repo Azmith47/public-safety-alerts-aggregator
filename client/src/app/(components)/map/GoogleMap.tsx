@@ -53,7 +53,7 @@ export default function GoogleMap() {
     const loadGeometry = async () => {
       try {
         const url =
-          `http://localhost:3001/map/loadgeometry` +
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/map/loadgeometry` +
           `?minLat=${bounds.south}` +
           `&maxLat=${bounds.north}` +
           `&minLng=${bounds.west}` +
@@ -113,7 +113,12 @@ export default function GoogleMap() {
             newPolylines.push({
               alertId,
               alertType,
-              encodedPath: polyline,
+              paths: polyline.map(
+                (point: { latitude: number; longitude: number }) => ({
+                  lat: point.latitude,
+                  lng: point.longitude,
+                }),
+              ),
             });
           }
         }
@@ -209,10 +214,10 @@ export default function GoogleMap() {
       {polylines.map((polyline) => (
         <Polyline
           key={`polyline-${polyline.alertId}`}
-          path={polyline.encodedPath}
-          strokeColor="blue"
+          path={polyline.paths}
+          strokeColor="yellow"
           strokeOpacity={1}
-          strokeWeight={2}
+          strokeWeight={5}
         />
       ))}
     </Map>

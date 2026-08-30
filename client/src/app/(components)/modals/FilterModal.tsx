@@ -116,7 +116,7 @@ export default function FilterModal() {
           {/* options */}
           <option value="">Select Region</option>
           {regions.map((region) => (
-            <option value={region}>{region}</option>
+            <option key={region} value={region}>{region}</option>
           ))}
         </select>
         {/* testing lgas */}

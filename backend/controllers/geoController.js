@@ -152,6 +152,7 @@ class GeoController {
 				const alertGeometry = await geoSpatialService.getAlertGeometry(alert.id);
 
 				if (alertGeometry) {
+					// console.log(alertGeometry?.geometry?.polygons)
 					geometryArray.push({
 						alertId: alert.id,
 						alertType: alert.category_id,
