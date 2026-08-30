@@ -42,3 +42,24 @@ export function removeFormatting(value: string): string | null {
   if(value === null) return null
   else return value.toUpperCase().replace(/[-_'\s]/g, "");
 }
+
+export function formatDate(dateString: string | null){
+  if(dateString === null) return null
+  
+  const date = new Date(dateString);
+
+  const formattedDate = new Intl.DateTimeFormat("en-AU", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+
+  return formattedDate
+}
+
+export function convertDate(dateString: string | null) {
+  if(dateString === null) return null
+
+  const date = new Date(dateString)
+  const isoString = date.toISOString()
+  return isoString
+}
