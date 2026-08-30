@@ -36,7 +36,8 @@ next-env.d.ts
 .idea/
 
 # Database Files
-*.sqlitebackend/database/database.sqlite
-backend/database/database.sqlite-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 backend/database/database.sqlite-shm
-backend/logs/*.txt
+backend/database/database.sqlite-wal
