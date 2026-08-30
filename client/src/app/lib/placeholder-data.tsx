@@ -21,7 +21,7 @@ export const greaterSydneyLgas = [
   "Mosman",
   "North Sydney",
   "Northern Beaches",
-  "City of Parramatta",
+  "City Parramatta",
   "Penrith",
   "Randwick",
   "Ryde",
@@ -180,3 +180,20 @@ export const lgaGroups = {
   "South East Tablelands": southEastTableandsLgas,
   "South Coast": southCoastLgas,
 };
+
+//Regions
+export const regions = [
+  "Greater Sydney",
+  "Central Coast",
+  "Central West",
+  "Far West",
+  "Hunter",
+  "Illawarra Shoalhaven",
+  "New England North West",
+  "North Coast",
+  "Northern Rivers",
+  "Riverina",
+  "Murray Riverina",
+  "South East Tablelands",
+  "South Coast",
+];

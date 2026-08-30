@@ -14,6 +14,7 @@ export const FilterContext = createContext<FilterContextValue>({
     is_active: true,
     source_id: null,
     location_council_area: null,
+    location_region: null,
   },
   updateFilters: () => {},
 });
@@ -28,6 +29,7 @@ export function FilterProvider({ children }: FilterProviderProps) {
     is_active: null,
     source_id: null,
     location_council_area: null,
+    location_region: null,
   });
 
   const updateFilters = (newFilters: AlertFilters) => {

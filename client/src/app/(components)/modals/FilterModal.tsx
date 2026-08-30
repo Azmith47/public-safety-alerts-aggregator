@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import { AlertFilters, FilterKey } from "@/app/lib/definitions";
-import { lgaGroups } from "@/app/lib/placeholder-data";
+import { lgaGroups, regions } from "@/app/lib/placeholder-data";
 import { convertActiveToString, removeFormatting } from "@/app/lib/utils";
 
 export function FilterTabs() {
@@ -104,6 +104,21 @@ export default function FilterModal() {
           <option value="1">Fire</option>
           <option value="2">Traffic</option>
         </select>
+        {/* testing regions */}
+        <label htmlFor="">Region</label>
+        <select
+          value={localFilters.location_region ?? ""}
+          onChange={(e) => {
+            const value = e.target.value === "" ? null : e.target.value;
+            setLocalFilters({ ...localFilters, location_region: value });
+          }}
+        >
+          {/* options */}
+          <option value="">Select Region</option>
+          {regions.map((region) => (
+            <option value={region}>{region}</option>
+          ))}
+        </select>
         {/* testing lgas */}
         <label htmlFor="">LGA</label>
         <select
@@ -126,7 +141,6 @@ export default function FilterModal() {
             </optgroup>
           ))}
         </select>
-        {/* testing lgas */}
         <div className="filter-btn-container">
           <button
             type="button"

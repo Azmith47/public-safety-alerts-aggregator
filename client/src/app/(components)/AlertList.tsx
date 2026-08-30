@@ -127,6 +127,13 @@ export default function AlertList() {
     ) {
       return false;
     }
+    if (
+      filters.location_region !== null &&
+      removeFormatting(alert.location_region) !==
+        removeFormatting(filters.location_region)
+    ) {
+      return false;
+    }
     return true;
   });
 

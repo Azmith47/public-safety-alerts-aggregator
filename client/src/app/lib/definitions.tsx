@@ -36,6 +36,7 @@ export type AlertFilters = {
   source_id: number | null;
   is_active: boolean | null;
   location_council_area: string | null;
+  location_region: string | null;
 };
 
 export type FilterKey = keyof AlertFilters;
