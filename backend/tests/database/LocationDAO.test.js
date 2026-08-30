@@ -20,13 +20,13 @@ describe("LocationDAO", () => {
 	});
 
 	test("getOrCreate returns existing record when found", async () => {
-		get.mockResolvedValue({ id: 17, name: "Test" });
+		get.mockResolvedValue({ id: 17, name: "Test", postcode: "2000" });
 
 		const result = await LocationDAO.getOrCreate("Test", "2000", 3);
 
 		expect(get).toHaveBeenCalledWith(
-			"SELECT * FROM locations WHERE name = ?",
-			["Test"],
+			"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND postcode = ?",
+			["Test", "2000"],
 		);
 		expect(result).toEqual({ id: 17, created: false });
 	});
@@ -42,6 +42,19 @@ describe("LocationDAO", () => {
 			["Newtown", "2042", 5],
 		);
 		expect(result).toEqual({ id: 22, created: true });
+	});
+
+	test("getOrCreate reuses seeded location when postcode is missing from the alert", async () => {
+		get.mockResolvedValue({ id: 41, name: "Newtown", postcode: "2042" });
+
+		const result = await LocationDAO.getOrCreate("newtown", null, 5);
+
+		expect(result).toEqual({ id: 41, created: false });
+		expect(get).toHaveBeenCalledWith(
+			"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND council_area_id = ?",
+			["newtown", 5],
+		);
+		expect(run).not.toHaveBeenCalled();
 	});
 
 	test("getAll returns location rows ordered by name", async () => {
