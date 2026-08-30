@@ -92,14 +92,21 @@ export default function AlertList() {
   }, [selectedMarker]);
 
   useEffect(() => {
-    // Fetch alerts from API and update context
-    fetch("http://localhost:3001/alerts/?limit=10000")
-      .then((response) => response.json())
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+    fetch(`${baseUrl}/alerts/?limit=10000`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        updateAlerts(data.rows);
+        updateAlerts(data.rows ?? []);
       })
       .catch((error) => console.error("Failed to load alerts:", error));
-  }, []);
+  }, [updateAlerts]);
 
   useEffect(() => {}, [modalOpen]);
 
@@ -136,18 +143,14 @@ export default function AlertList() {
   return (
     <aside ref={listRef} style={{ overflowY: "auto" }}>
       <ul>
-        {selectedMarker !== null ? (
-          <li className="focussed" key={selectedMarker.id}>
-            <AlertCard alert={selectedMarker} />
+        {filteredAlerts.map((alert) => (
+          <li
+            key={alert.id}
+            className={alert.id === selectedMarker?.id ? "focussed" : ""}
+          >
+            <AlertCard alert={alert} />
           </li>
-        ) : null}
-        {filteredAlerts.map((alert) =>
-          alert.id !== selectedMarker?.id ? (
-            <li key={alert.id}>
-              <AlertCard alert={alert} />
-            </li>
-          ) : null,
-        )}
+        ))}
       </ul>
       <div className="no-results-found">
         {" "}

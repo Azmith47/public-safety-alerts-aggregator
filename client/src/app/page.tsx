@@ -20,14 +20,14 @@ export default function Home() {
 
   return (
     <MenuProvider>
-      <PageOverlay />
-      <Navbar />
-      <MenuDrawer />
-      <SubscribeModal />
-      <FilterProvider>
-        <FilterModal />
-        <MySearchesModal />
-        <AlertsProvider>
+      <AlertsProvider>
+        <PageOverlay />
+        <Navbar />
+        <MenuDrawer />
+        <SubscribeModal />
+        <FilterProvider>
+          <FilterModal />
+          <MySearchesModal />
           <DetailedModal />
           <MyAlertsModal />
           <main>
@@ -40,8 +40,8 @@ export default function Home() {
             </div>
           </main>
           <Footer />
-        </AlertsProvider>
-      </FilterProvider>
+        </FilterProvider>
+      </AlertsProvider>
     </MenuProvider>
   );
 }

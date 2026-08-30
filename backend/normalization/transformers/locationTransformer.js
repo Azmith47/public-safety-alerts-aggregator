@@ -79,6 +79,9 @@ export function normalizeLocationName(value) {
 		.split(" ")
 		.filter(Boolean)
 		.map((word) => {
+			if (word === "of") {
+				return "of";
+			}
 			return word.charAt(0).toUpperCase() + word.slice(1);
 		})
 		.join(" ");
@@ -158,9 +161,9 @@ export function normalizeLGAName(value) {
 	);
 
 	/**
-	 * Remove stray "of" fragments.
+	 * Preserve "of" in canonical LGA names like "City of Parramatta".
+	 * We only strip it for comparison lookups, not for display/storage.
 	 */
-	normalizedValue = normalizedValue.replace(/\s+of\s+/gi, " ");
 
 	/**
 	 * Replace hyphens with spaces.
@@ -202,6 +205,20 @@ export function normalizePostcode(value) {
  * @param {string|null|undefined} value
  * @returns {string|null}
  */
+function stripComparisonWord(value) {
+	if (!value) {
+		return value;
+	}
+
+	return value
+		.replace(/_OF_/g, "_")
+		.replace(/^OF_/, "")
+		.replace(/_OF$/, "")
+		.replace(/\bOF\b/gi, "")
+		.replace(/_+/g, "_")
+		.replace(/^_+|_+$/g, "");
+}
+
 export function normalizeLGAKey(value) {
 	const normalizedName = normalizeLGAName(value);
 
@@ -226,13 +243,17 @@ const normalizedLgaMap = (() => {
 	const map = new Map();
 
 	for (const lga of Object.keys(LGA_REGION_MAP)) {
-		const normalizedKey = normalizeLGAKey(lga);
+		const canonicalKey = normalizeLGAKey(lga);
 
-		if (normalizedKey) {
-			/**
-			 * Store canonical enum-style LGA values.
-			 */
-			map.set(normalizedKey, normalizeLGAKey(lga));
+		if (!canonicalKey) {
+			continue;
+		}
+
+		const comparisonKey = stripComparisonWord(canonicalKey);
+
+		map.set(canonicalKey, canonicalKey);
+		if (comparisonKey && comparisonKey !== canonicalKey) {
+			map.set(comparisonKey, canonicalKey);
 		}
 	}
 
@@ -260,41 +281,35 @@ export function resolveCanonicalLGA(value) {
 		return null;
 	}
 
-	/**
-	 * Exact match.
-	 */
-	if (normalizedLgaMap.has(normalizedKey)) {
-		return normalizedLgaMap.get(normalizedKey);
-	}
+	const comparisonKey = stripComparisonWord(normalizedKey);
+	const candidateKeys = [
+		normalizedKey,
+		comparisonKey,
+		normalizedKey
+			.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
+			.replace(/_{2,}/g, "_")
+			.replace(/^_+|_+$/g, ""),
+		stripComparisonWord(
+			normalizedKey
+				.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
+				.replace(/_{2,}/g, "_")
+				.replace(/^_+|_+$/g, ""),
+		),
+	];
 
-	/**
-	 * Fuzzy substring matching.
-	 */
-	for (const [candidateKey, canonicalLGA] of normalizedLgaMap.entries()) {
-		if (
-			candidateKey.includes(normalizedKey) ||
-			normalizedKey.includes(candidateKey)
-		) {
-			return canonicalLGA;
+	for (const candidate of candidateKeys) {
+		if (!candidate) continue;
+		if (normalizedLgaMap.has(candidate)) {
+			return normalizedLgaMap.get(candidate);
 		}
 	}
 
-	/**
-	 * Additional relaxed matching.
-	 */
-	const strippedKey = normalizedKey
-		.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
-		.replace(/_{2,}/g, "_")
-		.replace(/^_+|_+$/g, "");
-
-	if (normalizedLgaMap.has(strippedKey)) {
-		return normalizedLgaMap.get(strippedKey);
-	}
-
 	for (const [candidateKey, canonicalLGA] of normalizedLgaMap.entries()) {
 		if (
-			candidateKey.includes(strippedKey) ||
-			strippedKey.includes(candidateKey)
+			candidateKey.includes(normalizedKey) ||
+			normalizedKey.includes(candidateKey) ||
+			(candidateKey.includes(comparisonKey) && comparisonKey) ||
+			(comparisonKey && comparisonKey.includes(candidateKey))
 		) {
 			return canonicalLGA;
 		}
