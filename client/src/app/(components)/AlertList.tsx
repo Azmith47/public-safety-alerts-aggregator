@@ -93,7 +93,7 @@ export default function AlertList() {
 
   useEffect(() => {
     const baseUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
     fetch(`${baseUrl}/alerts/?limit=10000`)
       .then((response) => {
