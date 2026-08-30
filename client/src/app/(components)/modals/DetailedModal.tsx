@@ -26,9 +26,9 @@ function Firecard({ alert }: { alert: Alert }) {
       </article>
       <article className="modal-data">
         <p>{alert.location_name}</p>
-        <p>{alert.location_postcode}</p>
-        <p>{removeFormatting(alert.location_council_area)}</p>
-        <p>{alert.location_region}</p>
+        <p>{alert.location_postcode ?? "n/a"}</p>
+        <p>{removeFormatting(alert.location_council_area) ?? "n/a"}</p>
+        <p>{alert.location_region ?? "n/a"}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
@@ -74,10 +74,10 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>End Date:</p>
       </article>
       <article className="modal-data">
-        <p>{alert.location_name}</p>
-        <p>{alert.location_postcode}</p>
-        <p>{removeFormatting(alert.location_council_area)}</p>
-        <p>{alert.location_region}</p>
+        <p>{alert.location_name ?? "n/a"}</p>
+        <p>{alert.location_postcode ?? "n/a"}</p>
+        <p>{removeFormatting(alert.location_council_area) ?? "n/a"}</p>
+        <p>{alert.location_region ?? "n/a"}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
