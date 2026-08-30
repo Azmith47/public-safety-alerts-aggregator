@@ -29,14 +29,14 @@ export default function GoogleMap() {
   useEffect(() => {
     if (selectedAlert !== null) {
       const marker = markers.find(
-        (marker) => (marker.alertId = selectedAlert.id),
+        (marker) => marker.alertId === selectedAlert.id,
       );
       if (marker?.coordinates) {
-        map?.panTo(marker?.coordinates);
+        map?.panTo(marker.coordinates);
         map?.setZoom(15);
       }
     }
-  }, [selectedAlert]);
+  }, [selectedAlert, markers, map]);
 
   /*
    * Fetch geometry whenever the bounds settle.
