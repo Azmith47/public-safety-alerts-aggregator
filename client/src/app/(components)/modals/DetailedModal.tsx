@@ -107,9 +107,13 @@ function TrafficCard({ alert }: { alert: Alert }) {
 export default function DetailedModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "detailedModal";
-  const onClose = () => toggleMenu(false, null);
+  const onClose = () => {
+    toggleMenu(false, null);
+  };
   const {
     selectedAlert: alert,
+    updateSelectedAlert,
+    updateSelectedMarker,
     addSubscribedAlert,
     removeSubscribedAlert,
     subscribedAlertTitles,
@@ -124,7 +128,15 @@ export default function DetailedModal() {
       }
     >
       <div className="modal-header">
-        <button onClick={onClose}>✕</button>
+        <button
+          onClick={() => {
+            updateSelectedAlert(null);
+            updateSelectedMarker(null);
+            onClose();
+          }}
+        >
+          ✕
+        </button>
       </div>
       <h4>{alert?.title}</h4>
       {alert?.source_id === 2 ? (

@@ -39,6 +39,10 @@ export function convertTime(date: string) {
 }
 
 //Normalise formatting (remove)
-export function removeFormatting(value: string): string {
+export function removeFormatting(value: string | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
   return value.toUpperCase().replace(/[-_'\s]/g, "");
 }
