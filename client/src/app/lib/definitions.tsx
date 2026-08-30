@@ -103,7 +103,10 @@ export type PolygonType = {
 export type PolylineType = {
   alertId: number;
   alertType: number;
-  encodedPath: string;
+  paths: {
+    lat: number;
+    lng: number;
+  }[];
 };
 
 export type BoundsType = {
