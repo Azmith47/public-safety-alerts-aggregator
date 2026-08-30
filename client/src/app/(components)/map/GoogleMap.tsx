@@ -53,7 +53,7 @@ export default function GoogleMap() {
     const loadGeometry = async () => {
       try {
         const url =
-          `http://localhost:3001/map/loadgeometry` +
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/map/loadgeometry` +
           `?minLat=${bounds.south}` +
           `&maxLat=${bounds.north}` +
           `&minLng=${bounds.west}` +

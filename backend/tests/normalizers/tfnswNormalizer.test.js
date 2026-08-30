@@ -23,7 +23,7 @@ describe("tfnswNormalizer", () => {
 		});
 
 		test("normalizes a documented TFNSW GeoJSON feature", () => {
-			const feature = tfnswFixture.features[0];
+			const feature = tfnswFixture.features[1];
 			const result = normalizeTfnswIncident(feature);
 
 			expect(result).toBeInstanceOf(CanonicalTrafficAlert);
@@ -40,7 +40,9 @@ describe("tfnswNormalizer", () => {
 				longitude: 151.0678188,
 				latitude: -33.8492544,
 			});
-			expect(result.createdAt).toEqual(new Date(feature.properties.created));
+			expect(result.createdAt).toEqual(
+				new Date(feature.properties.created),
+			);
 			expect(result.updatedAt).toEqual(
 				new Date(feature.properties.lastUpdated),
 			);
@@ -48,7 +50,9 @@ describe("tfnswNormalizer", () => {
 				new Date(feature.properties.created),
 			);
 			expect(result.planned).toBe(true);
-			expect(result.startDate).toEqual(new Date(feature.properties.start));
+			expect(result.startDate).toEqual(
+				new Date(feature.properties.start),
+			);
 			expect(result.endDate).toEqual(new Date(feature.properties.end));
 			expect(result.impactingNetwork).toBe(true);
 			expect(result.isMajor).toBe(false);
@@ -67,8 +71,22 @@ describe("tfnswNormalizer", () => {
 				"Use public transport",
 				"Allow extra travel time",
 			]);
-			expect(result.publicTransport).toBe(feature.properties.publicTransport);
+			expect(result.publicTransport).toBe(
+				feature.properties.publicTransport,
+			);
 			expect(result.rawPayload).toBe(feature);
+		});
+
+		test("decodes TfNSW encoded polylines from feature properties", () => {
+			const feature = tfnswFixture.features[0];
+			const result = normalizeTfnswIncident(feature);
+
+			expect(result.polylines).toHaveLength(2);
+			expect(result.polylines[0].length).toBeGreaterThan(2);
+			expect(result.polylines[0][0]).toEqual([
+				expect.any(Number),
+				expect.any(Number),
+			]);
 		});
 
 		test("normalizes web links, ended state, major severity, and numeric traffic fields", () => {
@@ -185,7 +203,9 @@ describe("tfnswNormalizer", () => {
 		});
 
 		test("normalizes arrays of TFNSW features", () => {
-			const result = normalizeTfnswFeed(tfnswFixture.features.slice(0, 3));
+			const result = normalizeTfnswFeed(
+				tfnswFixture.features.slice(0, 3),
+			);
 
 			expect(result).toHaveLength(3);
 			expect(result[0]).toBeInstanceOf(CanonicalTrafficAlert);

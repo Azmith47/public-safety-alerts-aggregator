@@ -100,9 +100,9 @@ export default function AlertList() {
     fetch("http://localhost:3001/alerts/?limit=10000")
       .then((response) => response.json())
       .then((data) => {
-        // Update the alerts in the context
         updateAlerts(data.rows);
-      });
+      })
+      .catch((error) => console.error("Failed to load alerts:", error));
   }, []);
 
   useEffect(() => {}, [modalOpen]);

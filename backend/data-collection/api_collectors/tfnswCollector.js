@@ -10,8 +10,20 @@ export const apiURLs = [
 	process.env.TFNSW_API_URL_MAJOR_EVENT,
 ];
 
+function getConfiguredApiUrls() {
+	return [
+		process.env.TFNSW_API_URL_INCIDENTS,
+		process.env.TFNSW_API_URL_ROADWORK,
+		process.env.TFNSW_API_URL_ALPINE,
+		process.env.TFNSW_API_URL_FIRE,
+		process.env.TFNSW_API_URL_FLOOD,
+		process.env.TFNSW_API_URL_MAJOR_EVENT,
+	].filter(Boolean);
+}
+
 export const run = async () => {
 	const apiKey = process.env.TFNSW_API_KEY;
+	const configuredApiUrls = getConfiguredApiUrls();
 	const alerts = [];
 
 	if (!apiKey) {
@@ -19,25 +31,37 @@ export const run = async () => {
 		return [];
 	}
 
-	try {
-		for (const apiURL of apiURLs) {
-			const response = await fetch(apiURL, {
-				headers: {
-					Authorization: `apikey ${apiKey}`,
-					Accept: "application/json",
-				},
-			});
+	if (configuredApiUrls.length === 0) {
+		console.warn("No TFNSW API URLs configured; skipping collector");
+		return [];
+	}
 
-			if (!response.ok) {
-				throw new Error(
-					`TFNSW request failed with status ${response.status}`,
+	try {
+		for (const apiURL of configuredApiUrls) {
+			try {
+				const response = await fetch(apiURL, {
+					headers: {
+						Authorization: `apikey ${apiKey}`,
+						Accept: "application/json",
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error(
+						`TFNSW request failed with status ${response.status}`,
+					);
+				}
+
+				const data = await response.json();
+				alerts.push(
+					...(Array.isArray(data?.features) ? data.features : []),
+				);
+			} catch (error) {
+				console.error(
+					`TFNSW endpoint failed (${apiURL}):`,
+					error.message,
 				);
 			}
-
-			const data = await response.json();
-			alerts.push(
-				...(Array.isArray(data?.features) ? data.features : []),
-			);
 		}
 
 		return alerts;
