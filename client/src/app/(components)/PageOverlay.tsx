@@ -2,22 +2,25 @@
 
 import { useContext } from "react";
 import { MenuContext } from "@/context/MenuContext";
-
-
-// Page Overlay component
-// Visible if menuOpen is true OR modalOpen is not null
-// Clicking the overlay sets menuOpen to false and modalOpen to null
-// Closes the drawer and any open modal when clicking outside
-// function PageOverlay({onClick }: PageOverlayProps) {
-//     if (menuOpen || modalOpen !== null) {
-//     return <div className="page-overlay" onClick={onClick}></div>;
-//   }
-// }
+import { AlertsContext } from "@/context/AlertsContext";
 
 export default function PageOverlay() {
-    const { menuOpen, modalOpen, toggleMenu } = useContext(MenuContext);
+  const { menuOpen, modalOpen, toggleMenu } = useContext(MenuContext);
+  const { updateSelectedAlert, updateSelectedMarker } =
+    useContext(AlertsContext);
 
-    if (menuOpen || modalOpen !== null) {
-        return <div className="page-overlay" onClick={() => toggleMenu(false, null)}></div>;
-    }
-};
+  if (menuOpen || modalOpen !== null) {
+    return (
+      <div
+        className="page-overlay"
+        onClick={() => {
+          updateSelectedAlert(null);
+          updateSelectedMarker(null);
+          toggleMenu(false, null);
+        }}
+      />
+    );
+  }
+
+  return null;
+}

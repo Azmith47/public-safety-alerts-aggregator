@@ -117,26 +117,13 @@ class AlertQueryService {
 			locations.postcode AS location_postcode,
 			regions.name AS location_region
 			FROM alerts
-			INNER JOIN locations ON alerts.location_id = locations.id
-			INNER JOIN council_areas ON locations.council_area_id = council_areas.id
-			INNER JOIN regions ON council_areas.region_id = regions.id
+			LEFT JOIN locations ON alerts.location_id = locations.id
+			LEFT JOIN council_areas ON locations.council_area_id = council_areas.id
+			LEFT JOIN regions ON council_areas.region_id = regions.id
 			${whereClause} ${orderClause} LIMIT ? OFFSET ?`,
 			params.concat([limit, offset]), 
 		);
-
-		rows.map((alert) => {
-			if(alert.location_postcode === null){
-				const location_name_sections = alert.location_name.split(" ")
-				alert.location_postcode = Number(location_name_sections.pop())
-
-				let name = ""
-				location_name_sections.map((name_section) => {
-					name = name + " " + name_section
-				})
-
-				alert.location_name = name
-			}
-		})
+		
 		return { total, rows };
 	}
 

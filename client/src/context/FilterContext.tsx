@@ -24,25 +24,27 @@ interface FilterProviderProps {
 }
 
 export function FilterProvider({ children }: FilterProviderProps) {
-  //State variables
+  const defaultFilters: AlertFilters = {
+    is_active: null,
+    source_id: null,
+    location_council_area: null,
+    location_region: null,
+  };
+
   const [filters, setFilters] = useState<AlertFilters>(() => {
+    if (typeof window === "undefined") {
+      return defaultFilters;
+    }
+
     try {
-      const savedFilters = localStorage.getItem('filters');
-      if (savedFilters !== null) return JSON.parse(savedFilters)
-      else return {
-        is_active: null,
-        source_id: null,
-        location_council_area: null,
-        location_region: null,
-      };
+      const savedFilters = window.localStorage.getItem("filters");
+      if (savedFilters !== null) {
+        return JSON.parse(savedFilters) as AlertFilters;
+      }
+      return defaultFilters;
     } catch (error) {
       console.error("Failed to parse storage:", error);
-      return {
-        is_active: null,
-        source_id: null,
-        location_council_area: null,
-        location_region: null,
-      }; // Fallback default
+      return defaultFilters;
     }
   });
 
@@ -51,11 +53,12 @@ export function FilterProvider({ children }: FilterProviderProps) {
   };
 
   useEffect(() => {
-    localStorage.setItem('filters', JSON.stringify(filters))
-    recentSearches(filters)
-  }, [filters])
+    if (typeof window === "undefined") return;
 
-  // 2. Provide the state and modifier function to children
+    window.localStorage.setItem("filters", JSON.stringify(filters));
+    recentSearches(filters);
+  }, [filters]);
+
   return (
     <FilterContext.Provider value={{ filters, updateFilters }}>
       {children}
@@ -63,15 +66,24 @@ export function FilterProvider({ children }: FilterProviderProps) {
   );
 }
 
-function recentSearches(filters: AlertFilters){
-  const searches = localStorage.getItem('recent-searches');
-  let filterCombos = []
-  if(searches === null) {
+function recentSearches(filters: AlertFilters) {
+  if (typeof window === "undefined") return;
+
+  const searches = window.localStorage.getItem("recent-searches");
+  let filterCombos: AlertFilters[] = [];
+
+  if (searches === null) {
     filterCombos.push(filters);
   } else {
-    filterCombos = JSON.parse(searches);
-    if(filterCombos.length > 10) filterCombos.shift();
+    try {
+      filterCombos = JSON.parse(searches) as AlertFilters[];
+    } catch {
+      filterCombos = [];
+    }
+
+    if (filterCombos.length > 10) filterCombos.shift();
     filterCombos.push(filters);
   }
-  localStorage.setItem('recent-searches', JSON.stringify(filterCombos))
+
+  window.localStorage.setItem("recent-searches", JSON.stringify(filterCombos));
 }

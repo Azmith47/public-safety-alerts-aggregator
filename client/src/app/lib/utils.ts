@@ -37,8 +37,8 @@ export function convertTime(date: string) {
   }
   return `${daysSinceIssue} days ago`;
 }
-
-//Normalise formatting (remove dashes)
-export function removeFormatting(value: string): string {
-  return value.toUpperCase().replace(/[-_'\s]/g, "");
+//Normalise formatting (remove)
+export function removeFormatting(value: string): string | null {
+  if(value === null) return null
+  else return value.toUpperCase().replace(/[-_'\s]/g, "");
 }

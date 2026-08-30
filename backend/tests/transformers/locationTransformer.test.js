@@ -69,6 +69,15 @@ describe("normalizeLGAName", () => {
 	test("should remove punctuation", () => {
 		expect(normalizeLGAName("Cessnock, Council")).toBe("Cessnock");
 	});
+
+	test("should preserve 'of' in canonical LGA names", () => {
+		expect(normalizeLGAName("City of Parramatta Council")).toBe(
+			"City of Parramatta",
+		);
+		expect(normalizeLGAKey("City of Parramatta Council")).toBe(
+			"CITY_OF_PARRAMATTA",
+		);
+	});
 });
 
 describe("normalizeLGAKey", () => {
@@ -96,6 +105,12 @@ describe("resolveCanonicalLGA", () => {
 
 	test("should resolve partial names", () => {
 		expect(resolveCanonicalLGA("Mid-Western")).toBe("MID_WESTERN_REGIONAL");
+	});
+
+	test("should preserve 'of' in canonical resolved LGAs", () => {
+		expect(resolveCanonicalLGA("City of Parramatta Council")).toBe(
+			"CITY_OF_PARRAMATTA",
+		);
 	});
 
 	test("should return null for unknown LGAs", () => {

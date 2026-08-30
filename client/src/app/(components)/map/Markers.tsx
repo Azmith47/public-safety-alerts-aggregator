@@ -21,6 +21,44 @@ export default function Markers({ map, markers }: MarkersProps) {
   const { updateSelectedMarker, alerts, updateSelectedAlert } =
     useContext(AlertsContext);
   const { toggleMenu } = useContext(MenuContext);
+
+  const resolveAlertDetails = async (alertId: number) => {
+    const alertFromList = alerts.find((alert) => alert.id === alertId);
+
+    if (alertFromList) {
+      updateSelectedMarker(alertFromList);
+      updateSelectedAlert(alertFromList);
+      toggleMenu(false, "detailedModal");
+      return;
+    }
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const response = await fetch(`${baseUrl}/alerts/${alertId}`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to load alert ${alertId}`);
+      }
+
+      const data = await response.json();
+      const alertDetails = data?.alert ?? data ?? null;
+
+      if (!alertDetails) {
+        updateSelectedMarker(null);
+        updateSelectedAlert(null);
+        return;
+      }
+
+      updateSelectedMarker(alertDetails);
+      updateSelectedAlert(alertDetails);
+      toggleMenu(false, "detailedModal");
+    } catch (error) {
+      console.error("Failed to load alert details for marker selection:", error);
+      updateSelectedMarker(null);
+      updateSelectedAlert(null);
+    }
+  };
   /*
    * Load the Google Maps marker library.
    *
@@ -95,11 +133,7 @@ export default function Markers({ map, markers }: MarkersProps) {
       googleMarker.addListener("gmp-click", () => {
         map.panTo(marker.coordinates);
         map.setZoom(11);
-        const alert =
-          alerts.find((alert) => alert.id === marker.alertId) || null;
-        updateSelectedMarker(alert);
-        updateSelectedAlert(alert);
-        toggleMenu(false, "detailedModal");
+        void resolveAlertDetails(marker.alertId);
       });
       return googleMarker;
     });
