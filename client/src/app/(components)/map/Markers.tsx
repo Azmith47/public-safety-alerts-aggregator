@@ -80,7 +80,7 @@ export default function Markers({ map, markers }: MarkersProps) {
       return;
     }
 
-    //LOOKUP FOR ALERT ICONS
+    //Lookup for alert icons
     const alertIcons: Record<number, string> = {
       1: "/icons/fire.svg",
       2: "/icons/traffic.svg",
@@ -96,12 +96,18 @@ export default function Markers({ map, markers }: MarkersProps) {
       12: "/icons/OTHER.svg",
     };
 
-    //TEST CODE:
     const googleMarkers: AlertMarker[] = markers.map((marker) => {
       const img = document.createElement("img");
+
+      //Assign icon path from alertIcons lookup, display fallback icon if null
       img.src = alertIcons[marker.alertType] ?? "/icons/kek.svg";
-      img.style.width = "50px";
-      img.style.height = "50px";
+
+      //conditionally render size depending on icon type
+      const isOtherIcon = marker.alertType === 11 || marker.alertType === 12;
+      const iconSize = isOtherIcon ? "35px" : "50px";
+
+      img.style.width = iconSize;
+      img.style.height = iconSize;
 
       const googleMarker = new markerLibrary.AdvancedMarkerElement({
         position: marker.coordinates,
