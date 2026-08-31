@@ -11,9 +11,19 @@ export function FilterTabs() {
   const selectedFilters: { key: FilterKey; label: string }[] = [];
   const { filters } = useContext(FilterContext);
 
-  const typeLabels: Record<number, string> = {
+  const incidentTypeLabels: Record<number, string> = {
     1: "Fire",
-    2: "Traffic",
+    2: "Traffic Incident",
+    3: "Road Hazard",
+    4: "Flood",
+    5: "Storm",
+    6: "Weather",
+    7: "Hazmat",
+    8: "Rescue",
+    9: "Medical",
+    10: "Planned Burn",
+    11: "Public Event",
+    12: "Other",
   };
 
   if (filters.is_active !== null) {
@@ -23,10 +33,10 @@ export function FilterTabs() {
     });
   }
 
-  if (filters.source_id !== null) {
+  if (filters.category_id !== null) {
     selectedFilters.push({
-      key: "source_id",
-      label: typeLabels[filters.source_id] ?? "Unknown",
+      key: "category_id",
+      label: incidentTypeLabels[filters.category_id] ?? "Unknown",
     });
   }
 
@@ -34,6 +44,13 @@ export function FilterTabs() {
     selectedFilters.push({
       key: "location_council_area",
       label: filters.location_council_area ?? "Unknown",
+    });
+  }
+
+  if (filters.location_region !== null) {
+    selectedFilters.push({
+      key: "location_region",
+      label: filters.location_region ?? "Unknown",
     });
   }
 
@@ -55,6 +72,14 @@ export default function FilterModal() {
 
   const { filters, updateFilters } = useContext(FilterContext);
   const [localFilters, setLocalFilters] = useState<AlertFilters>(filters);
+
+  //Reset object to set each filter back to null
+  const emptyFilters: AlertFilters = {
+    is_active: null,
+    category_id: null,
+    location_region: null,
+    location_council_area: null,
+  };
 
   useEffect(() => {
     setLocalFilters(filters);
@@ -94,17 +119,26 @@ export default function FilterModal() {
         </select>
         <label htmlFor="">Incident type</label>
         <select
-          value={localFilters.source_id ?? ""}
+          value={localFilters.category_id ?? ""}
           onChange={(e) => {
             const value = e.target.value === "" ? null : Number(e.target.value);
-            setLocalFilters({ ...localFilters, source_id: value });
+            setLocalFilters({ ...localFilters, category_id: value });
           }}
         >
           <option value="">Select Incident Type</option>
           <option value="1">Fire</option>
-          <option value="2">Traffic</option>
+          <option value="2">Traffic Incident</option>
+          <option value="3">Road Hazard</option>
+          <option value="4">Flood</option>
+          <option value="5">Storm</option>
+          <option value="6">Weather</option>
+          <option value="7">Hazmat</option>
+          <option value="8">Rescue</option>
+          <option value="9">Medical</option>
+          <option value="10">Planned Burn</option>
+          <option value="11">Public Event</option>
+          <option value="12">Other</option>
         </select>
-        {/* testing regions */}
         <label htmlFor="">Region</label>
         <select
           value={localFilters.location_region ?? ""}
@@ -113,13 +147,13 @@ export default function FilterModal() {
             setLocalFilters({ ...localFilters, location_region: value });
           }}
         >
-          {/* options */}
           <option value="">Select Region</option>
           {regions.map((region) => (
-            <option key={region} value={region}>{region}</option>
+            <option key={region} value={region}>
+              {region}
+            </option>
           ))}
         </select>
-        {/* testing lgas */}
         <label htmlFor="">LGA</label>
         <select
           value={localFilters.location_council_area ?? ""}
@@ -151,7 +185,15 @@ export default function FilterModal() {
           >
             Apply Filters
           </button>
-          <button className="reset-btn">Reset Filters</button>
+          <button
+            type="button"
+            className="reset-btn"
+            onClick={() => {
+              onApply(emptyFilters);
+            }}
+          >
+            Reset Filters
+          </button>
         </div>
       </form>
     </div>

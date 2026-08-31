@@ -100,7 +100,6 @@ function AlertCard({ alert }: { alert: Alert }) {
       </div>
       <div className="alert-card-bottom">
         <p>{alert.location_council_area}</p>
-        <p>{alert.location_region}</p>
       </div>
     </article>
   );
@@ -153,8 +152,8 @@ export default function AlertList() {
       return false;
     }
     if (
-      filters.source_id !== null &&
-      Number(alert.source_id) !== filters.source_id
+      filters.category_id !== null &&
+      Number(alert.category_id) !== filters.category_id
     ) {
       return false;
     }

@@ -199,7 +199,7 @@ aside {
   align-items: center;
   gap: 2em;
   padding: 0 1em;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .alert-card-middle {
@@ -210,16 +210,15 @@ aside {
 }
 
 .alert-card-middle p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: bold;
   overflow-wrap: anywhere;
 }
 
 .alert-card-bottom {
-  padding: 0.3em 0.8em 0.8em 0.85em;
-  font-size: 0.7rem;
+  padding: 0.3em 0.8em 0.8em 1.2em;
+  font-size: 0.8rem;
   display: flex;
-  justify-content: space-between;
 }
 
 .focussed article {

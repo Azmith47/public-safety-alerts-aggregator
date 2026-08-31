@@ -33,7 +33,8 @@ export type AlertListProps = {
 };
 
 export type AlertFilters = {
-  source_id: number | null;
+  // source_id: number | null;
+  category_id: number | null;
   is_active: boolean | null;
   location_council_area: string | null;
   location_region: string | null;
