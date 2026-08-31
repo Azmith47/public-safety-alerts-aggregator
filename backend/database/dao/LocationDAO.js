@@ -1,8 +1,14 @@
 import BaseDAO from "./BaseDAO.js";
 
+let isDatabaseInitializationComplete = false;
+
 class LocationDAO extends BaseDAO {
 	constructor() {
 		super("locations");
+	}
+
+	setDatabaseInitializationComplete(isComplete) {
+		isDatabaseInitializationComplete = Boolean(isComplete);
 	}
 
 	extractCandidateNames(name) {
@@ -88,6 +94,38 @@ class LocationDAO extends BaseDAO {
 					);
 				}
 				return { id: existingRow.id, created: false };
+			}
+
+			if (!normalizedPostcode || !isDatabaseInitializationComplete) {
+				continue;
+			}
+
+			const postcodeMatches =
+				councilAreaId !== null && councilAreaId !== undefined
+					? await this.findAll(
+							this.tableName,
+							"postcode = ? AND council_area_id = ?",
+							[normalizedPostcode, councilAreaId],
+						)
+					: await this.findAll(this.tableName, "postcode = ?", [
+							normalizedPostcode,
+						]);
+
+			if (!Array.isArray(postcodeMatches)) {
+				continue;
+			}
+
+			if (postcodeMatches.length === 1) {
+				const postcodeMatch = postcodeMatches[0];
+				if (!postcodeMatch.postcode) {
+					await this.update(
+						this.tableName,
+						{ postcode: normalizedPostcode },
+						"id = ?",
+						[postcodeMatch.id],
+					);
+				}
+				return { id: postcodeMatch.id, created: false };
 			}
 		}
 

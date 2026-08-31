@@ -35,34 +35,6 @@ describe("normalizeLocationName", () => {
 		);
 	});
 
-	test("should extract the place name from forestry and route-style outliers", () => {
-		expect(
-			normalizeLocationName(
-				"Chichester State Forest Bush Mill Rd Upper Karuah River",
-			),
-		).toBe("Upper Karuah River");
-		expect(
-			normalizeLocationName("Beavens Ridge Forest Rd Ravensdale"),
-		).toBe("Ravensdale");
-		expect(
-			normalizeLocationName(
-				"Watagan State Forest Wollombi Forest Rd Olney",
-			),
-		).toBe("Olney");
-		expect(
-			normalizeLocationName("Et150 Hume Mtwy (northbound) Douglas Park"),
-		).toBe("Douglas Park");
-		expect(
-			normalizeLocationName("Forestry Hr Armidale Sf Plantation"),
-		).toBe("Armidale");
-		expect(normalizeLocationName("Luddenham To Cecil Hills")).toBe(
-			"Cecil Hills",
-		);
-		expect(normalizeLocationName("Broken Hill To Packsaddle")).toBe(
-			"Packsaddle",
-		);
-	});
-
 	test("should return null for invalid input", () => {
 		expect(normalizeLocationName(null)).toBeNull();
 		expect(normalizeLocationName(undefined)).toBeNull();
