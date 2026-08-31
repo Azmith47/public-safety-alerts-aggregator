@@ -57,6 +57,47 @@ describe("LocationDAO", () => {
 		expect(run).not.toHaveBeenCalled();
 	});
 
+	test("getOrCreate reuses an existing endpoint when the alert contains a road route", async () => {
+		get.mockImplementation((sql, params) => {
+			if (
+				sql ===
+					"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND council_area_id = ?" &&
+				params[0] === "Broken Hill To Packsaddle"
+			) {
+				return Promise.resolve(null);
+			}
+			if (
+				sql ===
+					"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND council_area_id = ?" &&
+				params[0] === "Broken Hill"
+			) {
+				return Promise.resolve({
+					id: 12,
+					name: "Broken Hill",
+					postcode: "2880",
+				});
+			}
+			return Promise.resolve(null);
+		});
+
+		const result = await LocationDAO.getOrCreate(
+			"Broken Hill To Packsaddle",
+			null,
+			5,
+		);
+
+		expect(result).toEqual({ id: 12, created: false });
+		expect(get).toHaveBeenCalledWith(
+			"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND council_area_id = ?",
+			["Broken Hill To Packsaddle", 5],
+		);
+		expect(get).toHaveBeenCalledWith(
+			"SELECT * FROM locations WHERE LOWER(name) = LOWER(?) AND council_area_id = ?",
+			["Broken Hill", 5],
+		);
+		expect(run).not.toHaveBeenCalled();
+	});
+
 	test("getAll returns location rows ordered by name", async () => {
 		all.mockResolvedValue([
 			{ id: 1, name: "A" },
