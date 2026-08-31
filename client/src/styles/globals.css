@@ -210,7 +210,7 @@ aside {
 }
 
 .alert-card-middle p {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   overflow-wrap: anywhere;
 }
@@ -226,8 +226,8 @@ aside {
 }
 
 .icon {
-  height: 4em;
-  width: 4em;
+  height: 4rem;
+  width: 4rem;
   vertical-align: middle;
 }
 
