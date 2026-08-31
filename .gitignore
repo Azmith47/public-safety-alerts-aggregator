@@ -41,3 +41,4 @@ next-env.d.ts
 *.sqlite-wal
 backend/database/database.sqlite-shm
 backend/database/database.sqlite-wal
+backend/logs/eventLog.txt

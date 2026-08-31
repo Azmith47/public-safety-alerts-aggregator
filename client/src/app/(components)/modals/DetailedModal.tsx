@@ -4,7 +4,7 @@ import { MenuContext } from "@/context/MenuContext";
 import { AlertsContext } from "@/context/AlertsContext";
 import { useContext } from "react";
 import { Alert } from "@/app/lib/definitions";
-import { convertTime, removeFormatting } from "@/app/lib/utils";
+import { convertDate, convertTime, formatDate, removeFormatting } from "@/app/lib/utils";
 
 function Firecard({ alert }: { alert: Alert }) {
   return (
@@ -42,8 +42,14 @@ function Firecard({ alert }: { alert: Alert }) {
         <p>{alert.is_major === true ? "True" : "False"}</p>
         <p>{alert.impacting_network === true ? "True" : "False"}</p>
         <p>{alert.delay === true ? "True" : "False"}</p>
-        <p>{alert.start_date ?? "n/a"}</p>
-        <p>{alert.end_date ?? "n/a"}</p>
+        <time dateTime={convertDate(alert.start_date) ?? ""}>
+          {formatDate(alert.start_date) ?? "n/a"}
+        </time>
+        <br/>
+        <br/>
+        <time dateTime={convertDate(alert.end_date) ?? ""}>
+          {formatDate(alert.end_date) ?? "n/a"}
+        </time>
       </article>
       <p>
         Alert source: {alert.source_id} //{" "}
@@ -91,8 +97,14 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <p>{alert.is_major === true ? "True" : "False"}</p>
         <p>{alert.impacting_network === true ? "True" : "False"}</p>
         <p>{alert.delay === true ? "True" : "False"}</p>
-        <p>{alert.start_date ?? "n/a"}</p>
-        <p>{alert.end_date ?? "n/a"}</p>
+        <time dateTime={convertDate(alert.start_date) ?? ""}>
+          {formatDate(alert.start_date) ?? "n/a"}
+        </time>
+        <br/>
+        <br/>
+        <time dateTime={convertDate(alert.end_date) ?? ""}>
+          {formatDate(alert.end_date) ?? "n/a"}
+        </time>
       </article>
       <p>
         Alert source: {alert.source_id} //{" "}
