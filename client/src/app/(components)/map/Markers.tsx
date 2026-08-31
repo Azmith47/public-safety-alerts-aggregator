@@ -54,7 +54,10 @@ export default function Markers({ map, markers }: MarkersProps) {
       updateSelectedAlert(alertDetails);
       toggleMenu(false, "detailedModal");
     } catch (error) {
-      console.error("Failed to load alert details for marker selection:", error);
+      console.error(
+        "Failed to load alert details for marker selection:",
+        error,
+      );
       updateSelectedMarker(null);
       updateSelectedAlert(null);
     }
@@ -77,50 +80,26 @@ export default function Markers({ map, markers }: MarkersProps) {
       return;
     }
 
-    /////////////////////////////Uncomment this to revert
-    /*
-     * Create the individual Google Maps markers.
-     */
-    // const googleMarkers: AlertMarker[] = markers.map((marker) => {
-    /*
-     * Create the pin used for individual alerts.
-     */
-    // const pin = new markerLibrary.PinElement({
-    //   background: marker.alertType === 1 ? "red" : "yellow",
-
-    //   borderColor: "black",
-
-    //   glyphColor: "white",
-    // });
-
-    /*
-     * Create the Google Maps AdvancedMarkerElement.
-     */
-    // const googleMarker = new markerLibrary.AdvancedMarkerElement({
-    //   position: marker.coordinates,
-
-    //   content: pin,
-
-    //   title: `Alert ${marker.alertId}`,
-    // }) as AlertMarker;
-
-    /*
-     * Store the alert type on the Google Maps
-     * marker so the cluster renderer can inspect it.
-     */
-    // googleMarker.alertType = marker.alertType;
-
-    /*
-     * Clicking an individual alert:
-     * - pan to the alert
-     * - zoom to level 8
-     */
+    //LOOKUP FOR ALERT ICONS
+    const alertIcons: Record<number, string> = {
+      1: "/icons/fire.svg",
+      2: "/icons/traffic.svg",
+      3: "/icons/traffic.svg",
+      4: "/icons/flood.svg",
+      5: "",
+      6: "",
+      7: "/icons/fire.svg",
+      8: "",
+      9: "",
+      10: "/icons/fire.svg",
+      11: "/icons/OTHER.svg",
+      12: "/icons/OTHER.svg",
+    };
 
     //TEST CODE:
     const googleMarkers: AlertMarker[] = markers.map((marker) => {
       const img = document.createElement("img");
-      img.src =
-        marker.alertType === 1 || marker.alertType === 10 || marker.alertType === 7 ? "/icons/fire.svg" : "/icons/traffic.svg";
+      img.src = alertIcons[marker.alertType] ?? "/icons/kek.svg";
       img.style.width = "50px";
       img.style.height = "50px";
 

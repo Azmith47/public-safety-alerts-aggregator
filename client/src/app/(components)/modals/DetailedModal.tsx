@@ -4,7 +4,12 @@ import { MenuContext } from "@/context/MenuContext";
 import { AlertsContext } from "@/context/AlertsContext";
 import { useContext } from "react";
 import { Alert } from "@/app/lib/definitions";
-import { convertDate, convertTime, formatDate, removeFormatting } from "@/app/lib/utils";
+import {
+  convertDate,
+  convertTime,
+  formatDate,
+  removeFormatting,
+} from "@/app/lib/utils";
 
 function Firecard({ alert }: { alert: Alert }) {
   return (
@@ -45,14 +50,14 @@ function Firecard({ alert }: { alert: Alert }) {
         <time dateTime={convertDate(alert.start_date) ?? ""}>
           {formatDate(alert.start_date) ?? "n/a"}
         </time>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <time dateTime={convertDate(alert.end_date) ?? ""}>
           {formatDate(alert.end_date) ?? "n/a"}
         </time>
       </article>
       <p>
-        Alert source: {alert.source_id} //{" "}
+        Alert category: {alert.category_id} // Alert source: {alert.source_id}{" "}
         {alert.source_id === 1
           ? "This should be a fire alert"
           : "This should be a traffic alert"}
@@ -100,14 +105,15 @@ function TrafficCard({ alert }: { alert: Alert }) {
         <time dateTime={convertDate(alert.start_date) ?? ""}>
           {formatDate(alert.start_date) ?? "n/a"}
         </time>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <time dateTime={convertDate(alert.end_date) ?? ""}>
           {formatDate(alert.end_date) ?? "n/a"}
         </time>
       </article>
       <p>
-        Alert source: {alert.source_id} //{" "}
+        Alert category: {alert.category_id} // Alert source: {alert.source_id}{" "}
+        //{" "}
         {alert.source_id === 1
           ? "This should be a fire alert"
           : "This should be a traffic alert"}

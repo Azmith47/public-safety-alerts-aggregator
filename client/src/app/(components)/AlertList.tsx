@@ -8,8 +8,18 @@ import { FilterContext } from "@/context/FilterContext";
 import Image from "next/image";
 import { convertTime, removeFormatting } from "../lib/utils";
 
-function getIcon(source_id: number) {
-  if (Number(source_id) === 1)
+//Fire = 1,7,10
+//Traffic = 2,3
+//Flood = 4
+//Public event = 11
+//Other = 12
+//5,6,8,9 have no entries in the db
+function getIcon(category_id: number) {
+  if (
+    Number(category_id) === 1 ||
+    Number(category_id) === 7 ||
+    Number(category_id) === 10
+  )
     return (
       <Image
         className="icon"
@@ -19,7 +29,7 @@ function getIcon(source_id: number) {
         height={0}
       />
     );
-  if (Number(source_id) === 2)
+  if (Number(category_id) === 2 || Number(category_id) === 3)
     return (
       <Image
         className="icon"
@@ -29,11 +39,37 @@ function getIcon(source_id: number) {
         height={10}
       />
     );
-  else {
+  if (Number(category_id) === 4) {
     return (
-      <Image className="" src="" alt="this is broken" width={10} height={10} />
+      <Image
+        className="icon"
+        src="\icons\flood.svg" //PLACEHOLDER
+        alt="other alert icon"
+        width={10}
+        height={10}
+      />
     );
   }
+  if (Number(category_id) === 11 || Number(category_id) === 12) {
+    return (
+      <Image
+        className="icon"
+        src="\icons\OTHER.svg"
+        alt="other alert icon"
+        width={10}
+        height={10}
+      />
+    );
+  } else
+    return (
+      <Image
+        className="icon"
+        src="\icons\kek.svg"
+        alt="other alert icon"
+        width={10}
+        height={10}
+      />
+    );
 }
 
 function AlertCard({ alert }: { alert: Alert }) {
@@ -59,7 +95,7 @@ function AlertCard({ alert }: { alert: Alert }) {
         </p>
       </div>
       <div className="alert-card-middle">
-        <p>{getIcon(alert.source_id)}</p>
+        <p>{getIcon(alert.category_id)}</p>
         <p>{alert.title}</p>
       </div>
       <div className="alert-card-bottom">
@@ -92,8 +128,7 @@ export default function AlertList() {
   }, [selectedMarker]);
 
   useEffect(() => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
     fetch(`${baseUrl}/alerts/?limit=10000`)
       .then((response) => {
