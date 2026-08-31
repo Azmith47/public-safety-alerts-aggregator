@@ -104,7 +104,7 @@ export default function Markers({ map, markers }: MarkersProps) {
 
       //conditionally render size depending on icon type
       const isOtherIcon = marker.alertType === 11 || marker.alertType === 12;
-      const iconSize = isOtherIcon ? "35px" : "70px";
+      const iconSize = isOtherIcon ? "35px" : "65px";
 
       img.style.width = iconSize;
       img.style.height = iconSize;
