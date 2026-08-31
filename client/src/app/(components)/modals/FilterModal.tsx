@@ -192,7 +192,7 @@ export default function FilterModal() {
               onApply(emptyFilters);
             }}
           >
-            Reset Filters
+            Reset
           </button>
         </div>
       </form>
