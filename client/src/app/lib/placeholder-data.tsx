@@ -21,7 +21,7 @@ export const greaterSydneyLgas = [
   "Mosman",
   "North Sydney",
   "Northern Beaches",
-  "City Parramatta",
+  "City of Parramatta",
   "Penrith",
   "Randwick",
   "Ryde",

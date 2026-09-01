@@ -96,10 +96,10 @@ function AlertCard({ alert }: { alert: Alert }) {
       </div>
       <div className="alert-card-middle">
         <p>{getIcon(alert.category_id)}</p>
-        <p>{alert.title}</p>
+        <p>{removeFormatting(alert.title)}</p>
       </div>
       <div className="alert-card-bottom">
-        <p>{alert.location_council_area}</p>
+        <p>{removeFormatting(alert.location_council_area)}</p>
       </div>
     </article>
   );

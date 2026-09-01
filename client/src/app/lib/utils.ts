@@ -37,11 +37,6 @@ export function convertTime(date: string) {
   }
   return `${daysSinceIssue} days ago`;
 }
-//Normalise formatting (remove)
-export function removeFormatting(value: string): string | null {
-  if(value === null) return null
-  else return value.toUpperCase().replace(/[-_'\s]/g, "");
-}
 
 export function formatDate(dateString: string | null){
   if(dateString === null) return null
@@ -62,4 +57,16 @@ export function convertDate(dateString: string | null) {
   const date = new Date(dateString)
   const isoString = date.toISOString()
   return isoString
+}
+
+// //Normalise formatting (remove)
+export function removeFormatting(value: string): string | null {
+  if (value === null) return null;
+  return value
+    .replace(/_/g, " ")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
