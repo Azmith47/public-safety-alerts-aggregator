@@ -59,8 +59,14 @@ export function convertDate(dateString: string | null) {
   return isoString
 }
 
-// //Normalise formatting (remove)
-export function removeFormatting(value: string): string | null {
+// Remove formatting for filter comparison
+export function normalise(value: string | null): string | null {
+  if (value === null) return null;
+  return value.toUpperCase().replace(/[-_'\s]/g, "");
+}
+
+// Change data format to be more readable
+export function displayFormat(value: string): string | null {
   if (value === null) return null;
   return value
     .replace(/_/g, " ")

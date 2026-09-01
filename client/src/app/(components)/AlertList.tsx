@@ -6,7 +6,7 @@ import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import Image from "next/image";
-import { convertTime, removeFormatting } from "../lib/utils";
+import { convertTime, normalise, displayFormat } from "../lib/utils";
 
 //Fire = 1,7,10
 //Traffic = 2,3
@@ -96,10 +96,10 @@ function AlertCard({ alert }: { alert: Alert }) {
       </div>
       <div className="alert-card-middle">
         <p>{getIcon(alert.category_id)}</p>
-        <p>{removeFormatting(alert.title)}</p>
+        <p>{displayFormat(alert.title)}</p>
       </div>
       <div className="alert-card-bottom">
-        <p>{removeFormatting(alert.location_council_area)}</p>
+        <p>{displayFormat(alert.location_council_area)}</p>
       </div>
     </article>
   );
@@ -159,15 +159,14 @@ export default function AlertList() {
     }
     if (
       filters.location_council_area !== null &&
-      removeFormatting(alert.location_council_area) !==
-        removeFormatting(filters.location_council_area)
+      normalise(alert.location_council_area) !==
+        normalise(filters.location_council_area)
     ) {
       return false;
     }
     if (
       filters.location_region !== null &&
-      removeFormatting(alert.location_region) !==
-        removeFormatting(filters.location_region)
+      normalise(alert.location_region) !== normalise(filters.location_region)
     ) {
       return false;
     }

@@ -8,7 +8,7 @@ import {
   convertDate,
   convertTime,
   formatDate,
-  removeFormatting,
+  displayFormat,
 } from "@/app/lib/utils";
 
 function Firecard({ alert }: { alert: Alert }) {
@@ -32,8 +32,8 @@ function Firecard({ alert }: { alert: Alert }) {
       <article className="modal-data">
         <p>{alert.location_name}</p>
         <p>{alert.location_postcode ?? "n/a"}</p>
-        <p>{removeFormatting(alert.location_council_area) ?? "n/a"}</p>
-        <p>{removeFormatting(alert.location_region) ?? "n/a"}</p>
+        <p>{displayFormat(alert.location_council_area) ?? "n/a"}</p>
+        <p>{displayFormat(alert.location_region) ?? "n/a"}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
@@ -87,8 +87,8 @@ function TrafficCard({ alert }: { alert: Alert }) {
       <article className="modal-data">
         <p>{alert.location_name ?? "n/a"}</p>
         <p>{alert.location_postcode ?? "n/a"}</p>
-        <p>{removeFormatting(alert.location_council_area) ?? "n/a"}</p>
-        <p>{removeFormatting(alert.location_region) ?? "n/a"}</p>
+        <p>{displayFormat(alert.location_council_area) ?? "n/a"}</p>
+        <p>{displayFormat(alert.location_region) ?? "n/a"}</p>
         <p>{convertTime(alert.issued_at) ?? "n/a"}</p>
         <p>{convertTime(alert.updated_at) ?? "n/a"}</p>
         <p>
@@ -156,7 +156,7 @@ export default function DetailedModal() {
           ✕
         </button>
       </div>
-      <h4>{removeFormatting(alert?.title)}</h4>
+      <h4>{displayFormat(alert?.title)}</h4>
       {alert?.source_id === 2 ? (
         <TrafficCard alert={alert} />
       ) : (
