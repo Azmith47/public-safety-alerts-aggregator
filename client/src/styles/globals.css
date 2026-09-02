@@ -414,6 +414,16 @@ footer p {
   height: 20px;
 }
 
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+td {
+  overflow: hidden;
+  padding-bottom: 0.8em;
+}
+
 /* FILTER ALERTS MODAL */
 .filter-btn-container {
   display: flex;
