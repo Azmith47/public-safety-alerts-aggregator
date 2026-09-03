@@ -5,7 +5,7 @@ import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import { AlertFilters, FilterKey } from "@/app/lib/definitions";
 import { lgaGroups, regions } from "@/app/lib/placeholder-data";
-import { convertActiveToString, removeFormatting } from "@/app/lib/utils";
+import { convertActiveToString } from "@/app/lib/utils";
 
 export function FilterTabs() {
   const selectedFilters: { key: FilterKey; label: string }[] = [];
