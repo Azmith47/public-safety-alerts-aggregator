@@ -12,7 +12,6 @@ interface FilterContextValue {
 export const FilterContext = createContext<FilterContextValue>({
   filters: {
     is_active: true,
-    // source_id: null,
     category_id: null,
     location_council_area: null,
     location_region: null,
@@ -27,7 +26,6 @@ interface FilterProviderProps {
 export function FilterProvider({ children }: FilterProviderProps) {
   const defaultFilters: AlertFilters = {
     is_active: null,
-    // source_id: null,
     category_id: null,
     location_council_area: null,
     location_region: null,

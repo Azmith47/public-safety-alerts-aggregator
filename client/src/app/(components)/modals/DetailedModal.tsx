@@ -16,6 +16,12 @@ function TestCard({ alert }: { alert: Alert }) {
   return (
     <table>
       <tr>
+        <td>Issued by:</td>
+        <td>
+          {alert.source_id === 1 ? "Rural Fires Services" : "Transport For NSW"}
+        </td>
+      </tr>
+      <tr>
         <td>Location:</td>
         <td>{alert.location_name}</td>
       </tr>

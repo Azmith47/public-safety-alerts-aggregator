@@ -41,7 +41,9 @@ export default function AlertList() {
         updateAlerts(data.rows ?? []);
       })
       .catch((error) => console.error("Failed to load alerts:", error));
-  }, [updateAlerts]);
+  }, []); //temp code until we fix the following issue:
+  //This line is causing a large amount of get request
+  // }, [updateAlerts]);
 
   useEffect(() => {}, [modalOpen]);
 

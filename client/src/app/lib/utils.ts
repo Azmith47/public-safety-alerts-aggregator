@@ -76,3 +76,4 @@ export function displayFormat(value: string): string | null {
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 }
+

@@ -3,6 +3,7 @@
 import { useContext } from "react";
 import { MenuContext } from "@/context/MenuContext";
 import { AlertsContext } from "@/context/AlertsContext";
+import { FilterContext } from "@/context/FilterContext";
 
 export default function MyAlertsModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
@@ -10,6 +11,8 @@ export default function MyAlertsModal() {
   const { subscribedAlertTitles } = useContext(AlertsContext);
   const isOpen = modalOpen === "myAlerts";
   const onClose = () => toggleMenu(false, null);
+
+  //
 
   return (
     <div
