@@ -36,7 +36,7 @@ export default function GoogleMap() {
         map?.setZoom(15);
       }
     }
-  }, [selectedAlert, markers, map]);
+  }, [selectedAlert, markers, map]); //double check this line, could be causing event log spam - removing markers seems to fix it
 
   /*
    * Fetch geometry whenever the bounds settle.
