@@ -1,4 +1,15 @@
-//Alert & Filter prop types
+export type FireDetails = {
+  fire_type: string;
+  fire_size: number | null;
+  containment_status: string;
+  responsible_agency: string;
+};
+
+export type Advice = {
+  id: number;
+  alert_id: number;
+  message: string;
+};
 
 export type Alert = {
   id: number;
@@ -25,6 +36,9 @@ export type Alert = {
   location_postcode: number;
   location_council_area: string;
   location_region: string;
+  advice?: Advice[];
+  //Fire specific
+  fireDetails?: FireDetails | null;
 };
 
 export type AlertListProps = {
