@@ -178,21 +178,21 @@ export default function FilterModal() {
         <div className="filter-btn-container">
           <button
             type="button"
-            className="apply-btn"
-            onClick={() => {
-              onApply(localFilters);
-            }}
-          >
-            Apply Filters
-          </button>
-          <button
-            type="button"
             className="reset-btn"
             onClick={() => {
               onApply(emptyFilters);
             }}
           >
             Reset
+          </button>
+          <button
+            type="button"
+            className="apply-btn"
+            onClick={() => {
+              onApply(localFilters);
+            }}
+          >
+            Apply Filters
           </button>
         </div>
       </form>
