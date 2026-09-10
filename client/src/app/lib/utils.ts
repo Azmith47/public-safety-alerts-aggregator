@@ -17,6 +17,9 @@ export function convertTime(date: string) {
   const hoursSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60));
   const daysSinceIssue = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
+  if (timeDifference < 0) {
+  return "Invalid date";
+}
   if (minutesSinceIssue < 1) {
     return "just now";
   }
