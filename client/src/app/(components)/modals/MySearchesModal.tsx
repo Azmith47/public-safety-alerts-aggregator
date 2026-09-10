@@ -16,7 +16,7 @@ export default function MySearchesModal() {
       <div className="modal-header">
         <button onClick={onClose}>✕</button>
       </div>
-      <h4>My Saved Searches:</h4>
+      <h4>Recent Searches:</h4>
       <form action="" className="modal-form"></form>
     </div>
   );

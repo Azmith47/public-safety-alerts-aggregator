@@ -24,7 +24,7 @@ export default function MenuDrawer() {
         </li>
         <li>
           <button className="drawer-menu-button" onClick={onMySearchesClick}>
-            My Searches
+            Recent Searches
           </button>
         </li>
         <li>

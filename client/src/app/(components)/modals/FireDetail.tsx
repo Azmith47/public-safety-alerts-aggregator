@@ -15,14 +15,10 @@ export default function FireDetail({ alert }: { alert: Alert }) {
         <tbody>
           <tr>
             <td>Fire Type:</td>
-            <td>
-              {alert.fireDetails
-                ? displayFormat(alert.fireDetails.fire_type ?? undefined)
-                : "n/a"}
-            </td>
+            <td>{displayFormat(alert.fireDetails?.fire_type) ?? "n/a"}</td>
           </tr>
           <tr>
-            <td>Fire Size:</td>
+            <td>Fire Size (ha):</td>
             <td>{alert.fireDetails?.fire_size ?? "n/a"}</td>
           </tr>
           <tr>
@@ -36,21 +32,13 @@ export default function FireDetail({ alert }: { alert: Alert }) {
           <tr>
             <td>Containment Status:</td>
             <td>
-              {alert.fireDetails
-                ? displayFormat(
-                    alert.fireDetails.containment_status ?? undefined,
-                  )
-                : "n/a"}
+              {displayFormat(alert.fireDetails?.containment_status) ?? "n/a"}
             </td>
           </tr>
           <tr>
             <td>Responsible Agency:</td>
             <td>
-              {alert.fireDetails
-                ? displayFormat(
-                    alert.fireDetails.responsible_agency ?? undefined,
-                  )
-                : "n/a"}
+              {displayFormat(alert.fireDetails?.responsible_agency) ?? "n/a"}
             </td>
           </tr>
           <tr>
