@@ -73,6 +73,14 @@ export default function AlertList() {
     ) {
       return false;
     }
+    if (filters.search) {
+      const query = normalise(filters.search);
+      const title = normalise(alert.title);
+
+      const noMatch =
+        query !== null && title !== null && !title.includes(query);
+      if (noMatch) return false;
+    }
     return true;
   });
 

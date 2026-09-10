@@ -3,10 +3,12 @@ import { IconButtonProps } from "../lib/definitions";
 
 import { useContext } from "react";
 import { MenuContext } from "@/context/MenuContext";
+import { FilterContext } from "@/context/FilterContext";
 
 //Passing onMenuClick as a prop
 export default function Navbar() {
   const { menuOpen, toggleMenu } = useContext(MenuContext);
+  const { filters, updateFilters } = useContext(FilterContext);
 
   return (
     <nav>
@@ -15,11 +17,15 @@ export default function Navbar() {
         <p>Public Safety Alerts Aggregator</p>
       </div>
       <div className="nav-controls">
-        {/* <input
+        <input
           className="search-input"
           type="text"
           placeholder="Search alerts"
-        /> */}
+          value={filters.search ?? ""}
+          onChange={(e) =>
+            updateFilters({ ...filters, search: e.target.value || null })
+          }
+        />
         <IconButton
           onClick={() => toggleMenu(!menuOpen, null)}
           icon="icons/hamburger-menu.svg"

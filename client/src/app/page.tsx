@@ -22,10 +22,10 @@ export default function Home() {
     <MenuProvider>
       <AlertsProvider>
         <PageOverlay />
-        <Navbar />
         <MenuDrawer />
         <SubscribeModal />
         <FilterProvider>
+          <Navbar />
           <FilterModal />
           <MySearchesModal />
           <DetailedModal />
