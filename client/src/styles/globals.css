@@ -381,7 +381,7 @@ footer p {
   left: 60%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 700px;
+  width: 800px;
   height: 700px;
   background-color: var(--card-bg);
   border-radius: 8px;
@@ -445,12 +445,18 @@ td {
   padding-top: 1em;
 }
 
-.apply-btn .reset-btn {
+.apply-btn,
+.reset-btn {
   font-size: 0.9rem;
   width: fit-content;
   margin: auto;
   margin-top: 1.2em;
   cursor: pointer;
+  padding: 10px 20px 10px 20px;
+  border: 1px solid var(--body-bg-color);
+  border-radius: 20px;
+  background-color: var(--body-bg-color);
+  color: var(--text-primary);
 }
 
 /* OVERLAYS */

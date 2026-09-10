@@ -24,11 +24,19 @@ export default function TrafficDetail({ alert }: { alert: Alert }) {
     <>
       <AlertDescription description={alert.description} />
       <hr />
-      <table>
+      <table style={{ marginTop: "15px" }}>
         <tbody>
           <tr>
-            <td>Advice</td>
-            <td>{alert.advice?.map((advice) => advice.message)}</td>
+            <td>Advice:</td>
+            <td>
+              {alert.advice && alert.advice.length > 0 && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: alert.advice.map((item) => item.message).join(", "),
+                  }}
+                />
+              )}
+            </td>
           </tr>
           <tr>
             <td>Issued by:</td>
@@ -105,11 +113,11 @@ export default function TrafficDetail({ alert }: { alert: Alert }) {
             </td>
           </tr>
           <tr>
-            <td>source id</td>
+            <td>source id - remove me</td>
             <td> {alert.source_id}</td>
           </tr>
           <tr>
-            <td>category id</td>
+            <td>category id - remove me</td>
             <td>{alert.category_id}</td>
           </tr>
         </tbody>

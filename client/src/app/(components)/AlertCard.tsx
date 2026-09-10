@@ -74,15 +74,38 @@ export default function AlertCard({ alert }: { alert: Alert }) {
   const { toggleMenu } = useContext(MenuContext);
   const { selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
 
-  function onAlertClick(alert: Alert) {
+  // function onAlertClick(alert: Alert) {
+  //   toggleMenu(false, "detailedModal");
+  //   updateSelectedAlert(alert);
+  // }
+
+  //TEST
+  async function onAlertClick(alert: Alert) {
     toggleMenu(false, "detailedModal");
-    updateSelectedAlert(alert);
+    updateSelectedAlert(alert); // show summary immediately
+
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const response = await fetch(`${baseUrl}/alerts/${alert.id}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      updateSelectedAlert({
+        ...alert,
+        ...data.alert,
+        advice: data.advice ?? [],
+        fireDetails: data.fireDetails ?? null,
+      });
+    } catch (error) {
+      console.error("Failed to load full alert details:", error);
+    }
   }
 
   return (
     <article
       className={alert.is_active ? "alert-card-active" : "alert-card-inactive"}
-      onClick={() => onAlertClick(alert)}
+      // onClick={() => onAlertClick(alert)}
+      onClick={() => void onAlertClick(alert)}
     >
       <div className="alert-card-top">
         <span className={alert.is_active ? "dot-active" : "dot-inactive"}>

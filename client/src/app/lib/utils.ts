@@ -66,8 +66,8 @@ export function normalise(value: string | null): string | null {
 }
 
 // Change data format to be more readable
-export function displayFormat(value: string): string | null {
-  if (value === null) return null;
+export function displayFormat(value: string | undefined | null): string | null {
+  if (value === null || value === undefined) return null;
   return value
     .replace(/_/g, " ")
     .trim()

@@ -192,7 +192,7 @@ export default function FilterModal() {
               onApply(localFilters);
             }}
           >
-            Apply Filters
+            Apply
           </button>
         </div>
       </form>

@@ -15,7 +15,15 @@ export default function FireDetail({ alert }: { alert: Alert }) {
         <tbody>
           <tr>
             <td>Fire Type:</td>
-            <td>{alert.fireDetails?.fire_type}</td>
+            <td>
+              {alert.fireDetails
+                ? displayFormat(alert.fireDetails.fire_type ?? undefined)
+                : "n/a"}
+            </td>
+          </tr>
+          <tr>
+            <td>Fire Size:</td>
+            <td>{alert.fireDetails?.fire_size ?? "n/a"}</td>
           </tr>
           <tr>
             <td>Issued by:</td>
@@ -23,6 +31,26 @@ export default function FireDetail({ alert }: { alert: Alert }) {
               {alert.source_id === 1
                 ? "Rural Fires Services"
                 : "Transport For NSW"}
+            </td>
+          </tr>
+          <tr>
+            <td>Containment Status:</td>
+            <td>
+              {alert.fireDetails
+                ? displayFormat(
+                    alert.fireDetails.containment_status ?? undefined,
+                  )
+                : "n/a"}
+            </td>
+          </tr>
+          <tr>
+            <td>Responsible Agency:</td>
+            <td>
+              {alert.fireDetails
+                ? displayFormat(
+                    alert.fireDetails.responsible_agency ?? undefined,
+                  )
+                : "n/a"}
             </td>
           </tr>
           <tr>
@@ -92,15 +120,11 @@ export default function FireDetail({ alert }: { alert: Alert }) {
             </td>
           </tr>
           <tr>
-            <td>Advice</td>
-            <td>{alert.advice?.map((advice) => advice.message)}</td>
-          </tr>
-          <tr>
-            <td>source id</td>
+            <td>source id - remove me</td>
             <td> {alert.source_id}</td>
           </tr>
           <tr>
-            <td>category id</td>
+            <td>category id - remove me</td>
             <td>{alert.category_id}</td>
           </tr>
         </tbody>
