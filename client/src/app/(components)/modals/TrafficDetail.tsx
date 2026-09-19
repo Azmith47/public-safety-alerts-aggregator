@@ -112,14 +112,6 @@ export default function TrafficDetail({ alert }: { alert: Alert }) {
               </time>
             </td>
           </tr>
-          <tr>
-            <td>source id - remove me</td>
-            <td> {alert.source_id}</td>
-          </tr>
-          <tr>
-            <td>category id - remove me</td>
-            <td>{alert.category_id}</td>
-          </tr>
         </tbody>
       </table>
     </>

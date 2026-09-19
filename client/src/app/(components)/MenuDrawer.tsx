@@ -12,7 +12,7 @@ export default function MenuDrawer() {
   const onMyAlertsClick = () => toggleMenu(false, "myAlerts");
 
   return (
-    <div className={menuOpen ? "drawer-visible" : "drawer-hidden"}>
+    <div className={`drawer ${menuOpen ? "drawer-visible" : ""}`}>
       <div className="drawer-header">
         <button onClick={onClose}>✕</button>
       </div>

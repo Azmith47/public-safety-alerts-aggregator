@@ -58,7 +58,6 @@ export default function DetailedModal() {
               : addSubscribedAlert(alert.title)
           }
         />
-        <p>CURRENT ARRAY = {subscribedAlertTitles.join(" /// ")}</p>
       </div>
     </div>
   );
