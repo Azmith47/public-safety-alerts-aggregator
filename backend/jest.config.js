@@ -14,7 +14,13 @@ export default {
 	/**
 	 * Test discovery.
 	 */
-	testMatch: ["<rootDir>/tests/**/*.test.js"],
+	testMatch: [
+		"<rootDir>/tests/collectors/**/*.test.js",
+		"<rootDir>/tests/normalizers/**/*.test.js",
+		"<rootDir>/tests/transformers/**/*.test.js",
+		"<rootDir>/tests/services/AlertPersistenceService.test.js",
+		"<rootDir>/tests/services/IngestOrchestratorService.test.js",
+	],
 
 	/**
 	 * Test module file extensions.

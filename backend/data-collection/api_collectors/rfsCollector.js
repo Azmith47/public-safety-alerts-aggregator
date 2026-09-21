@@ -1,8 +1,10 @@
 export const sourceName = "NSW RFS";
 export const sourceWebsite = "https://www.rfs.nsw.gov.au";
+const DEFAULT_RFS_FEED_URL =
+	"https://www.rfs.nsw.gov.au/feeds/majorIncidents.json";
 
 export const run = async () => {
-	const FEED_URL = process.env.RFS_FEED_URL;
+	const FEED_URL = process.env.RFS_FEED_URL || DEFAULT_RFS_FEED_URL;
 
 	try {
 		const response = await fetch(FEED_URL);
