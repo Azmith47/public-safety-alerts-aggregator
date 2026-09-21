@@ -1,0 +1,374 @@
+/* RESET */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--body-bg-color);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nextjs-portal {
+  display: none;
+}
+
+/* VARIABLES */
+:root {
+  /* --nav-footer-bg-color: #1b2f6e; */
+  --nav-footer-bg-color: black;
+  --body-bg-color: #2e2e2e;
+  --surface-color: #3a3a3a;
+  --border-color: #555555;
+  --text-primary: #f0f0f0;
+  --accent-color: #ffc72c;
+  --card-bg: #f5f5f5;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--nav-footer-bg-color);
+  height: 4.5em;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 3em;
+  gap: 0.8em;
+}
+
+.nav-logo p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+nav button {
+  background: none;
+  border: none;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 1.5em;
+  margin-right: 4em;
+  width: 35em;
+}
+
+.search-input {
+  width: 25em;
+}
+
+.nav-icon {
+  max-height: 3em;
+  cursor: pointer;
+}
+
+/* DRAWER */
+.drawer-hidden {
+  display: none;
+}
+
+.drawer-visible {
+  display: block;
+  position: fixed;
+  top: 4.5em;
+  right: 0;
+  height: calc(100vh - 8.05em);
+  width: 15%;
+  z-index: 100;
+  background-color: var(--card-bg);
+  color: var(--body-bg-color);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 0.8em;
+}
+
+.drawer-header button {
+  margin: 0.5em 0.5em 1em 0.5em;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.drawer-menu-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 1em 1em 1em 1em;
+  width: 100%;
+}
+
+.drawer-menu-button:hover {
+  background-color: var(--accent-color);
+}
+
+/* MAIN LAYOUT */
+main {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  display: flex;
+}
+
+/* ALERT LIST */
+
+aside {
+  /* Play around with width */
+  width: 20%;
+  background-color: var(--surface-color);
+  height: calc(100vh - 8.05em);
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.alert-card-active {
+  background-color: var(--card-bg);
+  color: var(--body-bg-color);
+  border-radius: 5px;
+  position: relative;
+  margin: 0.8em 1.2em 0.8em 1.2em;
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+}
+
+.alert-card-inactive {
+  opacity: 70%;
+  background-color: var(--card-bg);
+  color: var(--body-bg-color);
+  border-radius: 5px;
+  position: relative;
+  margin: 0.8em 1.2em 0.8em 1.2em;
+  overflow: hidden;
+  text-align: left;
+}
+
+.dot-active {
+  background-color: #00fa9a;
+  color: black;
+  font-weight: 650;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-size: 0.8rem;
+  /* Give span width/height without taking up the full width of the div*/
+  display: inline-block;
+  position: absolute;
+  top: 0.7em;
+  left: 0.7em;
+}
+
+.dot-inactive {
+  background-color: #555555;
+  color: white;
+  font-weight: 650;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-size: 0.8rem;
+  /* Give span width/height without taking up the full width of the div*/
+  display: inline-block;
+  position: absolute;
+  top: 0.7em;
+  left: 0.7em;
+}
+
+.alert-card-top {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2em;
+  padding: 0 0.8em;
+  font-size: 0.75rem;
+}
+
+.alert-card-middle {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.5em 0.8em;
+}
+
+.alert-card-middle p {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.alert-card-bottom {
+  padding: 0.3em 0.8em 0.8em 2em;
+  font-size: 0.75rem;
+}
+
+.icon {
+  max-height: 4rem;
+}
+
+/* FILTER */
+.filter-bar {
+  position: absolute;
+  top: 6em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-color);
+  border-radius: 8px;
+  padding: 0.5em 1em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 0.5em;
+  z-index: 10;
+}
+
+.filter-items {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  background: var(--body-bg-color);
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-size: 0.8rem;
+}
+
+/* MAP */
+.map-area {
+  flex: 1;
+  height: 100%;
+}
+
+/* FOOTER */
+footer {
+  background-color: var(--nav-footer-bg-color);
+  color: var(--text-primary);
+  height: 3.5em;
+}
+
+footer p {
+  margin-left: 3em;
+}
+
+/* MODALS */
+.modal-container-hidden {
+  display: none;
+}
+
+.modal-container-visible {
+  position: fixed;
+  left: 60%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 2em;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.modal-container-visible h4 {
+  margin-bottom: 1em;
+  color: var(--body-bg-color);
+}
+
+.modal-header {
+  float: right;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.modal-header button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.modal-header p {
+  color: var(--body-bg-color);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.modal-form label {
+  font-size: 0.85rem;
+  color: var(--body-bg-color);
+  margin-bottom: 0.25em;
+}
+
+.modal-form select {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* DETAILED MODALS */
+.detail-modal-container-visible {
+  position: fixed;
+  left: 60%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 2em;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.data-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.labels {
+  width: 30%;
+}
+
+.labels p {
+  font-weight: bold;
+}
+
+.data {
+  padding-left: 1em;
+  width: 70%;
+}
+
+/* FILTER ALERTS MODAL */
+.apply-btn {
+  font-size: 0.9em;
+  width: fit-content;
+  margin: auto;
+  margin-top: 1.2em;
+  cursor: pointer;
+}
+
+/* OVERLAYS */
+.page-overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}

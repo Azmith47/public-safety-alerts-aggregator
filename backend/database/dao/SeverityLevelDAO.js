@@ -1,29 +1,24 @@
-const BaseDAO = require("./BaseDAO");
+import BaseDAO from "./BaseDAO.js";
 
 class SeverityLevelDAO extends BaseDAO {
+	constructor() {
+		super("severity_levels");
+	}
 
-    constructor() {
-        super("severity_levels");
-    }
+	async getOrCreate(name, description = null) {
+		const row = await this.findOne(this.tableName, "name = ?", [name]);
 
-    async getOrCreate(name, description = null) {
-        const row = await this.findOne(
-            this.tableName,
-            "name = ?",
-            [name]
-        );
+		if (row) {
+			return { id: row.id, created: false };
+		}
 
-        if (row) {
-            return { id: row.id, created: false };
-        }
+		const result = await super.insert(this.tableName, {
+			name,
+			description,
+		});
 
-        const result = await super.insert(this.tableName, {
-            name,
-            description
-        });
-
-        return { id: result.id, created: true };
-    }
+		return { id: result.id, created: true };
+	}
 }
 
-module.exports = new SeverityLevelDAO();
+export default new SeverityLevelDAO();

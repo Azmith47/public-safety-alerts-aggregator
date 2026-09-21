@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS alerts (
     delay INTEGER DEFAULT 0,
     start_date DATETIME,
     end_date DATETIME,
+    is_active INTEGER DEFAULT 1,
     raw_payload TEXT,
 
     FOREIGN KEY (category_id) REFERENCES categories(id),

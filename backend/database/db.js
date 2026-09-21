@@ -1,106 +1,56 @@
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+import sqlite3 from "better-sqlite3";
 
-const db = new sqlite3.Database(
-    path.join(__dirname, "database.sqlite")
-);
+import path from "path";
+import { fileURLToPath } from "url";
 
-db.serialize(() => {
-    db.run("PRAGMA foreign_keys = ON");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    db.run("PRAGMA journal_mode = WAL");
-
-    db.run("PRAGMA synchronous = NORMAL");
+export const db = sqlite3(path.join(__dirname, "database.sqlite"), {
+	// verbose: console.log, // Comment out if logs aren't needed
 });
 
-function run(sql, params = []) {
+db.pragma("foreign_keys = ON");
+db.pragma("journal_mode = WAL");
+db.pragma("synchronous = NORMAL");
 
-    return new Promise((resolve, reject) => {
-
-        db.run(sql, params, function (err) {
-
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this);
-            }
-        });
-    });
+export function run(sql, params = []) {
+	const stmt = db.prepare(sql);
+	return stmt.run(params); // Returns { changes: 1, lastInsertRowid: 1 }
 }
 
-function get(sql, params = []) {
-
-    return new Promise((resolve, reject) => {
-
-        db.get(sql, params, (err, row) => {
-
-            if (err) {
-                reject(err);
-            } else {
-                resolve(row);
-            }
-        });
-    });
+export function get(sql, params = []) {
+	const stmt = db.prepare(sql);
+	return stmt.get(params); // Returns a single row object or undefined
 }
 
-function all(sql, params = []) {
-
-    return new Promise((resolve, reject) => {
-
-        db.all(sql, params, (err, rows) => {
-
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+export function all(sql, params = []) {
+	const stmt = db.prepare(sql);
+	return stmt.all(params); // Returns an array of row objects
 }
 
-function exec(sql) {
-
-    return new Promise((resolve, reject) => {
-
-        db.exec(sql, (err) => {
-
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
+export function exec(sql) {
+	db.exec(sql); // Executes multi-line raw SQL strings
 }
 
 // -----------------------------------------
 // Transaction Helpers
 // -----------------------------------------
 
-async function beginImmediateTransaction() {
-    await run("BEGIN IMMEDIATE TRANSACTION");
+export function beginImmediateTransaction() {
+	db.prepare("BEGIN IMMEDIATE").run();
 }
 
-async function beginTransaction() {
-    await run("BEGIN TRANSACTION");
+export function beginTransaction() {
+	db.prepare("BEGIN").run();
 }
 
-async function commitTransaction() {
-    await run("COMMIT");
+export function commitTransaction() {
+	db.prepare("COMMIT").run();
 }
 
-async function rollbackTransaction() {
-    await run("ROLLBACK");
+export function rollbackTransaction() {
+	db.prepare("ROLLBACK").run();
 }
 
-module.exports = {
-    db,
-    run,
-    get,
-    all,
-    exec,
-    beginImmediateTransaction,
-    beginTransaction,
-    commitTransaction,
-    rollbackTransaction
-};
+export default db;
