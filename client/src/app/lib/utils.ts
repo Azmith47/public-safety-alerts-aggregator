@@ -80,3 +80,42 @@ export function displayFormat(value: string | undefined | null): string | null {
     .join(" ");
 }
 
+export const API_URL = "http://localhost:3001";
+
+export const CATEGORIES = [
+  { id: 1, name: "FIRE" },
+  { id: 2, name: "TRAFFIC_INCIDENT" },
+  { id: 3, name: "ROAD_HAZARD" },
+  { id: 4, name: "FLOOD" },
+  { id: 5, name: "STORM" },
+  { id: 6, name: "WEATHER" },
+  { id: 7, name: "HAZMAT" },
+  { id: 8, name: "RESCUE" },
+  { id: 9, name: "MEDICAL" },
+  { id: 10, name: "PLANNED_BURN" },
+  { id: 11, name: "PUBLIC_EVENT" },
+  { id: 12, name: "OTHER" },
+];
+
+export const REGIONS = [
+  { id: 1, name: "GREATER_SYDNEY" },
+  { id: 2, name: "CENTRAL_COAST" },
+  { id: 3, name: "CENTRAL_WEST_ORANA" },
+  { id: 4, name: "FAR_WEST" },
+  { id: 5, name: "HUNTER" },
+  { id: 6, name: "ILLAWARRA_SHOALHAVEN" },
+  { id: 7, name: "NEW_ENGLAND_NORTH_WEST" },
+  { id: 8, name: "NORTH_COAST" },
+  { id: 9, name: "NORTHERN_RIVERS" },
+  { id: 10, name: "RIVERINA" },
+  { id: 11, name: "MURRAY_RIVERINA_REGION" },
+  { id: 12, name: "SOUTH_EAST_TABLELANDS" },
+  { id: 13, name: "SOUTH_COAST" },
+];
+
+export const formatLabel = (s: string) =>
+  s
+    .toLowerCase()
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");

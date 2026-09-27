@@ -28,3 +28,28 @@ export const confirmSubscription = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const getSubscriptionsByEmail = async (req, res) => {
+	try {
+		const email = req.query.email;
+		if (!email) return res.status(400).json({ error: "Email is required" });
+
+		const subscriptions =
+			await SubscriptionService.getSubscriptionsByUserEmail(email);
+		res.json(subscriptions);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: "Failed to fetch subscriptions" });
+	}
+};
+
+export const deleteSubscription = async (req, res) => {
+	try {
+		const { id } = req.params;
+		await SubscriptionService.deleteSubscription(id);
+		res.status(204).send();
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ error: "Failed to delete subscription" });
+	}
+};

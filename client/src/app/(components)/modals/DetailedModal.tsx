@@ -49,15 +49,7 @@ export default function DetailedModal() {
       )}
       <div className="subscribe-section">
         <p>Click to subscribe</p>
-        <input
-          type="checkbox"
-          checked={subscribedAlertTitles.includes(alert.title)}
-          onChange={() =>
-            subscribedAlertTitles.includes(alert.title)
-              ? removeSubscribedAlert(alert.title)
-              : addSubscribedAlert(alert.title)
-          }
-        />
+        <input type="checkbox" checked={false} onChange={() => {}} />
       </div>
     </div>
   );

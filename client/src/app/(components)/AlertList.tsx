@@ -30,7 +30,7 @@ export default function AlertList() {
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-    fetch(`${baseUrl}/alerts/?limit=10000`)
+    fetch(`${baseUrl}/alerts/?limit=100000`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -41,9 +41,9 @@ export default function AlertList() {
         updateAlerts(data.rows ?? []);
       })
       .catch((error) => console.error("Failed to load alerts:", error));
-  }, []); //temp code until we fix the following issue:
-  //This line is causing a large amount of get request
-  // }, [updateAlerts]);
+    // }, []); //temp code until we fix the following issue:
+    //This line is causing a large amount of get request
+  }, [updateAlerts]);
 
   useEffect(() => {}, [modalOpen]);
 

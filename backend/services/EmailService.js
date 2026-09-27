@@ -39,6 +39,14 @@ class EmailService {
 
 	async sendConfirmationEmail(email, token) {
 		const confirmationUrl = `${this.appUrl}/subscriptions/confirm/${encodeURIComponent(token)}`;
+
+		if (!this.smtpHost || !this.smtpUser || !this.smtpPass) {
+			console.log(
+				`[DEV] SMTP not configured — confirmation link for ${email}:\n${confirmationUrl}`,
+			);
+			return;
+		}
+
 		return this.getTransporter().sendMail({
 			from: `"${this.fromName}" <${this.fromEmail}>`,
 			to: email,

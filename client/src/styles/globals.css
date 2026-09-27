@@ -471,6 +471,37 @@ td {
   z-index: 99;
 }
 
+.my-alerts-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.my-alerts-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.my-alerts-list li button {
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: var(--body-bg-color);
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
 /* Media Query for Tablet devices (lower than 1080px) */
 @media (max-width: 1440px) {
   aside {

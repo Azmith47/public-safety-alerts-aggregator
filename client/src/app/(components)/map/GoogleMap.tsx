@@ -36,7 +36,10 @@ export default function GoogleMap() {
         map?.setZoom(15);
       }
     }
-  }, [selectedAlert, markers, map]); //double check this line, could be causing event log spam - removing markers seems to fix it
+    // }, [selectedAlert, markers, map]);
+    //double check this line, could be causing event log spam - removing markers seems to fix it
+    //Christian - temp removing above line for demo recording
+  }, [selectedAlert, map]);
 
   /*
    * Fetch geometry whenever the bounds settle.
