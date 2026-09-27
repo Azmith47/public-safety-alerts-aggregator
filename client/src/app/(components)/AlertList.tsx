@@ -43,7 +43,7 @@ export default function AlertList() {
       .catch((error) => console.error("Failed to load alerts:", error));
     // }, []); //temp code until we fix the following issue:
     //This line is causing a large amount of get request
-  }, [updateAlerts]);
+  }, []);
 
   useEffect(() => {}, [modalOpen]);
 
