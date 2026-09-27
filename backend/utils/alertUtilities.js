@@ -15,6 +15,39 @@ export function stripHtml(value) {
 		.replace(/<[^>]+>/g, "")
 		.trim();
 }
+export function parsePubDate(value) {
+	if (!value || typeof value !== "string") {
+		return null;
+	}
+
+	const match = value
+		.trim()
+		.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})\s*(AM|PM)$/i);
+
+	if (!match) {
+		return null;
+	}
+
+	const [, day, month, year, hourStr, minute, second, meridiem] = match;
+
+	let hour = parseInt(hourStr, 10);
+	const isPM = meridiem.toUpperCase() === "PM";
+
+	if (isPM && hour !== 12) {
+		hour += 12;
+	} else if (!isPM && hour === 12) {
+		hour = 0;
+	}
+
+	return new Date(
+		parseInt(year, 10),
+		parseInt(month, 10) - 1,
+		parseInt(day, 10),
+		hour,
+		parseInt(minute, 10),
+		parseInt(second, 10)
+	);
+}
 
 export const geoJsonToPaths = (geoJson) => {
 	return geoJson.coordinates[0].map(([lng, lat]) => ({

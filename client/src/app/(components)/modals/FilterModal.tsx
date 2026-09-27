@@ -14,6 +14,7 @@ export function FilterTabs() {
 
   // Track mounting state to avoid Next.js hydration mismatch
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time mount guard, not a state-sync bug
     setIsMounted(true);
   }, []);
 

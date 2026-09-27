@@ -1,4 +1,4 @@
-"import client";
+"use client";
 import { Alert } from "@/app/lib/definitions";
 import {
   displayFormat,
@@ -69,7 +69,9 @@ export default function FireDetail({ alert }: { alert: Alert }) {
             <td>Source:</td>
             <td>
               {alert.source_url ? (
-                <a href={alert.source_url}>{alert.source_url}</a>
+                <a href={DOMPurify.sanitize(alert.source_url)}>
+                  {DOMPurify.sanitize(alert.source_url)}
+                 </a>
               ) : (
                 "n/a"
               )}
