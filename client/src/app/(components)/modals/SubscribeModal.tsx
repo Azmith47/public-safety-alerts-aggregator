@@ -2,6 +2,7 @@
 
 import { useContext, useState } from "react";
 import { MenuContext } from "@/context/MenuContext";
+import { API_URL } from "@/app/lib/utils";
 
 //Area where the user can subscribe to general alerts
 //Any new email matching the alert will trigger a notification via email
@@ -112,7 +113,7 @@ export default function SubscribeModal() {
     setErrorMsg("");
 
     try {
-      const res = await fetch(`http://localhost:3001/subscriptions`, {
+      const res = await fetch(`${API_URL}/subscriptions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

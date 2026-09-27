@@ -80,7 +80,7 @@ export function displayFormat(value: string | undefined | null): string | null {
     .join(" ");
 }
 
-export const API_URL = "http://localhost:3001";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export const CATEGORIES = [
   { id: 1, name: "FIRE" },
