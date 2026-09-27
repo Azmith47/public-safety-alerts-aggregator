@@ -8,8 +8,14 @@ import { lgaGroups, regions } from "@/app/lib/placeholder-data";
 import { convertActiveToString } from "@/app/lib/utils";
 
 export function FilterTabs() {
+  const [isMounted, setIsMounted] = useState(false);
   const selectedFilters: { key: FilterKey; label: string }[] = [];
   const { filters } = useContext(FilterContext);
+
+  // Track mounting state to avoid Next.js hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const incidentTypeLabels: Record<number, string> = {
     1: "Fire",
@@ -52,6 +58,11 @@ export function FilterTabs() {
       key: "location_region",
       label: filters.location_region ?? "Unknown",
     });
+  }
+
+  // Prevent rendering filter markup on the server pass
+  if (!isMounted) {
+    return null;
   }
 
   return (
