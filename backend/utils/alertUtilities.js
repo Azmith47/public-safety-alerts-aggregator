@@ -91,27 +91,3 @@ export const splitDescription = (description) => {
 
 	return values;
 };
-
-/**
- * parsePubDate
- *
- * DEPRECATED
- * Replaced by dateTransformer.js module
- * @param {*} dateString
- * @returns
- */
-export const parsePubDate = (dateString) => {
-	// 1. Split date and time components
-	const [datePart, timePart, ampm] = dateString.split(" ");
-	const [day, month, year] = datePart.split("/").map(Number);
-	let [hours, minutes, seconds] = timePart.split(":").map(Number);
-
-	// 2. Adjust hours for AM/PM
-	if (ampm === "PM" && hours < 12) hours += 12;
-	if (ampm === "AM" && hours === 12) hours = 0;
-
-	// 3. Create Date object (Note: months are 0-indexed in JS, so subtract 1)
-	const date = new Date(year, month - 1, day, hours, minutes, seconds);
-
-	return date;
-};
