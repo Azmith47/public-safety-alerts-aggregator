@@ -13,7 +13,7 @@ class SubscriptionService {
 		const email = subscription.email.trim().toLowerCase();
 		const verificationToken = crypto.randomBytes(32).toString("hex");
 
-		let user = await UserDAO.getByEmail(email);
+		const user = await UserDAO.getByEmail(email);
 		let userId;
 
 		if (!user) {

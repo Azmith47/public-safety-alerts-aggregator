@@ -5,7 +5,6 @@ import express from "express";
 import cors from "cors";
 import corsOptions from "./config/corsOptions.js";
 
-import db from "./database/db.js";
 import NotificationService from "./services/NotificationService.js";
 import {
 	initializeIngestScheduler,

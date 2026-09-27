@@ -8,8 +8,6 @@ import CategoryDAO from "./dao/CategoryDAO.js";
 import SeverityLevelDAO from "./dao/SeverityLevelDAO.js";
 import StatusTypeDAO from "./dao/StatusTypeDAO.js";
 import RegionDAO from "./dao/RegionDAO.js";
-import CouncilAreaDAO from "./dao/CouncilAreaDAO.js";
-import LocationDAO from "./dao/LocationDAO.js";
 import {
 	Categories,
 	SeverityLevels,
