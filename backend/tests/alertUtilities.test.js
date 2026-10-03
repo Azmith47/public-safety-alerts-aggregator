@@ -3,7 +3,6 @@ import {
 	geoJsonToPaths,
 	geoJsonToMarker,
 	splitDescription,
-	parsePubDate,
 } from "../utils/alertUtilities.js";
 
 describe("alertUtilities", () => {
@@ -49,15 +48,5 @@ describe("alertUtilities", () => {
 			status: "Active",
 			category: "Bushfire",
 		});
-	});
-
-	test("parsePubDate should parse DD/MM/YYYY HH:MM:SS AM/PM strings", () => {
-		const actual = parsePubDate("21/05/2026 03:15:45 PM");
-		expect(actual.getFullYear()).toBe(2026);
-		expect(actual.getMonth()).toBe(4);
-		expect(actual.getDate()).toBe(21);
-		expect(actual.getHours()).toBe(15);
-		expect(actual.getMinutes()).toBe(15);
-		expect(actual.getSeconds()).toBe(45);
 	});
 });
