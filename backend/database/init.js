@@ -10,6 +10,7 @@ import {
 import { seed } from "./seed.js";
 import { importSpatialData } from "./importSpatialData.js";
 import { migrateDatabase } from "./migrate.js";
+import LocationDAO from "./dao/LocationDAO.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,8 +40,10 @@ async function initializeDatabase() {
 
 		console.log("Database schema created successfully.");
 
+		LocationDAO.setDatabaseInitializationComplete(false);
 		await seed();
 		await importSpatialData();
+		LocationDAO.setDatabaseInitializationComplete(true);
 
 		console.log("Database initialization completed successfully.");
 	} catch (err) {

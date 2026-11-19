@@ -6,13 +6,14 @@ import SourceHealthService from "./SourceHealthService.js";
 import AlertQueryService from "./AlertQueryService.js";
 import { normalizeRfsFeed } from "../normalization/normalizers/rfsNormalizer.js";
 import { normalizeTfnswFeed } from "../normalization/normalizers/tfnswNormalizer.js";
+import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
+import NotificationService from "./NotificationService.js";
 
 import { fileURLToPath, pathToFileURL } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __root = process.cwd();
-
 
 const collectorNormalizers = {
 	rfsCollector: normalizeRfsFeed,
@@ -22,6 +23,7 @@ const collectorNormalizers = {
 export class IngestOrchestratorService {
 	constructor() {
 		this.collectors = new Map();
+		this.running = false;
 	}
 
 	/**
@@ -150,6 +152,16 @@ export class IngestOrchestratorService {
 				);
 				if (res.action === "created") created++;
 				if (res.action === "updated") updated++;
+				if (res.action === "created") {
+					const subscribers =
+						await SubscriptionDAO.getMatchingForAlert(res.alertId);
+					for (const subscriber of subscribers) {
+						await NotificationService.enqueue(
+							subscriber.user_id,
+							res.alertId,
+						);
+					}
+				}
 			} catch (err) {
 				console.error(
 					`Failed to persist alert from ${name}:`,
@@ -173,26 +185,34 @@ export class IngestOrchestratorService {
 
 	/** Run all registered collectors sequentially. */
 	async runAll() {
+		if (this.running) {
+			console.warn("Ingest already running; skipping overlapping run");
+			return [];
+		}
+		this.running = true;
 		const summary = [];
 
-		for (const [name] of this.collectors) {
-			try {
-				const res = await this.runCollector(name);
-				summary.push({ name, ...res });
-			} catch (err) {
-				summary.push({ name, error: err && err.message });
-				await SourceHealthService.recordRun(name, null, {
-					processed: 0,
-					created: 0,
-					updated: 0,
-					failed: 0,
-					success: false,
-					error: err && err.message,
-				});
+		try {
+			for (const [name] of this.collectors) {
+				try {
+					const res = await this.runCollector(name);
+					summary.push({ name, ...res });
+				} catch (err) {
+					summary.push({ name, error: err && err.message });
+					await SourceHealthService.recordRun(name, null, {
+						processed: 0,
+						created: 0,
+						updated: 0,
+						failed: 0,
+						success: false,
+						error: err && err.message,
+					});
+				}
 			}
+			return summary;
+		} finally {
+			this.running = false;
 		}
-
-		return summary;
 	}
 
 	/** Convenience: run collectors found in the project's data-collection folders. */

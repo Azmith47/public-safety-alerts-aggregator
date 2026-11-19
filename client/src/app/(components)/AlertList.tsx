@@ -1,151 +1,105 @@
 "use client";
-
-import { Alert } from "../lib/definitions";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AlertsContext } from "@/context/AlertsContext";
 import { MenuContext } from "@/context/MenuContext";
+import { FilterContext } from "@/context/FilterContext";
+import { normalise } from "../lib/utils";
+import AlertCard from "./AlertCard";
 
-
-// The alert data was hardcoded for the prototype
-// Hardcoded data needs to be replaced with API fetch (useEffect?)
-// Each AlertCard will receive JSON alert data as props
-// export default function AlertList() {
-//   return (
-//     <aside>
-//       <ul>
-//         {alerts.map((alert) => (
-//           <li key={alert.id}>
-//             {/* used spread operator to copy all the alert properties to AlertCard as props - otherwise we'd be typing them all manually */}
-//             <AlertCard {...alert} />
-//           </li>
-//         ))}
-//       </ul>
-//     </aside>
-//   );
-// }
-
-// Renders the AlertCard
-// Category is passed as a prop but not displayed due to size constraints
-// function AlertCard({
-//   title,
-//   type,
-//   alertLocation: { region, suburb },
-//   datePublished,
-//   active,
-// }: AlertCardProps) {
-//   return (
-//     <article className={active ? "alert-card-active" : "alert-card-inactive"}>
-//       {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
-//       <span className={active ? "dot-active" : "dot-inactive"}>
-//         {active ? "Active" : "Inactive"}
-//       </span>
-//       <div className="alert-card-top">
-//         <p>{datePublished}</p>
-//       </div>
-//       <div className="alert-card-middle">
-//         <p>{getIcon(type)}</p>
-//         <p>{title}</p>
-//       </div>
-//       <div className="alert-card-bottom">
-//         <p>
-//           {region}, {suburb}
-//         </p>
-//       </div>
-//     </article>
-//   );
-// }
-
-// Renders a different .svg icon determined by the type prop passed to the AlertCard
-// A switch statement could be more appropriate
-// The icons are are placeholder - needs to be discussed by the team
-// function getIcon(type: string) {
-//   if (type === "traffic")
-//     return <img className="icon" src="\icons\traffic.svg" alt="" />;
-//   if (type === "fire")
-//     return <img className="icon" src="\icons\fire.svg" alt="" />;
-//   if (type === "flood")
-//     return <img className="icon" src="\icons\flood.svg" alt="" />;
-//   if (type === "storm")
-//     return <img className="icon" src="\icons\storm.svg" alt="" />;
-// }
-
-// Renders a different .svg icon determined by alert type
-// A switch statement could be more appropriate
-// The icons are are placeholder
-function getIcon(type: number) {
-  if (type = 2)
-    return <img className="icon" src="\icons\traffic.svg" alt="" />;
-  if (type = 1)
-    return <img className="icon" src="\icons\fire.svg" alt="" />;
-  if (type = 4)
-    return <img className="icon" src="\icons\flood.svg" alt="" />;
-  if (type = 5)
-    return <img className="icon" src="\icons\storm.svg" alt="" />;
-}
-
-// Renders the AlertCard
-function AlertCard({alert}: {alert: Alert;}) {
-  const { toggleMenu } = useContext(MenuContext);
-  const { selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
-
-  function onAlertClick(alert: Alert) {
-    toggleMenu(false, "detailedModal");
-    updateSelectedAlert(alert);
-  }
-
-  return (
-    <article
-      className={alert.active ? "alert-card-active" : "alert-card-inactive"}
-      onClick={() => onAlertClick(alert)}
-    >
-      {/* If active is true display the dot-active CSS class, otherwise display the dot-inactive CSS class */}
-      <span className={alert.active ? "dot-active" : "dot-inactive"}>
-        {alert.active ? "Active" : "Inactive"}
-      </span>
-      <div className="alert-card-top">
-        <p>{alert.datePublished}</p>
-      </div>
-      <div className="alert-card-middle">
-        <p>{getIcon(alert.type)}</p>
-        <p>{alert.title}</p>
-      </div>
-      <div className="alert-card-bottom">
-        <p>
-          {/* {alert.alertLocation.region}, {alert.alertLocation.suburb} */}
-        </p>
-      </div>
-    </article>
-  );
-}
-
-// Hardcoded data needs to be replaced with API fetch (useEffect?)
-// Each AlertCard will receive JSON alert data as props
 export default function AlertList() {
-  const { alerts, updateAlerts, selectedAlert, updateSelectedAlert } = useContext(AlertsContext);
+  const {
+    alerts,
+    updateAlerts,
+    selectedAlert,
+    updateSelectedAlert,
+    selectedMarker,
+  } = useContext(AlertsContext);
   const { modalOpen } = useContext(MenuContext);
+  const { filters } = useContext(FilterContext);
+
+  const listRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    // Fetch alerts from API and update context
-    fetch("http://localhost:3001/alerts/")
-      .then((response) => response.json())
+    if (listRef.current) {
+      if (selectedMarker !== null) {
+        listRef.current.scrollTop = 0;
+      }
+    }
+  }, [selectedMarker]);
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+    fetch(`${baseUrl}/alerts/?limit=100000`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        // Update the alerts in the context
-        updateAlerts(data.rows);
-      });
+        updateAlerts(data.rows ?? []);
+      })
+      .catch((error) => console.error("Failed to load alerts:", error));
+    // }, []); //temp code until we fix the following issue:
+    //This line is causing a large amount of get request
   }, []);
 
-  useEffect(() => {
-  }, [modalOpen]);
+  useEffect(() => {}, [modalOpen]);
+
+  const filteredAlerts = alerts.filter((alert) => {
+    if (
+      filters.is_active !== null &&
+      Boolean(alert.is_active) !== filters.is_active
+    ) {
+      return false;
+    }
+    if (
+      filters.category_id !== null &&
+      Number(alert.category_id) !== filters.category_id
+    ) {
+      return false;
+    }
+    if (
+      filters.location_council_area !== null &&
+      normalise(alert.location_council_area) !==
+        normalise(filters.location_council_area)
+    ) {
+      return false;
+    }
+    if (
+      filters.location_region !== null &&
+      normalise(alert.location_region) !== normalise(filters.location_region)
+    ) {
+      return false;
+    }
+    if (filters.search) {
+      const query = normalise(filters.search);
+      const title = normalise(alert.title);
+
+      const noMatch =
+        query !== null && title !== null && !title.includes(query);
+      if (noMatch) return false;
+    }
+    return true;
+  });
 
   return (
-    <aside>
+    <aside ref={listRef} style={{ overflowY: "auto" }}>
       <ul>
-        {alerts.map((alert) => (
-          <li key={alert.id}>
+        {filteredAlerts.map((alert) => (
+          <li
+            key={alert.id}
+            className={alert.id === selectedMarker?.id ? "focussed" : ""}
+          >
             <AlertCard alert={alert} />
           </li>
         ))}
       </ul>
+      <div className="no-results-found">
+        {" "}
+        {filteredAlerts.length === 0 && <p>No results found</p>}
+      </div>
     </aside>
   );
 }

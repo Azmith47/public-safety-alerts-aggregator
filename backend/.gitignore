@@ -37,3 +37,7 @@ next-env.d.ts
 
 # Database Files
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
+backend/database/database.sqlite-shm
+backend/database/database.sqlite-wal

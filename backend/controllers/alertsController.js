@@ -1,16 +1,3 @@
-import {
-	FireAlert,
-	TrafficAlert,
-	WeatherAlert,
-} from "../models/alertClasses.js";
-
-import {
-	geoJsonToPaths,
-	geoJsonToMarker,
-	splitDescription,
-	parsePubDate,
-} from "../utils/alertUtilities.js";
-
 import AlertQueryService from "../services/AlertQueryService.js";
 
 export const getAlertsFromDb = async (req, res) => {
@@ -62,17 +49,3 @@ export const getAlertById = async (req, res) => {
 		res.status(500).json({ error: "Failed to fetch alert details" });
 	}
 };
-
-// export const unsubscribe = async (req, res) => {
-// 	const { token } = req.params;
-
-// 	const user = await UserDAO.getByUnsubscribeToken(token);
-
-// 	if (!user) {
-// 		return res.status(404).send("Invalid token");
-// 	}
-
-// 	await SubscriptionDAO.disableForUser(user.id);
-
-// 	res.send("You have been unsubscribed.");
-// };

@@ -1,46 +1,117 @@
-jest.mock("../../database/dao/NotificationDAO", () => ({ create: jest.fn(), getPending: jest.fn(), markSent: jest.fn(), markFailed: jest.fn() }));
-jest.mock("../../database/dao/UserDAO", () => ({ getById: jest.fn() }));
-jest.mock("../../database/dao/SubscriptionDAO", () => ({ getForUser: jest.fn() }));
+import { describe, expect, jest, test } from "@jest/globals";
 
-const NotificationService = require("../../services/NotificationService");
-const NotificationDAO = require("../../database/dao/NotificationDAO");
-const UserDAO = require("../../database/dao/UserDAO");
-const SubscriptionDAO = require("../../database/dao/SubscriptionDAO");
+const notificationDAO = {
+	create: jest.fn(),
+	getPending: jest.fn(),
+	markSent: jest.fn(),
+	markFailed: jest.fn(),
+};
+const userDAO = { getById: jest.fn() };
+const subscriptionDAO = { getForUser: jest.fn() };
+const alertDAO = { getById: jest.fn() };
+const emailService = { sendAlertDigest: jest.fn() };
+
+jest.unstable_mockModule("../../database/dao/NotificationDAO.js", () => ({
+	default: notificationDAO,
+}));
+jest.unstable_mockModule("../../database/dao/UserDAO.js", () => ({
+	default: userDAO,
+}));
+jest.unstable_mockModule("../../database/dao/SubscriptionDAO.js", () => ({
+	default: subscriptionDAO,
+}));
+jest.unstable_mockModule("../../database/dao/AlertDAO.js", () => ({
+	default: alertDAO,
+}));
+jest.unstable_mockModule("../../services/EmailService.js", () => ({
+	default: emailService,
+}));
+
+const { default: NotificationService } =
+	await import("../../services/NotificationService.js");
 
 describe("NotificationService", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        NotificationService.stopProcessing();
-        jest.useRealTimers();
-    });
+	beforeEach(() => {
+		jest.clearAllMocks();
+		NotificationService.stopProcessing();
+		notificationDAO.markSent.mockResolvedValue({ changes: 1 });
+		notificationDAO.markFailed.mockResolvedValue({ changes: 1 });
+		emailService.sendAlertDigest.mockResolvedValue({ ok: true });
+		jest.useRealTimers();
+	});
 
-    test("enqueue forwards notification payload to DAO", async () => {
-        NotificationDAO.create.mockResolvedValue({ id: 1 });
-        const result = await NotificationService.enqueue(5, 10);
+	test("enqueue forwards notification payload to DAO", async () => {
+		notificationDAO.create.mockResolvedValue({ id: 1 });
 
-        expect(NotificationDAO.create).toHaveBeenCalledWith({ user_id: 5, alert_id: 10, sent_status: 'pending' });
-        expect(result).toEqual({ id: 1 });
-    });
+		const result = await NotificationService.enqueue(5, 10);
 
-    test("processPending marks a valid pending notification as sent", async () => {
-        NotificationDAO.getPending.mockResolvedValue([{ id: 1, user_id: 2, alert_id: 3 }]);
-        UserDAO.getById.mockResolvedValue({ id: 2, email: "test@example.com", verified: true });
-        SubscriptionDAO.getForUser.mockResolvedValue({ is_enabled: true });
-        NotificationDAO.markSent.mockResolvedValue({ changes: 1 });
+		expect(notificationDAO.create).toHaveBeenCalledWith({
+			user_id: 5,
+			alert_id: 10,
+			sent_status: "pending",
+		});
+		expect(result).toEqual({ id: 1 });
+	});
 
-        const processed = await NotificationService.processPending(10);
+	test("sends one digest for all pending alerts belonging to a user", async () => {
+		notificationDAO.getPending.mockResolvedValue([
+			{ id: 1, user_id: 2, alert_id: 3 },
+			{ id: 2, user_id: 2, alert_id: 4 },
+		]);
+		userDAO.getById.mockResolvedValue({
+			id: 2,
+			email: "test@example.com",
+			verified: true,
+		});
+		subscriptionDAO.getForUser.mockResolvedValue([{ is_enabled: true }]);
+		alertDAO.getById
+			.mockResolvedValueOnce({ title: "Flood" })
+			.mockResolvedValueOnce({ title: "Fire" });
 
-        expect(processed).toBe(1);
-        expect(NotificationDAO.markSent).toHaveBeenCalledWith(1);
-    });
+		const processed = await NotificationService.processPending(10);
 
-    test("startProcessing and stopProcessing manage the timer state", () => {
-        jest.useFakeTimers();
+		expect(processed).toBe(2);
+		expect(emailService.sendAlertDigest).toHaveBeenCalledTimes(1);
+		expect(emailService.sendAlertDigest).toHaveBeenCalledWith(
+			"test@example.com",
+			[{ title: "Flood" }, { title: "Fire" }],
+		);
+		expect(notificationDAO.markSent).toHaveBeenCalledTimes(2);
+		expect(notificationDAO.markSent).toHaveBeenNthCalledWith(1, 1);
+		expect(notificationDAO.markSent).toHaveBeenNthCalledWith(2, 2);
+	});
 
-        NotificationService.startProcessing();
-        expect(NotificationService.running).toBe(true);
+	test("marks every notification in a failed digest as failed", async () => {
+		notificationDAO.getPending.mockResolvedValue([
+			{ id: 1, user_id: 2, alert_id: 3 },
+			{ id: 2, user_id: 2, alert_id: 4 },
+		]);
+		userDAO.getById.mockResolvedValue({
+			id: 2,
+			email: "test@example.com",
+			verified: true,
+		});
+		subscriptionDAO.getForUser.mockResolvedValue([{ is_enabled: true }]);
+		alertDAO.getById.mockResolvedValue({ title: "Alert" });
+		emailService.sendAlertDigest.mockRejectedValue(
+			new Error("delivery failed"),
+		);
 
-        NotificationService.stopProcessing();
-        expect(NotificationService.running).toBe(false);
-    });
+		await NotificationService.processPending(10);
+
+		expect(notificationDAO.markSent).not.toHaveBeenCalled();
+		expect(notificationDAO.markFailed).toHaveBeenCalledTimes(2);
+		expect(notificationDAO.markFailed).toHaveBeenNthCalledWith(1, 1);
+		expect(notificationDAO.markFailed).toHaveBeenNthCalledWith(2, 2);
+	});
+
+	test("startProcessing and stopProcessing manage the timer state", () => {
+		jest.useFakeTimers();
+
+		NotificationService.startProcessing();
+		expect(NotificationService.running).toBe(true);
+
+		NotificationService.stopProcessing();
+		expect(NotificationService.running).toBe(false);
+	});
 });

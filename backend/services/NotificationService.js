@@ -1,10 +1,13 @@
 import NotificationDAO from "../database/dao/NotificationDAO.js";
 import UserDAO from "../database/dao/UserDAO.js";
 import SubscriptionDAO from "../database/dao/SubscriptionDAO.js";
+import AlertDAO from "../database/dao/AlertDAO.js";
+import EmailService from "./EmailService.js";
 
 class NotificationService {
 	constructor(options = {}) {
 		this.pollInterval = options.pollInterval || 5000; // 5s
+		this.emailService = options.emailService || EmailService;
 		this.running = false;
 	}
 
@@ -18,48 +21,66 @@ class NotificationService {
 
 	async processPending(limit = 50) {
 		const pending = await NotificationDAO.getPending(limit);
-		for (const n of pending) {
+		const notificationsByUser = new Map();
+		for (const notification of pending) {
+			const userNotifications =
+				notificationsByUser.get(notification.user_id) || [];
+			userNotifications.push(notification);
+			notificationsByUser.set(notification.user_id, userNotifications);
+		}
+
+		for (const userNotifications of notificationsByUser.values()) {
+			const notificationIds = userNotifications.map(
+				(notification) => notification.id,
+			);
 			try {
-				const user = await UserDAO.getById(n.user_id);
-				const subscription = await SubscriptionDAO.getForUser(
-					n.user_id,
-				);
-
-				if (!subscription) {
-					console.warn(
-						`No subscription for user ${n.user_id}, marking notification ${n.id} failed`,
-					);
-					await NotificationDAO.markFailed(n.id);
-					continue;
-				}
-
-				if (!subscription.is_enabled && !user.verified) {
-					console.warn(
-						`Subscription disabled for user ${n.user_id}, marking notification ${n.id} failed`,
-					);
-					await NotificationDAO.markFailed(n.id);
-					continue;
-				}
-
+				const userId = userNotifications[0].user_id;
+				const user = await UserDAO.getById(userId);
 				if (!user || !user.email) {
+					await this.markNotificationsFailed(notificationIds);
+					continue;
+				}
+				const subscription = await SubscriptionDAO.getForUser(userId);
+
+				if (!Array.isArray(subscription) || subscription.length === 0) {
 					console.warn(
-						`No email for user ${n.user_id}, marking notification ${n.id} failed`,
+						`No subscription for user ${userId}, marking notifications failed`,
 					);
-					await NotificationDAO.markFailed(n.id);
+					await this.markNotificationsFailed(notificationIds);
 					continue;
 				}
 
-				// Mock send: in production replace with real email sender
-				console.log(
-					`Sending notification for alert ${n.alert_id} to ${user.email}`,
-				);
-				await NotificationDAO.markSent(n.id);
+				const hasEnabledSubscription = Array.isArray(subscription)
+					? subscription.some((item) => item.is_enabled)
+					: subscription.is_enabled;
+				if (!user.verified || !hasEnabledSubscription) {
+					console.warn(
+						`Subscription disabled for user ${userId}, marking notifications failed`,
+					);
+					await this.markNotificationsFailed(notificationIds);
+					continue;
+				}
+
+				const alerts = [];
+				for (const notification of userNotifications) {
+					alerts.push(await AlertDAO.getById(notification.alert_id));
+				}
+				await this.emailService.sendAlertDigest(user.email, alerts);
+				for (const notificationId of notificationIds) {
+					await NotificationDAO.markSent(notificationId);
+				}
 			} catch (err) {
 				console.error("Notification send failed", err);
-				await NotificationDAO.markFailed(n.id);
+				await this.markNotificationsFailed(notificationIds);
 			}
 		}
 		return pending.length;
+	}
+
+	async markNotificationsFailed(notificationIds) {
+		for (const notificationId of notificationIds) {
+			await NotificationDAO.markFailed(notificationId);
+		}
 	}
 
 	startProcessing() {

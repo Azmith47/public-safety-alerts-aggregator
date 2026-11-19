@@ -1,20 +1,137 @@
 import BaseDAO from "./BaseDAO.js";
 
+let isDatabaseInitializationComplete = false;
+
 class LocationDAO extends BaseDAO {
 	constructor() {
 		super("locations");
 	}
 
-	async getOrCreate(name, postcode = null, councilAreaId = null) {
-		const row = await this.findOne(this.tableName, "name = ?", [name]);
+	setDatabaseInitializationComplete(isComplete) {
+		isDatabaseInitializationComplete = Boolean(isComplete);
+	}
 
-		if (row) {
-			return { id: row.id, created: false };
+	extractCandidateNames(name) {
+		const rawName = String(name || "").trim();
+		if (!rawName) {
+			return [];
+		}
+
+		const normalizedName = rawName.replace(/\s+/g, " ").trim();
+		const candidates = [normalizedName];
+
+		const routeMatch = normalizedName.match(
+			/^(.*?)\s+(?:to|from|via)\s+(.*)$/i,
+		);
+		if (routeMatch) {
+			candidates.push(routeMatch[1].trim(), routeMatch[2].trim());
+		}
+
+		const dashMatch = normalizedName.match(/^(.*?)(?:\s*[–—-]\s*)(.*)$/);
+		if (dashMatch) {
+			candidates.push(dashMatch[1].trim(), dashMatch[2].trim());
+		}
+
+		const slashMatch = normalizedName.match(/^(.*?)(?:\s*\/\s*)(.*)$/);
+		if (slashMatch) {
+			candidates.push(slashMatch[1].trim(), slashMatch[2].trim());
+		}
+
+		return [...new Set(candidates.filter(Boolean))];
+	}
+
+	async getOrCreate(name, postcode = null, councilAreaId = null) {
+		const trimmedName = String(name || "").trim();
+		if (!trimmedName) {
+			return { id: null, created: false };
+		}
+
+		const normalizedPostcode =
+			postcode === null || postcode === undefined || postcode === ""
+				? null
+				: String(postcode).trim();
+
+		const candidateNames = this.extractCandidateNames(trimmedName);
+		for (const candidateName of candidateNames) {
+			const exactMatch = normalizedPostcode
+				? await this.findOne(
+						this.tableName,
+						"LOWER(name) = LOWER(?) AND postcode = ?",
+						[candidateName, normalizedPostcode],
+					)
+				: null;
+
+			if (exactMatch) {
+				return { id: exactMatch.id, created: false };
+			}
+
+			const councilMatch =
+				councilAreaId !== null && councilAreaId !== undefined
+					? await this.findOne(
+							this.tableName,
+							"LOWER(name) = LOWER(?) AND council_area_id = ?",
+							[candidateName, councilAreaId],
+						)
+					: null;
+
+			if (councilMatch) {
+				return { id: councilMatch.id, created: false };
+			}
+
+			const existingRow = await this.findOne(
+				this.tableName,
+				"LOWER(name) = LOWER(?)",
+				[candidateName],
+			);
+
+			if (existingRow) {
+				if (normalizedPostcode && !existingRow.postcode) {
+					await this.update(
+						this.tableName,
+						{ postcode: normalizedPostcode },
+						"id = ?",
+						[existingRow.id],
+					);
+				}
+				return { id: existingRow.id, created: false };
+			}
+
+			if (!normalizedPostcode || !isDatabaseInitializationComplete) {
+				continue;
+			}
+
+			const postcodeMatches =
+				councilAreaId !== null && councilAreaId !== undefined
+					? await this.findAll(
+							this.tableName,
+							"postcode = ? AND council_area_id = ?",
+							[normalizedPostcode, councilAreaId],
+						)
+					: await this.findAll(this.tableName, "postcode = ?", [
+							normalizedPostcode,
+						]);
+
+			if (!Array.isArray(postcodeMatches)) {
+				continue;
+			}
+
+			if (postcodeMatches.length === 1) {
+				const postcodeMatch = postcodeMatches[0];
+				if (!postcodeMatch.postcode) {
+					await this.update(
+						this.tableName,
+						{ postcode: normalizedPostcode },
+						"id = ?",
+						[postcodeMatch.id],
+					);
+				}
+				return { id: postcodeMatch.id, created: false };
+			}
 		}
 
 		const result = await super.insert(this.tableName, {
-			name,
-			postcode,
+			name: trimmedName,
+			postcode: normalizedPostcode,
 			council_area_id: councilAreaId,
 		});
 

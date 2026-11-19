@@ -26,6 +26,15 @@ describe("normalizeLocationName", () => {
 		);
 	});
 
+	test("should extract the suburb from street-address alert strings", () => {
+		expect(
+			normalizeLocationName("Mount Lindesay Rd, Tenterfield 2372"),
+		).toBe("Tenterfield");
+		expect(normalizeLocationName("120 Main St, Sydney 2000")).toBe(
+			"Sydney",
+		);
+	});
+
 	test("should return null for invalid input", () => {
 		expect(normalizeLocationName(null)).toBeNull();
 		expect(normalizeLocationName(undefined)).toBeNull();
@@ -69,6 +78,15 @@ describe("normalizeLGAName", () => {
 	test("should remove punctuation", () => {
 		expect(normalizeLGAName("Cessnock, Council")).toBe("Cessnock");
 	});
+
+	test("should preserve 'of' in canonical LGA names", () => {
+		expect(normalizeLGAName("City of Parramatta Council")).toBe(
+			"City of Parramatta",
+		);
+		expect(normalizeLGAKey("City of Parramatta Council")).toBe(
+			"CITY_OF_PARRAMATTA",
+		);
+	});
 });
 
 describe("normalizeLGAKey", () => {
@@ -96,6 +114,12 @@ describe("resolveCanonicalLGA", () => {
 
 	test("should resolve partial names", () => {
 		expect(resolveCanonicalLGA("Mid-Western")).toBe("MID_WESTERN_REGIONAL");
+	});
+
+	test("should preserve 'of' in canonical resolved LGAs", () => {
+		expect(resolveCanonicalLGA("City of Parramatta Council")).toBe(
+			"CITY_OF_PARRAMATTA",
+		);
 	});
 
 	test("should return null for unknown LGAs", () => {

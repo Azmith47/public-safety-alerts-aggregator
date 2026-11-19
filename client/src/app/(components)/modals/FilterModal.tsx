@@ -1,42 +1,72 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "@/context/MenuContext";
 import { FilterContext } from "@/context/FilterContext";
 import { AlertFilters, FilterKey } from "@/app/lib/definitions";
+import { lgaGroups, regions } from "@/app/lib/placeholder-data";
+import { convertActiveToString } from "@/app/lib/utils";
 
-//Convert string to null | true |false
-function convertActiveToString(value: string): boolean | null {
-  if (value === "") {
-    return null;
-  } else if (value === "true") {
-    return true;
-  }
-  return false;
-}
-
-//TODO: This is too repetitive as number of filters increases
-//Replace "if" block with Object.entries(filters)
-//For labels use a simple object as a lookup table
 export function FilterTabs() {
+  const [isMounted, setIsMounted] = useState(false);
   const selectedFilters: { key: FilterKey; label: string }[] = [];
-  const { filters } = useContext(FilterContext)
+  const { filters } = useContext(FilterContext);
 
-  if (filters.active !== null) {
+  // Track mounting state to avoid Next.js hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const incidentTypeLabels: Record<number, string> = {
+    1: "Fire",
+    2: "Traffic Incident",
+    3: "Road Hazard",
+    4: "Flood",
+    5: "Storm",
+    6: "Weather",
+    7: "Hazmat",
+    8: "Rescue",
+    9: "Medical",
+    10: "Planned Burn",
+    11: "Public Event",
+    12: "Other",
+  };
+
+  if (filters.is_active !== null) {
     selectedFilters.push({
-      key: "active",
-      label: filters.active ? "Active" : "Inactive",
+      key: "is_active",
+      label: filters.is_active ? "Active" : "Inactive",
     });
   }
 
-  if (filters.type !== null) {
+  if (filters.category_id !== null) {
     selectedFilters.push({
-      key: "type",
-      label: filters.type,
+      key: "category_id",
+      label: incidentTypeLabels[filters.category_id] ?? "Unknown",
     });
   }
+
+  if (filters.location_council_area !== null) {
+    selectedFilters.push({
+      key: "location_council_area",
+      label: filters.location_council_area ?? "Unknown",
+    });
+  }
+
+  if (filters.location_region !== null) {
+    selectedFilters.push({
+      key: "location_region",
+      label: filters.location_region ?? "Unknown",
+    });
+  }
+
+  // Prevent rendering filter markup on the server pass
+  if (!isMounted) {
+    return null;
+  }
+
   return (
-    <div className="filter-bar">
+    <div className={selectedFilters.length > 0 ? "filter-bar" : ""}>
       {selectedFilters.map((filter) => (
         <div className="filter-items" key={filter.key}>
           <span>{filter.label}</span>
@@ -46,19 +76,30 @@ export function FilterTabs() {
   );
 }
 
-// Filter component
-// Fields need to be confirmed, everything below is placeholder
 export default function FilterModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "filter";
   const onClose = () => toggleMenu(false, null);
 
-  const { filters : localFilters, updateFilters : setLocalFilters } = useContext(FilterContext)
-  
-  const onApply = (newFilters : AlertFilters) => {
-    setLocalFilters(newFilters);
-    toggleMenu(false, null)
-  }
+  const { filters, updateFilters } = useContext(FilterContext);
+  const [localFilters, setLocalFilters] = useState<AlertFilters>(filters);
+
+  //Reset object to set each filter back to null
+  const emptyFilters: AlertFilters = {
+    is_active: null,
+    category_id: null,
+    location_region: null,
+    location_council_area: null,
+  };
+
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
+  const onApply = (newFilters: AlertFilters) => {
+    updateFilters(newFilters);
+    toggleMenu(false, null);
+  };
 
   return (
     <div
@@ -72,44 +113,99 @@ export default function FilterModal() {
         <label htmlFor="">Incident Status</label>
         <select
           value={
-            localFilters.active === null
+            localFilters.is_active === null
               ? ""
-              : localFilters.active
+              : localFilters.is_active
                 ? "true"
                 : "false"
           }
           onChange={(e) => {
             const value = convertActiveToString(e.target.value);
-            setLocalFilters({ ...localFilters, active: value });
+            setLocalFilters({ ...localFilters, is_active: value });
           }}
         >
-          <option value="">-</option>
+          <option value="">Select Incident status</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
         <label htmlFor="">Incident type</label>
         <select
-          value={localFilters.type ?? ""}
+          value={localFilters.category_id ?? ""}
+          onChange={(e) => {
+            const value = e.target.value === "" ? null : Number(e.target.value);
+            setLocalFilters({ ...localFilters, category_id: value });
+          }}
+        >
+          <option value="">Select Incident Type</option>
+          <option value="1">Fire</option>
+          <option value="2">Traffic Incident</option>
+          <option value="3">Road Hazard</option>
+          <option value="4">Flood</option>
+          <option value="5">Storm</option>
+          <option value="6">Weather</option>
+          <option value="7">Hazmat</option>
+          <option value="8">Rescue</option>
+          <option value="9">Medical</option>
+          <option value="10">Planned Burn</option>
+          <option value="11">Public Event</option>
+          <option value="12">Other</option>
+        </select>
+        <label htmlFor="">Region</label>
+        <select
+          value={localFilters.location_region ?? ""}
           onChange={(e) => {
             const value = e.target.value === "" ? null : e.target.value;
-            setLocalFilters({ ...localFilters, type: value });
+            setLocalFilters({ ...localFilters, location_region: value });
           }}
         >
-          <option value="">-</option>
-          <option value="traffic">Traffic</option>
-          <option value="fire">Fire</option>
-          <option value="storm">Storm</option>
-          <option value="flood">Flood</option>
+          <option value="">Select Region</option>
+          {regions.map((region) => (
+            <option key={region} value={region}>
+              {region}
+            </option>
+          ))}
         </select>
-        <button
-          type="button"
-          className="apply-btn"
-          onClick={() => {
-            onApply(localFilters);
+        <label htmlFor="">LGA</label>
+        <select
+          value={localFilters.location_council_area ?? ""}
+          onChange={(e) => {
+            const value = e.target.value === "" ? null : e.target.value;
+            setLocalFilters({ ...localFilters, location_council_area: value });
           }}
         >
-          Filter
-        </button>
+          <option value="">Select LGA</option>
+          {Object.entries(lgaGroups).map(([region, lgas]) => (
+            <optgroup key={region} label={region} className="optgroup-label">
+              {[...lgas]
+                .sort((a, b) => a.localeCompare(b))
+                .map((lga) => (
+                  <option key={lga} value={lga}>
+                    {lga}
+                  </option>
+                ))}
+            </optgroup>
+          ))}
+        </select>
+        <div className="filter-btn-container">
+          <button
+            type="button"
+            className="reset-btn"
+            onClick={() => {
+              onApply(emptyFilters);
+            }}
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            className="apply-btn"
+            onClick={() => {
+              onApply(localFilters);
+            }}
+          >
+            Apply
+          </button>
+        </div>
       </form>
     </div>
   );

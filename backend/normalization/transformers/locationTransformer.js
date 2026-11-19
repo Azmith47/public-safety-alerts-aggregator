@@ -64,21 +64,75 @@ export function normalizeLocationName(value) {
 		return null;
 	}
 
-	const trimmedValue = value.trim();
-
-	/**
-	 * Empty string protection after trimming.
-	 */
-	if (!trimmedValue) {
+	const rawValue = value.trim();
+	if (!rawValue) {
 		return null;
 	}
 
-	return trimmedValue
-		.trim()
+	const normalizedValue = rawValue
+		.replace(/\s+/g, " ")
+		.replace(/\([^)]*\)/g, " ")
+		.trim();
+
+	if (!normalizedValue) {
+		return null;
+	}
+
+	const postcodeMatch = normalizedValue.match(/^(.*?)(?:\s+\d{4})$/);
+	if (postcodeMatch) {
+		const candidate = postcodeMatch[1].trim();
+		if (candidate) {
+			const words = candidate.split(/\s+/).filter(Boolean);
+			if (words.length <= 2) {
+				return words
+					.map((word) => {
+						if (word.toLowerCase() === "of") return "of";
+						return (
+							word.charAt(0).toUpperCase() +
+							word.slice(1).toLowerCase()
+						);
+					})
+					.join(" ");
+			}
+		}
+	}
+
+	if (normalizedValue.includes(",")) {
+		const parts = normalizedValue
+			.split(",")
+			.map((part) => part.trim())
+			.filter(Boolean);
+		const lastPart = parts[parts.length - 1];
+		if (lastPart) {
+			const lastPartMatch = lastPart.match(/^(.*?)(?:\s+\d{4})$/);
+			const extracted = lastPartMatch
+				? lastPartMatch[1].trim()
+				: lastPart;
+			if (extracted) {
+				const words = extracted.split(/\s+/).filter(Boolean);
+				if (words.length <= 2) {
+					return words
+						.map((word) => {
+							if (word.toLowerCase() === "of") return "of";
+							return (
+								word.charAt(0).toUpperCase() +
+								word.slice(1).toLowerCase()
+							);
+						})
+						.join(" ");
+				}
+			}
+		}
+	}
+
+	return normalizedValue
 		.toLowerCase()
 		.split(" ")
 		.filter(Boolean)
 		.map((word) => {
+			if (word === "of") {
+				return "of";
+			}
 			return word.charAt(0).toUpperCase() + word.slice(1);
 		})
 		.join(" ");
@@ -158,9 +212,9 @@ export function normalizeLGAName(value) {
 	);
 
 	/**
-	 * Remove stray "of" fragments.
+	 * Preserve "of" in canonical LGA names like "City of Parramatta".
+	 * We only strip it for comparison lookups, not for display/storage.
 	 */
-	normalizedValue = normalizedValue.replace(/\s+of\s+/gi, " ");
 
 	/**
 	 * Replace hyphens with spaces.
@@ -202,6 +256,20 @@ export function normalizePostcode(value) {
  * @param {string|null|undefined} value
  * @returns {string|null}
  */
+function stripComparisonWord(value) {
+	if (!value) {
+		return value;
+	}
+
+	return value
+		.replace(/_OF_/g, "_")
+		.replace(/^OF_/, "")
+		.replace(/_OF$/, "")
+		.replace(/\bOF\b/gi, "")
+		.replace(/_+/g, "_")
+		.replace(/^_+|_+$/g, "");
+}
+
 export function normalizeLGAKey(value) {
 	const normalizedName = normalizeLGAName(value);
 
@@ -226,13 +294,17 @@ const normalizedLgaMap = (() => {
 	const map = new Map();
 
 	for (const lga of Object.keys(LGA_REGION_MAP)) {
-		const normalizedKey = normalizeLGAKey(lga);
+		const canonicalKey = normalizeLGAKey(lga);
 
-		if (normalizedKey) {
-			/**
-			 * Store canonical enum-style LGA values.
-			 */
-			map.set(normalizedKey, normalizeLGAKey(lga));
+		if (!canonicalKey) {
+			continue;
+		}
+
+		const comparisonKey = stripComparisonWord(canonicalKey);
+
+		map.set(canonicalKey, canonicalKey);
+		if (comparisonKey && comparisonKey !== canonicalKey) {
+			map.set(comparisonKey, canonicalKey);
 		}
 	}
 
@@ -260,41 +332,35 @@ export function resolveCanonicalLGA(value) {
 		return null;
 	}
 
-	/**
-	 * Exact match.
-	 */
-	if (normalizedLgaMap.has(normalizedKey)) {
-		return normalizedLgaMap.get(normalizedKey);
-	}
+	const comparisonKey = stripComparisonWord(normalizedKey);
+	const candidateKeys = [
+		normalizedKey,
+		comparisonKey,
+		normalizedKey
+			.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
+			.replace(/_{2,}/g, "_")
+			.replace(/^_+|_+$/g, ""),
+		stripComparisonWord(
+			normalizedKey
+				.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
+				.replace(/_{2,}/g, "_")
+				.replace(/^_+|_+$/g, ""),
+		),
+	];
 
-	/**
-	 * Fuzzy substring matching.
-	 */
-	for (const [candidateKey, canonicalLGA] of normalizedLgaMap.entries()) {
-		if (
-			candidateKey.includes(normalizedKey) ||
-			normalizedKey.includes(candidateKey)
-		) {
-			return canonicalLGA;
+	for (const candidate of candidateKeys) {
+		if (!candidate) continue;
+		if (normalizedLgaMap.has(candidate)) {
+			return normalizedLgaMap.get(candidate);
 		}
 	}
 
-	/**
-	 * Additional relaxed matching.
-	 */
-	const strippedKey = normalizedKey
-		.replace(/_(REGIONAL|REGION|DISTRICT|CITY|SHIRE|COUNCIL)$/g, "")
-		.replace(/_{2,}/g, "_")
-		.replace(/^_+|_+$/g, "");
-
-	if (normalizedLgaMap.has(strippedKey)) {
-		return normalizedLgaMap.get(strippedKey);
-	}
-
 	for (const [candidateKey, canonicalLGA] of normalizedLgaMap.entries()) {
 		if (
-			candidateKey.includes(strippedKey) ||
-			strippedKey.includes(candidateKey)
+			candidateKey.includes(normalizedKey) ||
+			normalizedKey.includes(candidateKey) ||
+			(candidateKey.includes(comparisonKey) && comparisonKey) ||
+			(comparisonKey && comparisonKey.includes(candidateKey))
 		) {
 			return canonicalLGA;
 		}
@@ -439,4 +505,66 @@ export function normalizePolygonCoordinates(coordinates) {
  */
 export function normalizePolylineCoordinates(coordinates) {
 	return normalizePolygonCoordinates(coordinates);
+}
+
+/**
+ * Decodes a Google encoded polyline into [longitude, latitude] pairs.
+ *
+ * @param {string|null|undefined} encodedPolyline
+ * @returns {Array}
+ */
+export function decodeEncodedPolyline(encodedPolyline) {
+	if (typeof encodedPolyline !== "string" || encodedPolyline.length === 0) {
+		return [];
+	}
+
+	const coordinates = [];
+	let index = 0;
+	let latitude = 0;
+	let longitude = 0;
+
+	try {
+		while (index < encodedPolyline.length) {
+			let result = 0;
+			let shift = 0;
+			let byte;
+
+			do {
+				byte = encodedPolyline.charCodeAt(index++) - 63;
+				if (byte < 0) return [];
+				result |= (byte & 0x1f) << shift;
+				shift += 5;
+			} while (byte >= 0x20 && index <= encodedPolyline.length);
+
+			const latitudeDelta = result & 1 ? ~(result >> 1) : result >> 1;
+			latitude += latitudeDelta;
+
+			result = 0;
+			shift = 0;
+
+			do {
+				byte = encodedPolyline.charCodeAt(index++) - 63;
+				if (byte < 0) return [];
+				result |= (byte & 0x1f) << shift;
+				shift += 5;
+			} while (byte >= 0x20 && index <= encodedPolyline.length);
+
+			const longitudeDelta = result & 1 ? ~(result >> 1) : result >> 1;
+			longitude += longitudeDelta;
+
+			const normalizedCoordinate = normalizePolylineCoordinates([
+				[longitude / 1e5, latitude / 1e5],
+			]);
+
+			if (normalizedCoordinate.length === 0) {
+				return [];
+			}
+
+			coordinates.push(normalizedCoordinate[0]);
+		}
+	} catch {
+		return [];
+	}
+
+	return coordinates;
 }

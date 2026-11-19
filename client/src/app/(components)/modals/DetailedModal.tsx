@@ -3,17 +3,27 @@
 import { MenuContext } from "@/context/MenuContext";
 import { AlertsContext } from "@/context/AlertsContext";
 import { useContext } from "react";
+import FireDetail from "./FireDetail";
+import TrafficDetail from "./TrafficDetail";
+import { displayFormat } from "@/app/lib/utils";
 
-//TODO: Display different modals for fire & traffic
-//Current method DOES NOT scale well
 export default function DetailedModal() {
   const { modalOpen, toggleMenu } = useContext(MenuContext);
   const isOpen = modalOpen === "detailedModal";
-  const onClose = () => toggleMenu(false, null);
+  const onClose = () => {
+    toggleMenu(false, null);
+  };
+  const {
+    selectedAlert: alert,
+    updateSelectedAlert,
+    updateSelectedMarker,
+    addSubscribedAlert,
+    removeSubscribedAlert,
+    subscribedAlertTitles,
+  } = useContext(AlertsContext);
 
-  const { selectedAlert: alert } = useContext(AlertsContext);
+  if (alert === null) return null; //if alert is null render nothing
 
-//   if (alert === null) return null; //if alert is null render nothing
   return (
     <div
       className={
@@ -21,54 +31,26 @@ export default function DetailedModal() {
       }
     >
       <div className="modal-header">
-        <button onClick={onClose}>✕</button>
+        <button
+          onClick={() => {
+            updateSelectedAlert(null);
+            updateSelectedMarker(null);
+            onClose();
+          }}
+        >
+          ✕
+        </button>
       </div>
-      <h4>{alert?.title}</h4>
-      {alert?.type === 2 ? (
-        <div className="data-grid">
-          <article className="labels">
-            <p>Type:</p>
-            <p>Category:</p>
-            <p>Region:</p>
-            <p>Suburb:</p>
-            <p>Date Published:</p>
-          </article>
-          <article className="data">
-            <p>{alert?.type}</p>
-            <p>{alert?.category}</p>
-            <p>{alert?.alertLocation.region}</p>
-            <p>{alert?.alertLocation.suburb}</p>
-            <p>{alert?.datePublished}</p>
-          </article>
-          <p style={{ color: "red", fontWeight: "bold" }}>
-            This is the view for a fire alert
-          </p>
-        </div>
+      <h4>{displayFormat(alert?.title)}</h4>
+      {alert.source_id === 1 ? (
+        <FireDetail alert={alert} />
       ) : (
-        <div className="data-grid">
-          <article className="labels">
-            <p>Type:</p>
-            <p>Category:</p>
-            <p>Region:</p>
-            <p>Suburb:</p>
-            <p>Date Published:</p>
-            <p>Road:</p>
-            <p>Cross Road: </p>
-          </article>
-          <article className="data">
-            <p>{alert?.type}</p>
-            <p>{alert?.category}</p>
-            <p>{alert?.alertLocation.region}</p>
-            <p>{alert?.alertLocation.suburb}</p>
-            <p>{alert?.datePublished}</p>
-            <p>bla bla</p>
-            <p>bla bla</p>
-          </article>
-          <p style={{ color: "green", fontWeight: "bold" }}>
-            This is the view for any other type of element
-          </p>
-        </div>
+        <TrafficDetail alert={alert} />
       )}
+      <div className="subscribe-section">
+        <p>Click to subscribe</p>
+        <input type="checkbox" checked={false} onChange={() => {}} />
+      </div>
     </div>
   );
 }

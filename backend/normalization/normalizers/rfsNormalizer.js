@@ -219,6 +219,24 @@ function extractNumericValue(value) {
 	return match ? Number(match[0]) : null;
 }
 
+function normalizeExternalId(value) {
+	if (value === null || value === undefined) {
+		return null;
+	}
+
+	const raw = String(value).trim();
+	if (!raw) {
+		return raw;
+	}
+
+	const urlMatch = raw.match(/\/([0-9]+)(?:[/?#]|$)/);
+	if (urlMatch) {
+		return urlMatch[1];
+	}
+
+	return raw;
+}
+
 function extractCategoryFromRFS(category, descriptionFields) {
 	const transformedCategory = transformCategory(category);
 
@@ -480,12 +498,13 @@ export function normalizeRfsFeature(feature) {
 			/**
 			 * Core identifiers
 			 */
-			externalId: String(
-				feature.id ||
-					properties.guid ||
-					properties.id ||
-					crypto.randomUUID(),
-			),
+			externalId:
+				normalizeExternalId(
+					feature.id ||
+						properties.guid ||
+						properties.id ||
+						crypto.randomUUID(),
+				) || crypto.randomUUID(),
 
 			/**
 			 * Core alert info

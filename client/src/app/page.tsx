@@ -2,7 +2,7 @@ import Navbar from "./(components)/Navbar";
 import MenuDrawer from "./(components)/MenuDrawer";
 import { FilterTabs } from "./(components)/modals/FilterModal";
 import AlertList from "./(components)/AlertList";
-import GoogleMap from "./(components)/AlertsMap";
+import GoogleMap from "./(components)/map/AlertsMap";
 import Footer from "./(components)/Footer";
 import FilterModal from "./(components)/modals/FilterModal";
 import MySearchesModal from "./(components)/modals/MySearchesModal";
@@ -16,34 +16,32 @@ import { AlertsProvider } from "@/context/AlertsContext";
 import { FilterProvider } from "@/context/FilterContext";
 
 export default function Home() {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY || '';
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY || "";
 
   return (
     <MenuProvider>
-      <PageOverlay/>
-      <Navbar/>
-      <MenuDrawer/>
-      <SubscribeModal/>
-      <FilterProvider>
-        <FilterModal/>
-        <MySearchesModal/>
-        <MyAlertsModal/>
-          <AlertsProvider>
-            <DetailedModal/>
-
-            <main>
-                  <AlertList />
-
-              <div className="map-area">
-                <FilterTabs />
-                <Suspense fallback={<div>Loading...</div>}>
-                  <GoogleMap apiKey={apiKey} />
-                </Suspense>
-              </div>
-            </main>
-            <Footer />
-        </AlertsProvider>
-      </FilterProvider>
+      <AlertsProvider>
+        <PageOverlay />
+        <MenuDrawer />
+        <SubscribeModal />
+        <FilterProvider>
+          <Navbar />
+          <FilterModal />
+          <MySearchesModal />
+          <DetailedModal />
+          <MyAlertsModal />
+          <main>
+            <AlertList />
+            <div className="map-area">
+              <FilterTabs />
+              <Suspense fallback={<div>Loading...</div>}>
+                <GoogleMap apiKey={apiKey} />
+              </Suspense>
+            </div>
+          </main>
+          <Footer />
+        </FilterProvider>
+      </AlertsProvider>
     </MenuProvider>
   );
 }

@@ -39,6 +39,7 @@ import {
 	normalizeLocationName,
 	normalizeMarker,
 	normalizePolylineCoordinates,
+	decodeEncodedPolyline,
 	resolveCanonicalLGA,
 	resolveRegionFromLGA,
 } from "../transformers/locationTransformer.js";
@@ -262,6 +263,18 @@ function extractPolylinesFromGeometry(geometry) {
 	return polylines;
 }
 
+function extractEncodedPolylines(encodedPolylines) {
+	if (!Array.isArray(encodedPolylines)) {
+		return [];
+	}
+
+	return encodedPolylines
+		.map((encodedPolyline) =>
+			decodeEncodedPolyline(encodedPolyline?.coords),
+		)
+		.filter((polyline) => polyline.length > 0);
+}
+
 /**
  * normalizeTfnswIncident
  *
@@ -292,7 +305,10 @@ export function normalizeTfnswIncident(incident) {
 
 		const primaryMarker = markers[0] || null;
 
-		const polylines = extractPolylinesFromGeometry(geometry);
+		const polylines = [
+			...extractPolylinesFromGeometry(geometry),
+			...extractEncodedPolylines(properties.encodedPolylines),
+		];
 
 		/**
 		 * -------------------------------------------------

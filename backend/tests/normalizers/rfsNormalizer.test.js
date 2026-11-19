@@ -49,7 +49,7 @@ describe("rfsNormalizer", () => {
 			/**
 			 * Core identifiers
 			 */
-			expect(result.externalId).toBe(feature.properties.guid);
+			expect(result.externalId).toBe("660262");
 			expect(result.source).toBe(Sources.RFS);
 			expect(result.sourceType).toBe(SourceTypes.FIRE);
 
@@ -288,7 +288,7 @@ describe("rfsNormalizer", () => {
 			const result = normalizeRfsFeature(feature);
 
 			expect(result).toBeInstanceOf(CanonicalFireAlert);
-			expect(result.externalId).toBe(feature.properties.guid);
+			expect(result.externalId).toBe("660262");
 			expect(result.title).toBe(feature.properties.title);
 			expect(result.source).toBe(Sources.RFS);
 			expect(result.sourceType).toBe(SourceTypes.FIRE);
@@ -298,7 +298,9 @@ describe("rfsNormalizer", () => {
 				longitude: feature.geometry.coordinates[0],
 				latitude: feature.geometry.coordinates[1],
 			});
-			expect(result.location).toBe("Castlereagh Hwy, Apple Tree Flat 2850");
+			expect(result.location).toBe(
+				"Castlereagh Hwy, Apple Tree Flat 2850",
+			);
 			expect(result.councilArea).toBe("MID_WESTERN_REGIONAL");
 			expect(result.region).toBe("CENTRAL_WEST_ORANA");
 			expect(result.rawPayload).toBe(feature);

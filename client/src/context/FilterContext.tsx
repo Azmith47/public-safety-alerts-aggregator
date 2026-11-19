@@ -1,18 +1,21 @@
 "use client";
 
-import { AlertFilters } from '@/app/lib/definitions';
-import { createContext, useState, type ReactNode } from 'react';
+import { AlertFilters } from "@/app/lib/definitions";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 
 interface FilterContextValue {
-    filters: AlertFilters;
-    updateFilters: (filters: AlertFilters) => void;
+  filters: AlertFilters;
+  updateFilters: (filters: AlertFilters) => void;
 }
 
 // 1. Create the context with an optional default value
 export const FilterContext = createContext<FilterContextValue>({
   filters: {
-    active: null,
-    type: null,
+    is_active: true,
+    category_id: null,
+    location_council_area: null,
+    location_region: null,
+    search: null,
   },
   updateFilters: () => {},
 });
@@ -22,20 +25,67 @@ interface FilterProviderProps {
 }
 
 export function FilterProvider({ children }: FilterProviderProps) {
-    //State variables
-    const [filters, setFilters] = useState<AlertFilters>({
-      active: null,
-      type: null,
-    });
+  const defaultFilters: AlertFilters = {
+    is_active: null,
+    category_id: null,
+    location_council_area: null,
+    location_region: null,
+    search: null,
+  };
 
-    const updateFilters = (newFilters: AlertFilters) => {
-        setFilters(newFilters);
-    };
+  const [filters, setFilters] = useState<AlertFilters>(() => {
+    if (typeof window === "undefined") {
+      return defaultFilters;
+    }
 
-  // 2. Provide the state and modifier function to children
+    try {
+      const savedFilters = window.localStorage.getItem("filters");
+      if (savedFilters !== null) {
+        return JSON.parse(savedFilters) as AlertFilters;
+      }
+      return defaultFilters;
+    } catch (error) {
+      console.error("Failed to parse storage:", error);
+      return defaultFilters;
+    }
+  });
+
+  const updateFilters = (newFilters: AlertFilters) => {
+    setFilters(newFilters);
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    window.localStorage.setItem("filters", JSON.stringify(filters));
+    recentSearches(filters);
+  }, [filters]);
+
   return (
     <FilterContext.Provider value={{ filters, updateFilters }}>
       {children}
     </FilterContext.Provider>
   );
+}
+
+function recentSearches(filters: AlertFilters) {
+  if (typeof window === "undefined") return;
+
+  const searches = window.localStorage.getItem("recent-searches");
+  let filterCombos: AlertFilters[] = [];
+
+  if (searches === null) {
+    filterCombos.push(filters);
+  } else {
+    try {
+      filterCombos = JSON.parse(searches) as AlertFilters[];
+    } catch {
+      filterCombos = [];
+    }
+
+    if (filterCombos.length > 10) filterCombos.shift();
+    filterCombos.push(filters);
+  }
+
+  window.localStorage.setItem("recent-searches", JSON.stringify(filterCombos));
 }
